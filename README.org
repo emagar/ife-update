@@ -1,0 +1,15 @@
+#+TITLE: IFE project update
+#+AUTHOR: Eric Magar
+Last revision: 2021-02-05
+
+# Export to md: M-x org-md-export-to-markdown
+
+* Description of /Roll call votes data for the Mexican Chamber of Deputies/ repository
+- Authors: Federico Estévez, Eric Magar, and Guillermo Rosas
+- Email: emagar at gmail dot com
+- GitHub: https://github.com/emagar/dipMex
+
+* Description
+The repository contains files for analysis of our re-loaded IFE project---see our [[https://github.com/emagar/ep3/blob/master/lecturas/EstevezMagarRosasIfeElecStud2008.pdf][publication]]. 
+* License
+This repository in under the MIT License, see http://opensource.org/licenses/MIT. The sole condition to use the data is to cite it as follows: Federico Estévez, Eric Magar and Guillermo Rosas. 2008. Partisanship in non-partisan electoral agencies and democratic compliance: Evidence from Mexico's Federal Electoral Institute. /Electoral Studies/ vol. 27, pp. 257-271.
