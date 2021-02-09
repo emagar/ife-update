@@ -35,14 +35,13 @@ d[,sel] <- tmp
 # compute total ayes
 d$tmp00 <- d$tmp01 <- d$tmp02 <- d$tmp03 <- d$tmp04 <- d$tmp05 <- d$tmp06 <- d$tmp07 <- d$tmp08 <- d$tmp09 <- d$tmp10 <- d$tmp11 <- d$tmp12 <- d$tmp13 <- d$tmp14 <- d$tmp15 <- d$tmp16 <- d$tmp17 <- d$tmp18 <- d$tmp19 <- d$tmp20 <- d$tmp21 <- d$tmp22 <- d$tmp23 <- d$tmp24 <- d$tmp25 <- d$tmp26 <- d$tmp27 <- d$tmp28 <- d$tmp29 <- d$tmp30 <- d$tmp31 <- d$tmp32 <- d$tmp33 <- d$tmp34 <- d$tmp35 <- d$tmp36 <- d$tmp37 <- d$tmp38 <- 0
 #
-table(d$segob)
 d$tmp00[d$segob==1] <- 1
 d$tmp01[d$senpri==1] <- 1
 d$tmp02[d$senprd==1] <- 1
 d$tmp03[d$dippri==1] <- 1
 d$tmp04[d$dippan==1] <- 1
 d$tmp05[d$creel==1] <- 1
-d$tmp07[d$granados==1] <- 1
+d$tmp06[d$granados==1] <- 1
 d$tmp07[d$pinchetti==1] <- 1
 d$tmp08[d$pozas==1] <- 1
 d$tmp09[d$zertuche==1] <- 1
@@ -108,10 +107,10 @@ d <- within(d, {
     dippan1 <- as.numeric(dippan==1 | dippan==2);
     creel1 <- as.numeric(creel==1 | creel==2);
     granados1 <- as.numeric(granados==1 | granados==2);
-    zertuche1 <- as.numeric(zertuche==1 | zertuche==2);
     pinchetti1 <- as.numeric(pinchetti==1 | pinchetti==2);
     pozas1 <- as.numeric(pozas==1 | pozas==2);
     woldenberg1 <- as.numeric(woldenberg==1 | woldenberg==2);
+    zertuche1 <- as.numeric(zertuche==1 | zertuche==2);
     barragan1 <- as.numeric(barragan==1 | barragan==2);
     cardenas1 <- as.numeric(cardenas==1 | cardenas==2);
     cantu1 <- as.numeric(cantu==1 | cantu==2);
@@ -144,47 +143,47 @@ d <- within(d, {
 #
 d$vtot <- NA
 tmp <- d[d$term==1,]
-tmp <- within(tmp, vtot <- segob1+senpri1+senprd1+dippri1+dippan1+creel1+granados1+woldenberg1+zertuche1+pinchetti1+pozas1) 
+tmp <- within(tmp, vtot <- segob1 + senpri1 + senprd1 + dippri1 + dippan1 + creel1 + granados1 + pinchetti1 + pozas1 + woldenberg1 + zertuche1) 
 d[d$term==1,] <- tmp
 #
 tmp <- d[d$term==2,]
-tmp <- within(tmp, vtot <- woldenberg1+peschard1+lujambio1+cardenas1+cantu1+merino1+barragan1+zebadua1+molinar1)
+tmp <- within(tmp, vtot <- woldenberg1 + peschard1 + lujambio1 + cardenas1 + cantu1 + merino1 + barragan1 + zebadua1 + molinar1)
 d[d$term==2,] <- tmp
 #
 tmp <- d[d$term==3,]
-tmp <- within(tmp, vtot <- woldenberg1+peschard1+lujambio1+cardenas1+cantu1+merino1+barragan1+rivera1+luken1)
+tmp <- within(tmp, vtot <- woldenberg1 + peschard1 + lujambio1 + cardenas1 + cantu1 + merino1 + barragan1 + rivera1 + luken1)
 d[d$term==3,] <- tmp
 #
 tmp <- d[d$term==4,]
-tmp <- within(tmp, vtot <- ugalde1+albo1+andrade1+alcantar1+glezluna1+latapi1+lopezflores1+morales1+sanchez1)
+tmp <- within(tmp, vtot <- ugalde1 + albo1 + andrade1 + alcantar1 + glezluna1 + latapi1 + lopezflores1 + morales1 + sanchez1)
 d[d$term==4,] <- tmp
 #
 tmp <- d[d$term==5,]
-tmp <- within(tmp, vtot <- albo1+andrade1+alcantar1+glezluna1+latapi1+lopezflores1+morales1+sanchez1)
+tmp <- within(tmp, vtot <- albo1 + andrade1 + alcantar1 + glezluna1 + latapi1 + lopezflores1 + morales1 + sanchez1)
 d[d$term==5,] <- tmp
 #
 tmp <- d[d$term==6,]
-tmp <- within(tmp, vtot <- albo1+andrade1+alcantar1+glezluna1+        lopezflores1+         sanchez1+valdes1+banos1+nacif1)
+tmp <- within(tmp, vtot <- albo1 + andrade1 + alcantar1 + glezluna1 +         lopezflores1 +          sanchez1 + valdes1 + banos1 + nacif1)
 d[d$term==6,] <- tmp
 #
 tmp <- d[d$term==7,]
-tmp <- within(tmp, vtot <-       andrade1+alcantar1+                                        sanchez1+valdes1+banos1+nacif1+elizondo1+figueroa1+guerrero1)
+tmp <- within(tmp, vtot <-       andrade1 + alcantar1 +                                         sanchez1 + valdes1 + banos1 + nacif1 + elizondo1 + figueroa1 + guerrero1)
 d[d$term==7,] <- tmp
 #
 tmp <- d[d$term==8,]
-tmp <- within(tmp, vtot <- valdes1+banos1+nacif1+elizondo1+figueroa1+guerrero1)
+tmp <- within(tmp, vtot <- valdes1 + banos1 + nacif1 + elizondo1 + figueroa1 + guerrero1)
 d[d$term==8,] <- tmp
 #
 tmp <- d[d$term==9,]
-tmp <- within(tmp, vtot <- valdes1+banos1+nacif1+elizondo1+figueroa1+guerrero1+marvan1+cordova1+garcia1)
+tmp <- within(tmp, vtot <- valdes1 + banos1 + nacif1 + elizondo1 + figueroa1 + guerrero1 + marvan1 + cordova1 + garcia1)
 d[d$term==9,] <- tmp
 #
 tmp <- d[d$term==10,]
-tmp <- within(tmp, vtot <- valdes1+banos1+nacif1+elizondo1+figueroa1+guerrero1+marvan1+cordova1)
+tmp <- within(tmp, vtot <- valdes1 + banos1 + nacif1 + elizondo1 + figueroa1 + guerrero1 + marvan1 + cordova1)
 d[d$term==10,] <- tmp
 #
 tmp <- d[d$term==11,]
-tmp <- within(tmp, vtot <- banos1+nacif1+marvan1+cordova1)
+tmp <- within(tmp, vtot <- banos1 + nacif1 + marvan1 + cordova1)
 d[d$term==11,] <- tmp
 #
 d$absten <- NA
@@ -214,15 +213,21 @@ d <- within(d, result <- as.numeric(ayes - nays > 0))
 
 # unanimous v contested votes
 #
-# version up to US-Mex presentation in 2010
+# version up to US-Mex presentation in 2010 AQUI ME QUEDE
 d$tmp <- d$dunan # for comparison
 d$dunan <- 0
 
-sel <- which(d$term==1)
-table(d$ayes[sel], d$nays[sel])
+with(d, table(ayes, nays, absten))
+sel <- which(d$nays<0)
+d[sel[1],]
+with(d, table(ayes, nays))
+x
 
-table(d$absten)
-d$unanime[d$absten==0 & ayes==0] 
+d$unanime[d$absten==0 & (d$ayes==0 | d$nays==0)]  <- 1 
+d$unanime[d$absten==0 & (d$ayes==0 | d$ayes==11) & d$term==1] <- 1 
+d$unanime[d$absten==1 & (d$ayes==0 | d$ayes==10) & d$term==1] <- 1 
+
+
 replace unanime=1 if absten==0 & (ayes==9 | ayes==0) & term>1
 replace unanime=1 if absten==0 & (ayes==11 | ayes==0) & term==1
 replace unanime=1 if absten==1 & segob==. & (ayes==10 | ayes==0) & term==1
