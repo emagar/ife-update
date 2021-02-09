@@ -1,3 +1,7 @@
+##################################################
+## script invoked from within another code file ##
+##################################################
+
 # working dir
 setwd("~/Dropbox/data/rollcall/ife_cg/ife-update/")
 
@@ -200,25 +204,36 @@ d <- within(d, nays <- vtot - ayes)
 ## table(d$nays, useNA = "always")
 ## table(d$absten, useNA = "always")
 #
-# recompute result AQUI ME QUEDE
-d$tmp <- d$result # for comparison
+# recompute result
+d$tmp <- 1 - d$result # for comparison (was coded 0 pass 1 fail)
 d <- within(d, result <- as.numeric(ayes - nays > 0))
-table(d$result, d$tmp, useNA = "always")
-table(d$vtot, useNA = "always")
+# there were lots of inconsistent codings
+## table(d$result, d$tmp, useNA = "always")
+## sel <- which(d$result!=d$tmp)
+## d[sel[2],]
 
-gen tmp=ayes-nays
-gen result2=.
-move result2 result
-replace result2=1 if tmp>0
-replace result2=0 if tmp<=0
-drop tmp
-drop result
-rename result2 result
+# unanimous v contested votes
+#
+# version up to US-Mex presentation in 2010
+d$tmp <- d$dunan # for comparison
+d$dunan <- 0
+
+sel <- which(d$term==1)
+table(d$ayes[sel], d$nays[sel])
+
+table(d$absten)
+d$unanime[d$absten==0 & ayes==0] 
+replace unanime=1 if absten==0 & (ayes==9 | ayes==0) & term>1
+replace unanime=1 if absten==0 & (ayes==11 | ayes==0) & term==1
+replace unanime=1 if absten==1 & segob==. & (ayes==10 | ayes==0) & term==1
+move unanime ayes
+replace unanime=1 if absten==9 & term>1
+
+*replace unanime=1 if dunan==1     /* Estas las codificó Eric MAL (CORREGIR CUANDO LIMPIE) desde la base excel */
+replace unanime=1 if absten==0 & (ayes==8 | ayes==0) & term==5
+replace unanime=1 if absten==0 & (ayes==6 | ayes==0) & term==8
 
 
-
-
-# recode votes
 
 
 # summarize contested votes by month
