@@ -301,13 +301,32 @@ str(d)
 #################
 ## export data ##
 #################
+#info.cols <- c("folio", "date", "qtr", "sem", "term")
+info.cols <- c("folio", "date", "term")
+#
 sel.r <- which(d$term %in% c(2,3))
-sel.c <- c("woldenberg", "barragan", "cantu", "cardenas", "lujambio", "merino", "molinar", "peschard", "zebadua", "rivera", "luken", "folio", "date", "term")
+sel.c <- c("woldenberg", "barragan", "cantu", "cardenas", "lujambio", "merino", "molinar", "peschard", "zebadua", "rivera", "luken", info.cols)
 tmp <- d[sel.r, sel.c]
 write.csv(tmp, file = "data/v23.csv", row.names = FALSE)
+#
+sel.r <- which(d$term %in% 4:8)
+c("ugalde", "albo", "andrade", "alcantar", "glezluna", "latapi", "lopezflores", "morales", "sanchez", "valdes", "banos", "nacif", "elizondo", "figueroa", "guerrero", info.cols)
+tmp <- d[sel.r, sel.c]
+write.csv(tmp, file = "data/v45678.csv", row.names = FALSE)
+#
+sel.r <- which(d$term %in% 4:9)
+c("ugalde", "albo", "andrade", "alcantar", "glezluna", "latapi", "lopezflores", "morales", "sanchez", "valdes", "banos", "nacif", "elizondo", "figueroa", "guerrero", "marvan", "cordova", "garcia", info.cols)
+tmp <- d[sel.r, sel.c]
+write.csv(tmp, file = "data/v456789.csv", row.names = FALSE)
+#
+sel.r <- which(d$term %in% 4:11)
+c("ugalde", "albo", "andrade", "alcantar", "glezluna", "latapi", "lopezflores", "morales", "sanchez", "valdes", "banos", "nacif", "elizondo", "figueroa", "guerrero", "marvan", "cordova", "garcia", info.cols)
+tmp <- d[sel.r, sel.c]
+write.csv(tmp, file = "data/v45678901.csv", row.names = FALSE)
 
-str(tmp)
-x
+
+
+
 
 # summarize contested votes
 with(d[d$dunan==0,], plot(as.factor(year(date)+quarter(date)/10), main = "N monthly contested votes"))
