@@ -1,6 +1,6 @@
-##################################################
-## script invoked from within another code file ##
-##################################################
+#########################################################
+## script prepares data and exports files for analysis ##
+#########################################################
 
 # working dir
 setwd("~/Dropbox/data/rollcall/ife_cg/ife-update/")
@@ -293,10 +293,23 @@ d[,sel] <- tmp
 d <- d[,-sel]
 d <- cbind(d, tmp)
 
+# add date
+d <- within(d, date <- ymd(yr*10000+mo*100+dy))
+
 str(d)
 
+#################
+## export data ##
+#################
+sel.r <- which(d$term %in% c(2,3))
+sel.c <- c("woldenberg", "barragan", "cantu", "cardenas", "lujambio", "merino", "molinar", "peschard", "zebadua", "rivera", "luken", "folio", "date", "term")
+tmp <- d[sel.r, sel.c]
+write.csv(tmp, file = "data/v23.csv", row.names = FALSE)
+
+str(tmp)
+x
+
 # summarize contested votes
-d <- within(d, date <- ymd(yr*10000+mo*100+dy))
 with(d[d$dunan==0,], plot(as.factor(year(date)+quarter(date)/10), main = "N monthly contested votes"))
 with(d[d$dunan==0,], plot(as.factor(date), main = "N contested votes by session"))
 
