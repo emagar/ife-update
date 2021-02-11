@@ -225,9 +225,9 @@ d <- d[,-sel]
 ## replace unanime=1 if absten==9 & term>1
 ## replace unanime=1 if absten==0 & (ayes==8 | ayes==0) & term==5
 ## replace unanime=1 if absten==0 & (ayes==6 | ayes==0) & term==8
-d$dunan <- 0
+d$dunan.old <- 0
 #with(d, table(ayes, nays, absten))
-d$dunan[d$absten==0 & (d$ayes==0 | d$nays==0)]  <- 1 
+d$dunan.old[d$absten==0 & (d$ayes==0 | d$nays==0)]  <- 1 
 #
 #############################################################
 ## versión que excluye ausentes de la cuenta de unanimidad ##
@@ -264,7 +264,6 @@ d <- within(d, {
     garciagone <- as.numeric(garcia==4 | garcia==5);
     marvangone <- as.numeric(marvan==4 | marvan==5);
 })
-#
 d <- within(d, noshow <- woldenberggone + molinargone + lujambiogone + peschardgone + merinogone + cardenasgone + barragangone + cantugone + zebaduagone + lukengone + riveragone + albogone + glezlunagone + sanchezgone + moralesgone + ugaldegone + latapigone + andradegone + lopezfloresgone + alcantargone + valdesgone + banosgone + nacifgone + elizondogone + figueroagone + guerrerogone + marvangone + cordovagone + garciagone)
 # check
 #table(d$noshow)
@@ -275,7 +274,17 @@ d$tmp <- NULL
 #
 # noshows must be deducted from abstens
 d$absten <- d$absten - d$noshow
-
+#
+# "A vote qualifies as contested when, ignoring absences, at least one councilor voted contrary to the rest or abstained" ifedyn06
+d$dunan <- 0
+d$dunan[d$absten==0 & (d$ayes==0 | d$nays==0)]  <- 1 
+#
+##################################################
+## GET OTHER UNANIMITY MEASURE FROM ife.do HERE ##
+##################################################
+#
+# inspect
+table(factor(d$dunan, labels = c("contested","not")), factor(d$dunan.old, labels = c("old-contested","not")), useNA = "always")
 
 # sort agg vote count columns
 sel <- which(colnames(d) %in% c("vtot","ayes","nays","absten","noshow"))
@@ -284,13 +293,26 @@ d[,sel] <- tmp
 d <- d[,-sel]
 d <- cbind(d, tmp)
 
-GET OTHER UNIANIMITY MEASURE FROM ife.do HERE
+str(d)
 
-
-# summarize contested votes by month
+# summarize contested votes
 d <- within(d, date <- ymd(yr*10000+mo*100+dy))
+with(d[d$dunan==0,], plot(as.factor(year(date)+quarter(date)/10), main = "N monthly contested votes"))
+with(d[d$dunan==0,], plot(as.factor(date), main = "N contested votes by session"))
 
-with(d[d$dunan==0,], plot(as.factor(year(date)+quarter(date)/10)))
+cuts <- c(
+    ymd("19961031"), # 1  to 2
+    ymd("20001211"), # 2  to 3
+    ymd("20031105"), # 3  to 4
+    ymd("20071217"), # 4  to 5
+    ymd("20080215"), # 5  to 6
+    ymd("20080821"), # 6  to 7
+    ymd("20101031"), # 7  to 8
+    ymd("20111215"), # 8  to 9
+    ymd("20130220"), # 9  to 10
+    ymd("20131031")  # 10 to 11
+)
+
 
 
 
