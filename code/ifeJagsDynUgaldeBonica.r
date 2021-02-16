@@ -67,7 +67,9 @@ party4.11 <- ids$party[sel]
 color4.11 <- ids$color[sel]
 columns4.11 <- ids$column[sel]
 
-# Read votes (includes only informative votes only, exported by code/data-prep.r
+####################################################################################
+## Read votes (includes only informative votes only, exported by code/data-prep.r ##
+####################################################################################
 # subset votes to given terms (and members in those terms only)
 vot <-read.csv("v45678901.csv",  header=TRUE)
 sel.r <- which(vot$term %in% 4:8)
@@ -92,6 +94,14 @@ v[v==0] <- NA    ## Version probit requiere 0s y 1s
 v[v>2] <- NA
 v[v==2] <- 0
 
+# format dates
+vot$date <- ymd(vot$date)
+# summarize then drop uncontested votes
+table(factor(vot$dunan, labels = c("contested","not")), vot$term, useNA = "ifany")
+table(factor(vot$dunan, labels = c("contested","not")), useNA = "ifany")
+sel <- which(vot$dunan==1)
+vot <- vot[-sel,] # drop contested votes
+v   <- v  [-sel,] # drop contested votes
 
 # Make sure there are no sequences of "all missing" votes (there was one, including 20 votes on 20080111, 20080118, and 20080128, that we need to get rid off)
 # There is a sequence of votes that are missing
@@ -105,6 +115,8 @@ v.true <- apply(v, 1, nas)
 dim (vot)
 vot <- vot[v.true==FALSE,]
 dim (vot)
+# if some deteted, they'd have to be dropped from v too
+v <- v[v.true==FALSE,]
 
 
 #############################
@@ -131,7 +143,6 @@ model1Dj.irt <- function() {
 	for (p in 1:4){
 		partyPos[p] <- mean (x[party[p]]);
 	}
-
 }
 #end model##############
 
@@ -140,33 +151,34 @@ model1Dj.irt <- function() {
 # final  <- c ( 30:1110 )
 
 # Alternative: center on vote (for date), extend windows to both sides
-I <- nrow (vot); J <- 15;
+I <- nrow (vot)
+#J <- 15;
 item <- 1:I  # Need to define I before
 inicio <- item-15; inicio[inicio<0] <- 1
 final  <- item+15; final[final>I] <- I
 S <- length(inicio)
-item.date <- ymd(vot$yr*10000+vot$mo*100+vot$dy)
+item.date <- vot$date #ymd(vot$yr*10000+vot$mo*100+vot$dy)
 
 # Added March 19: We need a matrix showing whether each councilor is actually in IFE the moment the vote takes place
 IsCouncilor <- matrix (1, ncol=J, nrow=max(final))
-IsCouncilor[ item.date > ymd(20071217),1 ] <- NA
-IsCouncilor[ item.date > ymd(20080814),2 ] <- NA
-IsCouncilor[ item.date > ymd(20101027),3 ] <- NA
-IsCouncilor[ item.date > ymd(20101027),4 ] <- NA
-IsCouncilor[ item.date > ymd(20080814),5 ] <- NA
-IsCouncilor[ item.date > ymd(20071217),6 ] <- NA
-IsCouncilor[ item.date > ymd(20080814),7 ] <- NA
-IsCouncilor[ item.date > ymd(20071217),8 ] <- NA
-IsCouncilor[ item.date > ymd(20101027),9 ] <- NA
-IsCouncilor[ item.date < ymd(20080215),10] <- NA
-IsCouncilor[ item.date < ymd(20080215),11] <- NA
-IsCouncilor[ item.date < ymd(20080215),12] <- NA
-IsCouncilor[ item.date < ymd(20080829),13] <- NA
-IsCouncilor[ item.date < ymd(20080829),14] <- NA
-IsCouncilor[ item.date < ymd(20080829),15] <- NA
-#IsCouncilor[ item.date < ymd(20111215),16] <- NA
-#IsCouncilor[ item.date < ymd(20111215),17] <- NA
-#IsCouncilor[ item.date < ymd(20111215),18] <- NA
+IsCouncilor[ item.date > ymd("20071217"),1 ] <- NA
+IsCouncilor[ item.date > ymd("20080814"),2 ] <- NA
+IsCouncilor[ item.date > ymd("20101027"),3 ] <- NA
+IsCouncilor[ item.date > ymd("20101027"),4 ] <- NA
+IsCouncilor[ item.date > ymd("20080814"),5 ] <- NA
+IsCouncilor[ item.date > ymd("20071217"),6 ] <- NA
+IsCouncilor[ item.date > ymd("20080814"),7 ] <- NA
+IsCouncilor[ item.date > ymd("20071217"),8 ] <- NA
+IsCouncilor[ item.date > ymd("20101027"),9 ] <- NA
+IsCouncilor[ item.date < ymd("20080215"),10] <- NA
+IsCouncilor[ item.date < ymd("20080215"),11] <- NA
+IsCouncilor[ item.date < ymd("20080215"),12] <- NA
+IsCouncilor[ item.date < ymd("20080829"),13] <- NA
+IsCouncilor[ item.date < ymd("20080829"),14] <- NA
+IsCouncilor[ item.date < ymd("20080829"),15] <- NA
+#IsCouncilor[ item.date < ymd("20111215"),16] <- NA
+#IsCouncilor[ item.date < ymd("20111215"),17] <- NA
+#IsCouncilor[ item.date < ymd("20111215"),18] <- NA
 
 #Da la impresión de que alrededor del voto 900 se invierte la polaridad del espacio. Para entonces los priors semi-informativos que anclaron el norte y el sur han quedado muy atrás. Quizás esto pueda arreglarse dándole a córdova un prior centrado en -2. O quizás sea posible recentrar a Baños (supongo qu es quien sube cerca del 800 y baja abruptamente) en +2 o a Figueroa (el extremo sur que se vuelve norte) en -2 poco después de la entrada de Córdova, García Ramírez y Marván.
 
@@ -174,19 +186,19 @@ IsCouncilor[ item.date < ymd(20080829),15] <- NA
 
 #No agregué nuevos priors para los nuevos consejeros.  Siguen comenzando con el prior del partido que los postuló, con dos adendos: 1) La posición del partido es la mediana de sus integrantes, no la media, con el objeto de descontar extremistas.  2) La precisión del prior para los nuevos consejeros es un poco más alta: 10, en lugar de 4.
 
-
-# > which (all45678901$date==20080215)
-# [1] 209 210 211 212 213 214 215 216 217
-# Salen Ugalde (PRI), Latapi (PAN), y Morales (PRI)
-# Entran Valdes (PRD), Banyos (PRI), Nacif (PAN)
-# > which (all45678901$date==20080829)
-# [1] 262 263 264 265
-# Salen Albo (PAN), Gzlez. Luna (PAN), Lopez Flores (PRI)
-# Entran Elizondo (PAN), Figueroa (PRD), Guerrero (PRI)
-# > which (all45678901$date==20101022)
-# [1] 721 722 723 724 725 726 727 728 729 730 731
-# Salen Andrade (PRI), Alcantar (VERDE), Sanchez (PAN)
-# Entran Marvan (PAN), Cordova (PRD), Garcia Ramirez (PRI)
+sel <- which(vot$date==ymd("20080215"))
+v[sel,]
+[1] 209 210 211 212 213 214 215 216 217
+Salen Ugalde (PRI), Latapi (PAN), y Morales (PRI)
+Entran Valdes (PRD), Baños (PRI), Nacif (PAN)
+which (vot$date==ymd("20080829"))
+[1] 262 263 264 265
+Salen Albo (PAN), Glez. Luna (PAN), Lopez Flores (PRI)
+Entran Elizondo (PAN), Figueroa (PRD), Guerrero (PRI)
+> which (vot$date==20101022)
+[1] 721 722 723 724 725 726 727 728 729 730 731
+Salen Andrade (PRI), Alcantar (VERDE), Sanchez (PAN)
+Entran Marvan (PAN), Cordova (PRD), Garcia Ramirez (PRI)
 
 # Initial ideal points to anchor ideological space
 #                 u  a  a  a  g  l  l  m  s  v  b  n  e  f  g  m  c  g

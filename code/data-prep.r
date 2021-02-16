@@ -285,6 +285,7 @@ d$dunan[d$absten==0 & (d$ayes==0 | d$nays==0)]  <- 1
 #
 # inspect
 table(factor(d$dunan, labels = c("contested","not")), factor(d$dunan.old, labels = c("old-contested","not")), useNA = "always")
+table(factor(d$dunan, labels = c("contested","not")), d$term, useNA = "ifany")
 
 # sort agg vote count columns
 sel <- which(colnames(d) %in% c("vtot","ayes","nays","absten","noshow"))
@@ -306,7 +307,7 @@ d <- within(d, {
 ## export data ##
 #################
 #info.cols <- c("folio", "date", "qtr", "sem", "term")
-info.cols <- c("folio", "date", "yr", "mo", "dy", "qtr", "sem", "term")
+info.cols <- c("folio", "date", "yr", "mo", "dy", "qtr", "sem", "term", "dunan")
 #
 sel.r <- which(d$term %in% c(2,3))
 sel.c <- c("woldenberg", "barragan", "cantu", "cardenas", "lujambio", "merino", "molinar", "peschard", "zebadua", "rivera", "luken", info.cols)
