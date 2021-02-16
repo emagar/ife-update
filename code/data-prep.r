@@ -295,32 +295,36 @@ d <- cbind(d, tmp)
 
 # add date
 d <- within(d, date <- ymd(yr*10000+mo*100+dy))
+# add quarter/semester in calendar year (ojo: no longer our october-to-march version)
+d <- within(d, {
+    qtr <- year(date) + quarter(date)/10;
+    sem <- year(date) + semester(date)/10;
+})
 
-str(d)
 
 #################
 ## export data ##
 #################
 #info.cols <- c("folio", "date", "qtr", "sem", "term")
-info.cols <- c("folio", "date", "term")
+info.cols <- c("folio", "date", "yr", "mo", "dy", "qtr", "sem", "term")
 #
 sel.r <- which(d$term %in% c(2,3))
 sel.c <- c("woldenberg", "barragan", "cantu", "cardenas", "lujambio", "merino", "molinar", "peschard", "zebadua", "rivera", "luken", info.cols)
 tmp <- d[sel.r, sel.c]
 write.csv(tmp, file = "data/v23.csv", row.names = FALSE)
 #
-sel.r <- which(d$term %in% 4:8)
-c("ugalde", "albo", "andrade", "alcantar", "glezluna", "latapi", "lopezflores", "morales", "sanchez", "valdes", "banos", "nacif", "elizondo", "figueroa", "guerrero", info.cols)
-tmp <- d[sel.r, sel.c]
-write.csv(tmp, file = "data/v45678.csv", row.names = FALSE)
-#
-sel.r <- which(d$term %in% 4:9)
-c("ugalde", "albo", "andrade", "alcantar", "glezluna", "latapi", "lopezflores", "morales", "sanchez", "valdes", "banos", "nacif", "elizondo", "figueroa", "guerrero", "marvan", "cordova", "garcia", info.cols)
-tmp <- d[sel.r, sel.c]
-write.csv(tmp, file = "data/v456789.csv", row.names = FALSE)
+## sel.r <- which(d$term %in% 4:8)
+## c("ugalde", "albo", "andrade", "alcantar", "glezluna", "latapi", "lopezflores", "morales", "sanchez", "valdes", "banos", "nacif", "elizondo", "figueroa", "guerrero", info.cols)
+## tmp <- d[sel.r, sel.c]
+## write.csv(tmp, file = "data/v45678.csv", row.names = FALSE)
+## #
+## sel.r <- which(d$term %in% 4:9)
+## c("ugalde", "albo", "andrade", "alcantar", "glezluna", "latapi", "lopezflores", "morales", "sanchez", "valdes", "banos", "nacif", "elizondo", "figueroa", "guerrero", "marvan", "cordova", "garcia", info.cols)
+## tmp <- d[sel.r, sel.c]
+## write.csv(tmp, file = "data/v456789.csv", row.names = FALSE)
 #
 sel.r <- which(d$term %in% 4:11)
-c("ugalde", "albo", "andrade", "alcantar", "glezluna", "latapi", "lopezflores", "morales", "sanchez", "valdes", "banos", "nacif", "elizondo", "figueroa", "guerrero", "marvan", "cordova", "garcia", info.cols)
+sel.c <- c("ugalde", "albo", "andrade", "alcantar", "glezluna", "latapi", "lopezflores", "morales", "sanchez", "valdes", "banos", "nacif", "elizondo", "figueroa", "guerrero", "marvan", "cordova", "garcia", info.cols)
 tmp <- d[sel.r, sel.c]
 write.csv(tmp, file = "data/v45678901.csv", row.names = FALSE)
 

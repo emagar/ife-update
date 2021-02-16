@@ -26,38 +26,85 @@ workdir <- c("/home/eric/Dropbox/data/rollcall/ife_cg/ife-update/data/")
 setwd(workdir)
 
 # Define colors and plotting names
-names.45678901 <- c("Ugalde", "Albo", "Andrade", "Alcantar", "Glez. Luna", "Latapi", "Lopez Flores", "Morales", "Sanchez", "Valdes", "Banos", "Nacif", "Elizondo", "Figueroa", "Guerrero", "Marvan", "Cordova", "Garcia Ramirez")
-color.45678901 <- c("red", "blue", "red", "green",  "blue", "red", "red", "blue", "blue", "gold", "red", "blue", "blue", "gold", "red", "blue", "gold", "red")
-party.45678901 <- c("PRI", "PAN", "PRI", "PVEM",  "PAN", "PRI", "PRI", "PAN", "PAN", "PRD", "PRI", "PAN", "PAN", "PRD", "PRI", "PAN", "PRD", "PRI")
-party.45678901 <- ifelse (party.45678901=="PRI", 1, ifelse (party.45678901=="PAN", 2, ifelse (party.45678901=="PRD", 3, 4)))
+# OJO: en tenure term==10 es 0, term==11 es 1 etc. Si se juntaran más de 13 terms, habría que replantear la codificación... 
+ids <- matrix(c("Ugalde",           "ugalde",      "PRI",  4,
+                "Albo",             "albo",        "PAN",  456,
+                "Andrade",          "andrade",     "PRI",  4567, 
+                "Gmz. Alcántar",    "alcantar",    "PVEM", 4567,
+                "Glez. Luna",       "glezluna",    "PAN",  456,
+                "Latapí",           "latapi",      "PRI",  45,
+                "López Flores",     "lopezflores", "PRI",  456,
+                "Morales",          "morales",     "PAN",  45,
+                "Sánchez",          "sanchez",     "PAN",  4567,
+                "Valdés",           "valdes",      "PRD",    67890,
+                "Baños",            "banos",       "PRI",    678901,
+                "Nacif",            "nacif",       "PAN",    678901,
+                "Elizondo",         "elizondo",    "PAN",     7890,
+                "Figueroa",         "figueroa",    "PRD",     7890,
+                "Guerrero",         "guerrero",    "PRI",     7890,
+                "Marván",           "marvan",      "PAN",       901,
+                "Córdova",          "cordova",     "PRD",       901,
+                "García Rmz.",      "garcia",      "PRI",       9  ),
+              ncol = 4,
+              byrow = TRUE)
+#
+ids <- as.data.frame(ids, stringsAsFactors = FALSE)
+colnames(ids) <- c("name", "column", "pty", "tenure")                                           
+ids$tenure <- as.numeric(ids$tenure)
+ids <- within(ids, party <- ifelse (pty=="PRI", 1, ifelse (pty=="PAN", 2, ifelse (pty=="PRD", 3, 4))))
+ids <- within(ids, color <- ifelse (pty=="PRI", "red", ifelse (pty=="PAN", "blue", ifelse (pty=="PRD", "gold", "green"))))
+#str(ids)
+#
+sel <- grep(pattern = "[45678]", ids$tenure)
+names4.8   <- ids$name[sel]
+party4.8   <- ids$party[sel]
+color4.8   <- ids$color[sel]
+columns4.8 <- ids$column[sel]
+#
+sel <- grep(pattern = "[45678901]", ids$tenure)
+names4.11 <- ids$name[sel]
+party4.11 <- ids$party[sel]
+color4.11 <- ids$color[sel]
+columns4.11 <- ids$column[sel]
 
-# Read Ugalde et al's IFE's votes, only informative votes
-all45678901 <-read.csv("tmp45678901.csv",  header=TRUE)
-J <- 18
+# Read votes (includes only informative votes only, exported by code/data-prep.r
+# subset votes to given terms (and members in those terms only)
+vot <-read.csv("v45678901.csv",  header=TRUE)
+sel.r <- which(vot$term %in% 4:8)
+drop.c <- ids$column[grep(pattern = "[45678]", ids$tenure)] # column names not in terms 4-8
+drop.c <- setdiff(ids$column, drop.c)
+drop.c <- which(colnames(vot) %in% drop.c)
+vot <- vot[sel.r, -drop.c]
+colnames(vot)
+# total members
+J <- length(names4.8)
 
-## ## subset votes up to Andrade, Alcántar, Sánchez's exit
-## all45678901 <- all45678901[all45678901$term<=7,]
-## names.45678901 <- names.45678901[1:15]
-## color.45678901 <- color.45678901[1:15]
-## party.45678901 <- party.45678901[1:15]
-## J <- 15
+# ... or use all periods' votes
+vot <-read.csv("v45678901.csv",  header=TRUE)
+J <- length(names4.11)
 
-## subset votes up to Córdova, Marván, GarcíaRmz entry
-all45678901 <- all45678901[all45678901$term<=8,]
-J <- 15
-names.45678901 <- names.45678901[1:J]
-color.45678901 <- color.45678901[1:J]
-party.45678901 <- party.45678901[1:J]
+########################
+## recode vote values ##
+########################
+v <- vot[,1:J]
+#table(v$albo, useNA = "always")
+v[v==0] <- NA    ## Version probit requiere 0s y 1s
+v[v>2] <- NA
+v[v==2] <- 0
+
 
 # Make sure there are no sequences of "all missing" votes (there was one, including 20 votes on 20080111, 20080118, and 20080128, that we need to get rid off)
 # There is a sequence of votes that are missing
-v <- all45678901[,1:J]
-v[v==0] <- NA; v[v==-1] <- 0    ## Version probit requiere 0s y 1s
-v.true <- apply (v, 1, invalid)
-dim (all45678901)
-all45678901 <- all45678901[v.true==FALSE,]
-dim (all45678901)
-
+## v.true <- apply(v, 1, invalid) # Preg. a Memo (15feb2021): dónde definió esta función invalid?
+## dim (vot)
+## vot <- vot[v.true==FALSE,]
+## dim (vot)
+# eric's version 15feb2021
+nas <- function(x) ifelse(length(which(is.na(x)))==0, TRUE, FALSE)
+v.true <- apply(v, 1, nas) 
+dim (vot)
+vot <- vot[v.true==FALSE,]
+dim (vot)
 
 
 #############################
@@ -93,12 +140,12 @@ model1Dj.irt <- function() {
 # final  <- c ( 30:1110 )
 
 # Alternative: center on vote (for date), extend windows to both sides
-I <- nrow (all45678901); J <- 15;
+I <- nrow (vot); J <- 15;
 item <- 1:I  # Need to define I before
 inicio <- item-15; inicio[inicio<0] <- 1
 final  <- item+15; final[final>I] <- I
 S <- length(inicio)
-item.date <- ymd(all45678901$yr*10000+all45678901$mo*100+all45678901$dy)
+item.date <- ymd(vot$yr*10000+vot$mo*100+vot$dy)
 
 # Added March 19: We need a matrix showing whether each councilor is actually in IFE the moment the vote takes place
 IsCouncilor <- matrix (1, ncol=J, nrow=max(final))
@@ -121,11 +168,11 @@ IsCouncilor[ item.date < ymd(20080829),15] <- NA
 #IsCouncilor[ item.date < ymd(20111215),17] <- NA
 #IsCouncilor[ item.date < ymd(20111215),18] <- NA
 
-#Da la impresiÃ³n de que alrededor del voto 900 se invierte la polaridad del espacio. Para entonces los priors semi-informativos que anclaron el norte y el sur han quedado muy atrÃ¡s. QuizÃ¡s esto pueda arreglarse dÃ¡ndole a cÃ³rdova un prior centrado en -2. O quizÃ¡s sea posible recentrar a BaÃ±os (supongo qu es quien sube cerca del 800 y baja abruptamente) en +2 o a Figueroa (el extremo sur que se vuelve norte) en -2 poco despuÃ©s de la entrada de CÃ³rdova, GarcÃ­a RamÃ­rez y MarvÃ¡n.
+#Da la impresión de que alrededor del voto 900 se invierte la polaridad del espacio. Para entonces los priors semi-informativos que anclaron el norte y el sur han quedado muy atrás. Quizás esto pueda arreglarse dándole a córdova un prior centrado en -2. O quizás sea posible recentrar a Baños (supongo qu es quien sube cerca del 800 y baja abruptamente) en +2 o a Figueroa (el extremo sur que se vuelve norte) en -2 poco después de la entrada de Córdova, García Ramírez y Marván.
 
-#En la versiÃ³n trimestral, anclar a Figueroa y a CÃ³rdova ambos en dnorm(-2,4) permitiÃ³ producir estimaciones que aparecen en la grÃ¡fica que he guardado en el directorio correspondiente. Si fuera necesario, trate de poner a GarcÃ­a RamÃ­rez en dnorm(2,4).
+#En la versión trimestral, anclar a Figueroa y a Córdova ambos en dnorm(-2,4) permitió producir estimaciones que aparecen en la gráfica que he guardado en el directorio correspondiente. Si fuera necesario, trate de poner a García Ramírez en dnorm(2,4).
 
-#No agregué nuevos priors para los nuevos consejeros.  Siguen comenzando con el prior del partido que los postulÃ³, con dos adendos: 1) La posiciÃ³n del partido es la mediana de sus integrantes, no la media, con el objeto de descontar extremistas.  2) La precisiÃ³n del prior para los nuevos consejeros es un poco mÃ¡s alta: 10, en lugar de 4.
+#No agregué nuevos priors para los nuevos consejeros.  Siguen comenzando con el prior del partido que los postuló, con dos adendos: 1) La posición del partido es la mediana de sus integrantes, no la media, con el objeto de descontar extremistas.  2) La precisión del prior para los nuevos consejeros es un poco más alta: 10, en lugar de 4.
 
 
 # > which (all45678901$date==20080215)
@@ -161,8 +208,8 @@ for (s in 174:S){        # <= BIG FUNCTION STARTS (loop over 1081 windows)
 	# This means that the length of estimated ideal points is either
 	# 9 (for most votes) or 11 (when there is some overlap: two councilors are leaving , two are coming in)
 	councilor.in <- apply (IsCouncilor[inicio[s]:final[s],], 2, invalid)
-	councilors <- names.45678901[councilor.in==FALSE]
-	party      <- party.45678901[councilor.in==FALSE]
+	councilors <- names45678901[councilor.in==FALSE]
+	party      <- party45678901[councilor.in==FALSE]
 
 	for (c in 1:15){
 		x.mean[c] <- ifelse (councilor.in[c]==TRUE, NA, ifelse (!is.na(x.location[c]), x.location[c], ifelse (party[c]==1, 2, ifelse (party[c]==3, -2, -1))))
@@ -223,11 +270,11 @@ for (s in 174:S){        # <= BIG FUNCTION STARTS (loop over 1081 windows)
 #	partyPlacement <- apply( rbind (results[[1]]$BUGSoutput$sims.list$partyPos, results[[2]]$BUGSoutput$sims.list$partyPos), 2, median)
 	partyPlacement <- apply( results$BUGSoutput$sims.list$partyPos, 2, median)
 	for (n in 1:15){
-		if (length (which (councilors==names.45678901[n]))==0) {
+		if (length (which (councilors==names45678901[n]))==0) {
 			x.location[n] <- NA
 			x.precision[n] <- NA
 		}
-		else { x.location[n] <-  locs[which (councilors==names.45678901[n])] }
+		else { x.location[n] <-  locs[which (councilors==names45678901[n])] }
 	}
 	# Precision prior is always constant at 100, implying standard deviation = sqrt (1/100) = 0.1
 }  # <---   END OF LOOP OVER WINDOWS
@@ -297,7 +344,7 @@ ideal.points <- matrix (NA, nrow=S, ncol=J)
 ideal.points.var <- matrix (NA, nrow=S, ncol=J)
 for (i in 1:S){
 	for (j in 1:J){
-		councilor <- names.45678901[j]
+		councilor <- names45678901[j]
 		num <- which (semester.results[[i]][[3]]==councilor)
 		if ( length (num)==0 ) {
 			ideal.points[i,j] <- 1
@@ -329,7 +376,7 @@ setwd ("/Users/grosas/Dropbox/ifesharedge/graphs")
 pdf ("UgaldeEtAlNonSmooth.pdf", h=7, w=9)
 plot(c(1:S), ideal.points[1:S,1], main="", ylim=c(-3,3), type="n", xlab="", ylab="Ideal points")
 for (j in 1:J){
-# 	lines(ideal.points[1:S,j], lwd=3, col=color.45678901[j])
+# 	lines(ideal.points[1:S,j], lwd=3, col=color45678901[j])
 	lines(CouncilorIn[j,1:S] * ideal.points[1:S,j], lwd=3, col=rgb.45678901[j])
 }
 dev.off()
@@ -342,7 +389,7 @@ pdf ("UgaldeEtAlSmoothMarch21.pdf", h=7, w=9)
 plot(c(1:S), ideal.points[1:S,1], main="", ylim=c(-3,3), type="n", xlab="", ylab="Ideal points")
 for (j in 1:J){
 	lines(smooth.spline(c(1:S)[!is.na(CouncilorIn[j,1:S])], ideal.points[!is.na(CouncilorIn[j,1:S]),j], df=10), lwd=3, col=rgb.45678901[j])
-# 	lines(smooth.spline(c(1:S), ideal.points[,j], df=10), lwd=3, col=color.45678901[j])
+# 	lines(smooth.spline(c(1:S), ideal.points[,j], df=10), lwd=3, col=color45678901[j])
 }
 dev.off()
 
@@ -373,7 +420,7 @@ for (s in snapshot){
 	for (j in 1:J){
 		lines ( Smooth[[j]]$x[1:s], Smooth[[j]]$y[1:s], lwd=6, col=rgb.45678901[j])
 	}
-	# Eric: Creo que tÃº tienes mÃ¡s informaciÃ³n para hacer los cambios en las siguientes tres lÃ­neas
+	# Eric: Creo que tú tienes más información para hacer los cambios en las siguientes tres líneas
 	legend ("topright", bty="n", legend=paste ("vote", s, sep=" ")) #Change the legend for the date of the vote
 	# Add vertical lines for elections here, but only for some realizations of S
 	# Add names of councilors here as well, but only for some realizations of S
