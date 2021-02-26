@@ -21,7 +21,7 @@ library (sm)
 library(lubridate)
 
 
-#rm(list = ls())
+rm(list = ls())
 workdir <- c("/home/eric/Dropbox/data/rollcall/ife_cg/ife-update/data/")
 setwd(workdir)
 
@@ -54,18 +54,19 @@ ids$tenure <- as.numeric(ids$tenure)
 ids <- within(ids, party <- ifelse (pty=="PRI", 1, ifelse (pty=="PAN", 2, ifelse (pty=="PRD", 3, 4))))
 ids <- within(ids, color <- ifelse (pty=="PRI", "red", ifelse (pty=="PAN", "blue", ifelse (pty=="PRD", "gold", "green"))))
 #str(ids)
-#
-sel <- grep(pattern = "[45678]", ids$tenure)
-names4.8   <- ids$name[sel]
-party4.8   <- ids$party[sel]
-color4.8   <- ids$color[sel]
-columns4.8 <- ids$column[sel]
-#
-sel <- grep(pattern = "[45678901]", ids$tenure)
-names4.11 <- ids$name[sel]
-party4.11 <- ids$party[sel]
-color4.11 <- ids$color[sel]
-columns4.11 <- ids$column[sel]
+# terms 4-8
+sel    <- grep(pattern = "[45678]", ids$tenure)
+name   <- ids$name[sel]
+party  <- ids$party[sel]
+color  <- ids$color[sel]
+column <- ids$column[sel]
+
+# ... or terms 4-11
+sel    <- grep(pattern = "[45678901]", ids$tenure)
+name   <- ids$name[sel]
+party  <- ids$party[sel]
+color  <- ids$color[sel]
+column <- ids$column[sel]
 
 ####################################################################################
 ## Read votes (includes only informative votes only, exported by code/data-prep.r ##
@@ -79,20 +80,20 @@ drop.c <- which(colnames(vot) %in% drop.c)
 vot <- vot[sel.r, -drop.c]
 colnames(vot)
 # total members
-J <- length(names4.8)
+J <- length(name)
 
-# ... or use all periods' votes
+# ... or use all periods' votes 4-11
 vot <-read.csv("v45678901.csv",  header=TRUE)
-J <- length(names4.11)
+J <- length(name)
 
 ########################
 ## recode vote values ##
 ########################
-v <- vot[,1:J]
+vs <- vot[,1:J]
 #table(v$albo, useNA = "always")
-v[v==0] <- NA    ## Version probit requiere 0s y 1s
-v[v>2] <- NA
-v[v==2] <- 0
+vs[vs==0] <- NA    ## Version probit requiere 0s y 1s
+vs[vs>2] <- NA
+vs[vs==2] <- 0
 
 # format dates
 vot$date <- ymd(vot$date)
@@ -100,8 +101,8 @@ vot$date <- ymd(vot$date)
 table(factor(vot$dunan, labels = c("contested","not")), vot$term, useNA = "ifany")
 table(factor(vot$dunan, labels = c("contested","not")), useNA = "ifany")
 sel <- which(vot$dunan==1)
-vot <- vot[-sel,] # drop contested votes
-v   <- v  [-sel,] # drop contested votes
+vot <- vot[-sel,] # drop uncontested votes
+vs  <- vs [-sel,] # drop uncontested votes
 
 # Make sure there are no sequences of "all missing" votes (there was one, including 20 votes on 20080111, 20080118, and 20080128, that we need to get rid off)
 # There is a sequence of votes that are missing
@@ -111,12 +112,12 @@ v   <- v  [-sel,] # drop contested votes
 ## dim (vot)
 # eric's version 15feb2021
 nas <- function(x) ifelse(length(which(is.na(x)))==0, TRUE, FALSE)
-v.true <- apply(v, 1, nas) 
+v.true <- apply(vs, 1, nas) 
 dim (vot)
 vot <- vot[v.true==FALSE,]
 dim (vot)
 # if some deteted, they'd have to be dropped from v too
-v <- v[v.true==FALSE,]
+vs <- vs[v.true==FALSE,]
 
 
 #############################
@@ -161,24 +162,42 @@ item.date <- vot$date #ymd(vot$yr*10000+vot$mo*100+vot$dy)
 
 # Added March 19: We need a matrix showing whether each councilor is actually in IFE the moment the vote takes place
 IsCouncilor <- matrix (1, ncol=J, nrow=max(final))
-IsCouncilor[ item.date > ymd("20071217"),1 ] <- NA
-IsCouncilor[ item.date > ymd("20080814"),2 ] <- NA
-IsCouncilor[ item.date > ymd("20101027"),3 ] <- NA
-IsCouncilor[ item.date > ymd("20101027"),4 ] <- NA
-IsCouncilor[ item.date > ymd("20080814"),5 ] <- NA
-IsCouncilor[ item.date > ymd("20071217"),6 ] <- NA
-IsCouncilor[ item.date > ymd("20080814"),7 ] <- NA
-IsCouncilor[ item.date > ymd("20071217"),8 ] <- NA
-IsCouncilor[ item.date > ymd("20101027"),9 ] <- NA
-IsCouncilor[ item.date < ymd("20080215"),10] <- NA
-IsCouncilor[ item.date < ymd("20080215"),11] <- NA
-IsCouncilor[ item.date < ymd("20080215"),12] <- NA
-IsCouncilor[ item.date < ymd("20080829"),13] <- NA
-IsCouncilor[ item.date < ymd("20080829"),14] <- NA
-IsCouncilor[ item.date < ymd("20080829"),15] <- NA
-#IsCouncilor[ item.date < ymd("20111215"),16] <- NA
-#IsCouncilor[ item.date < ymd("20111215"),17] <- NA
-#IsCouncilor[ item.date < ymd("20111215"),18] <- NA
+## IsCouncilor[ item.date > ymd("20071217"),1 ] <- NA # OLD, MISSES LATE ENTRANTS
+## IsCouncilor[ item.date > ymd("20080814"),2 ] <- NA
+## IsCouncilor[ item.date > ymd("20101027"),3 ] <- NA
+## IsCouncilor[ item.date > ymd("20101027"),4 ] <- NA
+## IsCouncilor[ item.date > ymd("20080814"),5 ] <- NA
+## IsCouncilor[ item.date > ymd("20071217"),6 ] <- NA
+## IsCouncilor[ item.date > ymd("20080814"),7 ] <- NA
+## IsCouncilor[ item.date > ymd("20071217"),8 ] <- NA
+## IsCouncilor[ item.date > ymd("20101027"),9 ] <- NA
+## IsCouncilor[ item.date < ymd("20080215"),10] <- NA
+## IsCouncilor[ item.date < ymd("20080215"),11] <- NA
+## IsCouncilor[ item.date < ymd("20080215"),12] <- NA
+## IsCouncilor[ item.date < ymd("20080829"),13] <- NA
+## IsCouncilor[ item.date < ymd("20080829"),14] <- NA
+## IsCouncilor[ item.date < ymd("20080829"),15] <- NA
+## #IsCouncilor[ item.date < ymd("20111215"),16] <- NA
+## #IsCouncilor[ item.date < ymd("20111215"),17] <- NA
+## #IsCouncilor[ item.date < ymd("20111215"),18] <- NA
+IsCouncilor[ vot$term < 4 & vot$term >  4,1 ] <- NA
+IsCouncilor[ vot$term < 4 & vot$term >  6,2 ] <- NA
+IsCouncilor[ vot$term < 4 & vot$term >  7,3 ] <- NA
+IsCouncilor[ vot$term < 4 & vot$term >  7,4 ] <- NA
+IsCouncilor[ vot$term < 4 & vot$term >  6,5 ] <- NA
+IsCouncilor[ vot$term < 4 & vot$term >  5,6 ] <- NA
+IsCouncilor[ vot$term < 4 & vot$term >  6,7 ] <- NA
+IsCouncilor[ vot$term < 4 & vot$term >  5,8 ] <- NA
+IsCouncilor[ vot$term < 4 & vot$term >  7,9 ] <- NA
+IsCouncilor[ vot$term < 6 & vot$term > 10,10] <- NA
+IsCouncilor[ vot$term < 6 & vot$term > 11,11] <- NA
+IsCouncilor[ vot$term < 6 & vot$term > 11,12] <- NA
+IsCouncilor[ vot$term < 7 & vot$term > 10,13] <- NA
+IsCouncilor[ vot$term < 7 & vot$term > 10,14] <- NA
+IsCouncilor[ vot$term < 7 & vot$term > 10,15] <- NA
+#IsCouncilor[ vot$term < 9 & vot$term > 11,16] <- NA
+#IsCouncilor[ vot$term < 9 & vot$term > 11,17] <- NA
+#IsCouncilor[ vot$term < 9 & vot$term >  9,18] <- NA
 
 #Da la impresión de que alrededor del voto 900 se invierte la polaridad del espacio. Para entonces los priors semi-informativos que anclaron el norte y el sur han quedado muy atrás. Quizás esto pueda arreglarse dándole a córdova un prior centrado en -2. O quizás sea posible recentrar a Baños (supongo qu es quien sube cerca del 800 y baja abruptamente) en +2 o a Figueroa (el extremo sur que se vuelve norte) en -2 poco después de la entrada de Córdova, García Ramírez y Marván.
 
@@ -186,19 +205,19 @@ IsCouncilor[ item.date < ymd("20080829"),15] <- NA
 
 #No agregué nuevos priors para los nuevos consejeros.  Siguen comenzando con el prior del partido que los postuló, con dos adendos: 1) La posición del partido es la mediana de sus integrantes, no la media, con el objeto de descontar extremistas.  2) La precisión del prior para los nuevos consejeros es un poco más alta: 10, en lugar de 4.
 
-sel <- which(vot$date==ymd("20080215"))
-v[sel,]
-[1] 209 210 211 212 213 214 215 216 217
-Salen Ugalde (PRI), Latapi (PAN), y Morales (PRI)
-Entran Valdes (PRD), Baños (PRI), Nacif (PAN)
-which (vot$date==ymd("20080829"))
-[1] 262 263 264 265
-Salen Albo (PAN), Glez. Luna (PAN), Lopez Flores (PRI)
-Entran Elizondo (PAN), Figueroa (PRD), Guerrero (PRI)
-> which (vot$date==20101022)
-[1] 721 722 723 724 725 726 727 728 729 730 731
-Salen Andrade (PRI), Alcantar (VERDE), Sanchez (PAN)
-Entran Marvan (PAN), Cordova (PRD), Garcia Ramirez (PRI)
+## # ESTO VIENE DE ANTES Y TIENE IMPRECISIONES
+## which(vot$date==ymd("20080215"))
+## [1] 209 210 211 212 213 214 215 216 217
+## Salen Ugalde (PRI), Latapi (PAN), y Morales (PRI)
+## Entran Valdes (PRD), Baños (PRI), Nacif (PAN)
+## which (vot$date==ymd("20080829"))
+## [1] 262 263 264 265
+## Salen Albo (PAN), Glez. Luna (PAN), Lopez Flores (PRI)
+## Entran Elizondo (PAN), Figueroa (PRD), Guerrero (PRI)
+## > which (vot$date==20101022)
+## [1] 721 722 723 724 725 726 727 728 729 730 731
+## Salen Andrade (PRI), Alcantar (VERDE), Sanchez (PAN)
+## Entran Marvan (PAN), Cordova (PRD), Garcia Ramirez (PRI)
 
 # Initial ideal points to anchor ideological space
 #                 u  a  a  a  g  l  l  m  s  v  b  n  e  f  g  m  c  g
@@ -212,7 +231,7 @@ x.mean <- numeric ()
 x.tau  <- numeric ()
 
 item.date[s+14]
-
+ids
 s <- 174 ## LA PRIMERA VENTANA EN QUE ENTRAN VALDÉS NACIF Y BAÑOS... SE ROMPE EL CÓDIGO. COMPARARLO CON EL DE WOLDENBERG BONICA QUE SI FUNCIONA
 for (s in 174:S){        # <= BIG FUNCTION STARTS (loop over 1081 windows)
 
@@ -220,19 +239,18 @@ for (s in 174:S){        # <= BIG FUNCTION STARTS (loop over 1081 windows)
 	# This means that the length of estimated ideal points is either
 	# 9 (for most votes) or 11 (when there is some overlap: two councilors are leaving , two are coming in)
 	councilor.in <- apply (IsCouncilor[inicio[s]:final[s],], 2, invalid)
-	councilors <- names45678901[councilor.in==FALSE]
-	party      <- party45678901[councilor.in==FALSE]
+	councilors   <- name[councilor.in==FALSE]
+	parties      <- party[councilor.in==FALSE]
 
 	for (c in 1:15){
-		x.mean[c] <- ifelse (councilor.in[c]==TRUE, NA, ifelse (!is.na(x.location[c]), x.location[c], ifelse (party[c]==1, 2, ifelse (party[c]==3, -2, -1))))
+		x.mean[c] <- ifelse (councilor.in[c]==TRUE, NA, ifelse (!is.na(x.location[c]), x.location[c], ifelse (parties[c]==1, 2, ifelse (parties[c]==3, -2, -1))))
 		x.tau[c]  <- ifelse (councilor.in[c]==TRUE, NA, ifelse (!is.na(x.precision[c]), x.precision[c], 4))
 	}
 
 	x.mean <- as.numeric (na.omit (x.mean))
 	x.tau  <- as.numeric (na.omit (x.tau))
 
-	v <- all45678901[inicio[s]:final[s],1:15][,councilor.in==FALSE]; ## EXTRACT 30 VOTES EACH TIME
-	v[v==0] <- NA; v[v==-1] <- 0    ## Version probit requiere 0s y 1s
+	v <- vs[inicio[s]:final[s],1:15][,councilor.in==FALSE]; ## EXTRACT 30 VOTES EACH TIME
 	v <- t(v)                       ## ROLL CALLS NEED ITEMS IN COLUMNS, LEGISLATORS IN ROWS
 	J <- nrow(v); I <- ncol(v)      ## SESSION TOTALS
 
@@ -299,7 +317,7 @@ for (s in 174:S){        # <= BIG FUNCTION STARTS (loop over 1081 windows)
 
 source("http://rtm.wustl.edu/code/sendEmail.R")
 #sendEmail (subject="Ugalde et al esta listo", text="", address="rosas.guillermo@gmail.com")
-sendEmail (subject="Ugalde et al esta listo", text="", address="emagar@itam.mx")
+sendEmail (subject="Ugalde et al esta listo", text="", address="emagar@gmail.com")
 
 # RData file with runs carried out in Mexico, early March
 # load ("DynUgaldeBonica.RData")
