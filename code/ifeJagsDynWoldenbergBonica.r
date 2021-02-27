@@ -55,12 +55,27 @@ column <- ids$column[sel]
 
 # Read Woldenberg IFE's votes, only informative votes
 vot <-read.csv("v23.csv",  header=TRUE)
-
 # total members
 J <- length(name)
 
-colnames(vot)
-x
+########################
+## recode vote values ##
+########################
+vs <- vot[,1:J]
+#table(v$albo, useNA = "always")
+vs[vs==0] <- NA    ## Version probit requiere 0s y 1s
+vs[vs>2] <- NA
+vs[vs==2] <- 0
+
+# format dates
+vot$date <- ymd(vot$date)
+# summarize then drop uncontested votes
+table(factor(vot$dunan, labels = c("contested","not")), vot$term, useNA = "ifany")
+table(factor(vot$dunan, labels = c("contested","not")), useNA = "ifany")
+sel <- which(vot$dunan==1)
+vot <- vot[-sel,] # drop uncontested votes
+vs  <- vs [-sel,] # drop uncontested votes
+
 
 ## # sort by date and add session counter
 ## tmp <- vot
@@ -111,23 +126,6 @@ model1Dj.irt <- function() {
 }
 #end model##############
 
-########################
-## recode vote values ##
-########################
-vs <- vot[,1:J]
-#table(v$albo, useNA = "always")
-vs[vs==0] <- NA    ## Version probit requiere 0s y 1s
-vs[vs>2] <- NA
-vs[vs==2] <- 0
-
-# format dates
-vot$date <- ymd(vot$date)
-# summarize then drop uncontested votes
-table(factor(vot$dunan, labels = c("contested","not")), vot$term, useNA = "ifany")
-table(factor(vot$dunan, labels = c("contested","not")), useNA = "ifany")
-sel <- which(vot$dunan==1)
-vot <- vot[-sel,] # drop uncontested votes
-vs  <- vs [-sel,] # drop uncontested votes
 
 
 I <- nrow(vot)
@@ -141,7 +139,7 @@ I <- nrow(vot)
 item <- 1:I
 inicio <- item-15; inicio[inicio<0] <- 0
 final  <- item+15; final[final>I] <- I
-item.date <- ymd(paste(all23$yr,all23$mo,all23$dy,sep="-"))
+item.date <- vot$date
 S <- length(inicio)
 
 # Added March 19: We need a matrix showing whether each councilor is actually in IFE the moment the vote takes place
@@ -164,16 +162,16 @@ for (s in 1:S){        # <= BIG FUNCTION STARTS (loop over 552 windows)
 	# This means that the length of estimated ideal points is either
 	# 9 (for most votes) or 11 (when there is some overlap: two councilors are leaving , two are coming in)
 	councilor.in <- apply (IsCouncilor[inicio[s]:final[s],], 2, invalid)
-	councilors <- names.23[councilor.in==FALSE]
-	party      <- party.23[councilor.in==FALSE]
+	councilors <- name [councilor.in==FALSE]
+	party      <- party[councilor.in==FALSE]
 
 	for (c in 1:11){
-		x.mean[c] <- ifelse (!is.na(x.location[c]), x.location[c], partyPlacement[party.23[c]])
+		x.mean[c] <- ifelse (!is.na(x.location[c]), x.location[c], partyPlacement[party[c]])
 		x.tau[c]  <- ifelse (!is.na(x.precision[c]), x.precision[c], 4)
 	}
 
-	v <- all23[inicio[s]:final[s],1:11][,councilor.in==FALSE]; ## EXTRACT 30 VOTES EACH TIME
-	v[v==0] <- NA; v[v==-1] <- 0    ## Version probit requiere 0s y 1s
+	v <- vs[inicio[s]:final[s],1:11][,councilor.in==FALSE]; ## EXTRACT 30 VOTES EACH TIME
+#	v[v==0] <- NA; v[v==-1] <- 0    ## Version probit requiere 0s y 1s
 	v <- t(v)                       ## ROLL CALLS NEED ITEMS IN COLUMNS, LEGISLATORS IN ROWS
 	J <- nrow(v); I <- ncol(v)      ## SESSION TOTALS
 
@@ -197,10 +195,10 @@ for (s in 1:S){        # <= BIG FUNCTION STARTS (loop over 552 windows)
 #            mclapply(1:2, function(x) {
 #		model.jags.re <- try(
                                  jags (data=ife.data, inits=ife.inits, ife.parameters,
-#								   model.file=model1Dj.irt, n.chains=1,
-								   model.file=model1Dj.irt, n.chains=2,
-#								   n.iter=600, n.burnin=300, n.thin=30)
-								   n.iter=50000, n.burnin=30000, n.thin=200)
+								   model.file=model1Dj.irt, n.chains=1,
+#								   model.file=model1Dj.irt, n.chains=2,
+								   n.iter=600, n.burnin=300, n.thin=30)
+#								   n.iter=50000, n.burnin=30000, n.thin=200)
 #		)
 #		if(inherits(model.jags.re,"try-error")) {return()}
 #		return(model.jags.re)
@@ -220,11 +218,11 @@ for (s in 1:S){        # <= BIG FUNCTION STARTS (loop over 552 windows)
 	locs <- apply( results$BUGSoutput$sims.list$x, 2, median)
 	partyPlacement <- apply( results$BUGSoutput$sims.list$partyPos, 2, median)
 	for (n in 1:11){
-		if (length (which (councilors==names.23[n]))==0) {
+		if (length (which (councilors==name[n]))==0) {
 			x.location[n] <- NA
 			x.precision[n] <- NA
 		}
-		else { x.location[n] <-  locs[which (councilors==names.23[n])] }
+		else { x.location[n] <-  locs[which (councilors==name[n])] }
 	}
 	# Precision prior is always constant at 100, implying standard deviation = sqrt (1/100) = 0.1
 }  # <---   END OF LOOP OVER WINDOWS

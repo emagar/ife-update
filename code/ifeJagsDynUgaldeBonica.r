@@ -113,7 +113,7 @@ vs  <- vs [-sel,] # drop uncontested votes
 # eric's version 15feb2021
 nas <- function(x) ifelse(length(which(is.na(x)))==0, TRUE, FALSE)
 v.true <- apply(vs, 1, nas) 
-dim (vot)
+dim (vs)
 vot <- vot[v.true==FALSE,]
 dim (vot)
 # if some deteted, they'd have to be dropped from v too
