@@ -10,7 +10,7 @@ library (MCMCpack)
 library (foreign)
 library (car)
 library (gtools)
-library (multicore)
+#library (multicore)
 library (R2jags)
 library (mcmcplots)
 library (sm)
@@ -162,16 +162,16 @@ for (s in 1:S){        # <= BIG FUNCTION STARTS (loop over 552 windows)
 	# This means that the length of estimated ideal points is either
 	# 9 (for most votes) or 11 (when there is some overlap: two councilors are leaving , two are coming in)
 	councilor.in <- apply (IsCouncilor[inicio[s]:final[s],], 2, invalid)
-	councilors <- name [councilor.in==FALSE]
-	party      <- party[councilor.in==FALSE]
-
+	councilors   <- name [councilor.in==FALSE]
+	sponsors     <- party[councilor.in==FALSE]
+	
 	for (c in 1:11){
-		x.mean[c] <- ifelse (!is.na(x.location[c]), x.location[c], partyPlacement[party[c]])
+		x.mean[c] <- ifelse (!is.na(x.location[c]), x.location[c], partyPlacement[sponsors[c]])
 		x.tau[c]  <- ifelse (!is.na(x.precision[c]), x.precision[c], 4)
 	}
 
-	v <- vs[inicio[s]:final[s],1:11][,councilor.in==FALSE]; ## EXTRACT 30 VOTES EACH TIME
-#	v[v==0] <- NA; v[v==-1] <- 0    ## Version probit requiere 0s y 1s
+	v <- vs[inicio[s]:final[s], 1:11][, councilor.in==FALSE]; ## EXTRACT 30 VOTES EACH TIME
+#21-02#	v[v==0] <- NA; v[v==-1] <- 0    ## Version probit requiere 0s y 1s
 	v <- t(v)                       ## ROLL CALLS NEED ITEMS IN COLUMNS, LEGISLATORS IN ROWS
 	J <- nrow(v); I <- ncol(v)      ## SESSION TOTALS
 
@@ -185,7 +185,7 @@ for (s in 1:S){        # <= BIG FUNCTION STARTS (loop over 552 windows)
 	}
 	ife.parameters <- c("x", "signal", "difficulty", "partyPos")
 
-	print(cat("Session no.",s,"of",S,", with", I, "votes \n"))
+	print(cat("Session no.", s, "of", S, ", with", I, "votes \n"))
 
 	#full JAGS run
 	start.time <- proc.time()
@@ -195,20 +195,22 @@ for (s in 1:S){        # <= BIG FUNCTION STARTS (loop over 552 windows)
 #            mclapply(1:2, function(x) {
 #		model.jags.re <- try(
                                  jags (data=ife.data, inits=ife.inits, ife.parameters,
-								   model.file=model1Dj.irt, n.chains=1,
-#								   model.file=model1Dj.irt, n.chains=2,
-								   n.iter=600, n.burnin=300, n.thin=30)
-#								   n.iter=50000, n.burnin=30000, n.thin=200)
+#								   model.file=model1Dj.irt, n.chains=1,
+								   model.file=model1Dj.irt, n.chains=2,
+#								   n.iter=600, n.burnin=300, n.thin=30)
+								   n.iter=50000, n.burnin=30000, n.thin=200)
 #		)
 #		if(inherits(model.jags.re,"try-error")) {return()}
 #		return(model.jags.re)
 #	}, mc.cores=2 )
 	time.elapsed <- round(((proc.time()-start.time)[3])/60,2); rm(start.time)
-	print(cat("\tTime elapsed in estimation:",time.elapsed,"minutes","\n")); rm(time.elapsed)
+	print(cat("\tTime elapsed in estimation:", time.elapsed, "minutes", "\n")); rm(time.elapsed)
 
 #	results[[3]] <- councilors
-	results[[length(results)+1]] <- councilors;
-	window.results[length(window.results)+1] <- list(results) ## ADD SESSION'S RESULTS TO OBJECT HOLDING ALL RESULTS
+       
+        results <- c(results, councilors=list(councilors)); # should be faster than results[[length(results)+1]] <- councilors;
+    summary(window.results)
+        window.results <- c(window.results, list(results)); # should be faster than window.results[length(window.results)+1] <- list(results) ## ADD SESSION'S RESULTS TO OBJECT HOLDING ALL RESULTS
 
 	# Update location of ideal point at time s, to be used as location prior at time s+1
 	x.location  <- rep (NA, 11)
@@ -226,6 +228,23 @@ for (s in 1:S){        # <= BIG FUNCTION STARTS (loop over 552 windows)
 	}
 	# Precision prior is always constant at 100, implying standard deviation = sqrt (1/100) = 0.1
 }  # <---   END OF LOOP OVER WINDOWS
+
+# save
+class(window.results)
+save.image(file = "wold23-window-results.RData")
+save(window.results, file = "wold23-window-results-only.RData")
+save(window.results, file = "wold23-window-results-compress.RData", compress = "gzip")
+x
+
+summary(window.results)
+
+# clean
+ls()
+rm(x.location, x.mean, x.precision, x.tau, item, results, item.date, 
+   c, s, n, i, v, sel, tmp, ife.inits, ife.parameters, ife.data,
+   councilors, sponsors, inicio, final, councilor.in)
+
+x
 
 
 # Save semester.results, containing all chains from all runs
@@ -267,7 +286,7 @@ ideal.points <- matrix (NA, nrow=S, ncol=11)
 ideal.points.var <- matrix (NA, nrow=S, ncol=11)
 for (i in 1:S){
  	for (j in 1:11){
- 		councilor <- names.23[j]
+ 		councilor <- name[j]
  		num <- which (semester.results[[i]][[3]]==councilor)
  		if ( length (num)==0 ) {
  			ideal.points[i,j] <- 1
