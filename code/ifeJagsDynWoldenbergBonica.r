@@ -229,22 +229,28 @@ for (s in 1:S){        # <= BIG FUNCTION STARTS (loop over 552 windows)
 	# Precision prior is always constant at 100, implying standard deviation = sqrt (1/100) = 0.1
 }  # <---   END OF LOOP OVER WINDOWS
 
-# save
-class(window.results)
-save.image(file = "wold23-window-results.RData")
-save(window.results, file = "wold23-window-results-only.RData")
-save(window.results, file = "wold23-window-results-compress.RData", compress = "gzip")
-x
-
-summary(window.results)
+# rename object with posterior sims
+window.results.23 <- window.results
+ls()
+rm(window.results)
 
 # clean
 ls()
-rm(x.location, x.mean, x.precision, x.tau, item, results, item.date, 
-   c, s, n, i, v, sel, tmp, ife.inits, ife.parameters, ife.data,
-   councilors, sponsors, inicio, final, councilor.in)
+rm(c, s, n, i, v, sel, ife.inits, ife.parameters, ife.data)
+rm(councilors, sponsors, inicio, final, councilor.in)
+rm(x.location, x.mean, x.precision, x.tau, item, results, item.date)
+rm(color, column, locs, name, party, partyPlacement)
 
+
+# save
+summary(window.results)
+summary(window.results[[231]]) # 9 members
+summary(window.results[[232]]) # 11 members, overlap
+save.image(file = "posterior-samples/wold23-window-results-compress.RData", compress = "xz")
+#save(window.results.23, file = "posterior-samples/wold23-window-results-compress.RData")
 x
+
+
 
 
 # Save semester.results, containing all chains from all runs
