@@ -325,9 +325,9 @@ write.csv(tmp, file = "data/v23.csv", row.names = FALSE)
 ## write.csv(tmp, file = "data/v456789.csv", row.names = FALSE)
 #
 sel.r <- which(d$term %in% 4:11)
-sel.c <- c("ugalde", "albo", "andrade", "alcantar", "glezluna", "latapi", "lopezflores", "morales", "sanchez", "valdes", "banos", "nacif", "elizondo", "figueroa", "guerrero", "marvan", "cordova", "garcia", info.cols)
+sel.c <- c("ugalde", "albo", "andrade", "alcantar", "glezluna", "latapi", "lopezflores", "morales", "sanchez", "valdes", "banos", "nacif", "elizondo", "figueroa", "guerrero", "cordova", "garcia", "marvan", info.cols)
 tmp <- d[sel.r, sel.c]
-write.csv(tmp, file = "data/v45678901.csv", row.names = FALSE)
+write.csv(tmp, file = "data/v456789ab.csv", row.names = FALSE)
 
 
 

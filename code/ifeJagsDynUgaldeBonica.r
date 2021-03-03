@@ -45,27 +45,27 @@ ids <- matrix(c("Ugalde",           "ugalde",      "PRI",  "4",
                 "Córdova",          "cordova",     "PRD",       "9abcdef",
                 "García Rmz.",      "garcia",      "PRI",       "9"  ,
                 "Marván",           "marvan",      "PAN",       "9abcd",
-                "Andrade",          "andrade2",    "",             "cde",
+                "E. Andrade",       "andrade2",    "",             "cde",
                 "Favela",           "favela",      "",             "cdef",
                 "Santiago",         "santiago",    "",             "c",
                 "Galindo",          "galindo",     "",             "c",
-                "Murayama",         "favela",      "",             "cdef",
+                "Murayama",         "murayama",    "",             "cdef",
                 "Ruiz Saldaña",     "ruiz",        "",             "cdef",
                 "San Martín",       "snmartin",    "",             "cde",
                 "Santiago",         "santiago",    "",             "c",
                 "Ravel",            "ravel",       "",              "def",
-                "Rivera",           "rivera2",     "",              "def",
+                "J. Rivera",        "rivera2",     "",              "def",
                 "Zavala",           "zavala",      "",              "def",
                 "De la Cruz",       "magana",      "",                "f",
                 "Faz",              "faz",         "",                "f",
                 "Humphrey",         "humphrey",    "",                "f",
-                "Kib",              "kib",         "",                "f"),
+                "Kib Espadas",      "kib",         "",                "f"),
               ncol = 4,
               byrow = TRUE)
 #
 ids <- as.data.frame(ids, stringsAsFactors = FALSE)
 colnames(ids) <- c("name", "column", "pty", "tenure")                                           
-ids$tenure <- as.numeric(ids$tenure)
+#ids$tenure <- as.numeric(ids$tenure)
 ids <- within(ids, party <- ifelse (pty=="PRI", 1,
                             ifelse (pty=="PAN", 2,
                             ifelse (pty=="PRD", 3, 
@@ -73,33 +73,33 @@ ids <- within(ids, party <- ifelse (pty=="PRI", 1,
 ids <- within(ids, color <- ifelse (pty=="PRI", "red",
                             ifelse (pty=="PAN", "blue",
                             ifelse (pty=="PRD", "gold",
-                            ifelse (pty=="PVEM", "green", "orangered4")))))
+                            ifelse(pty=="PVEM", "green", "orangered4")))))
 
 # select terms 4-8, or more
-sel    <- grep(pattern = "[45678]", ids$tenure)
-#sel    <- grep(pattern = "[45678901]", ids$tenure)
+sel    <- grep(pattern = "[45678]", ids$tenure) #sel    <- grep(pattern = "[456789ab]", ids$tenure)
 name   <- ids$name[sel]
 party  <- ids$party[sel]
 color  <- ids$color[sel]
 column <- ids$column[sel]
 
+## rgb.23 <- c(length=11)
+## rgb.23[c(1,6,8,10)] <- rgb(1,       0, 0, 0.6) #red
+## rgb.23[c(2:4,9)]    <- rgb(1, 215/255, 0, 0.6) #gold
+## rgb.23[c(5,7,11)]   <- rgb(0,       0, 1, 0.6) #blue
 
 ###############################################################################
 ## Read votes (includes informative votes only, exported by code/data-prep.r ##
 ###############################################################################
-# subset votes to given terms (and members in those terms only)
-vot <-read.csv("v45678901.csv",  header=TRUE)
+vot <-read.csv("v456789ab.csv",  header=TRUE)
+#
+# subset to chosen periods
 sel.r <- which(vot$term %in% 4:8)
 drop.c <- ids$column[grep(pattern = "[45678]", ids$tenure)] # column names not in terms 4-8
 drop.c <- setdiff(ids$column, drop.c)
 drop.c <- which(colnames(vot) %in% drop.c)
-vot <- vot[sel.r, -drop.c]
+if (length(drop.c)>0) vot <- vot[sel.r, -drop.c]
 colnames(vot)
 # total members
-J <- length(name)
-
-# ... or use all periods' votes 4-11
-vot <-read.csv("v45678901.csv",  header=TRUE)
 J <- length(name)
 
 ########################
@@ -119,22 +119,6 @@ table(factor(vot$dunan, labels = c("contested","not")), useNA = "ifany")
 sel <- which(vot$dunan==1)
 vot <- vot[-sel,] # drop uncontested votes
 vs  <- vs [-sel,] # drop uncontested votes
-
-# Make sure there are no sequences of "all missing" votes (there was one, including 20 votes on 20080111, 20080118, and 20080128, that we need to get rid off)
-# There is a sequence of votes that are missing
-## v.true <- apply(v, 1, invalid) # Preg. a Memo (15feb2021): dónde definió esta función invalid?
-## dim (vot)
-## vot <- vot[v.true==FALSE,]
-## dim (vot)
-# eric's version 15feb2021
-nas <- function(x) ifelse(length(which(is.na(x)))==0, TRUE, FALSE)
-v.true <- apply(vs, 1, nas) 
-dim (vs)
-vot <- vot[v.true==FALSE,]
-dim (vot)
-# if some deteted, they'd have to be dropped from v too
-vs <- vs[v.true==FALSE,]
-
 
 #############################
 ###     UGALDE ET AL      ###
@@ -163,57 +147,31 @@ model1Dj.irt <- function() {
 }
 #end model##############
 
-# Establish moving windows of 30 votes each (OLD WAY)
-# inicio <- c ( 1:1081 )
-# final  <- c ( 30:1110 )
-
-# Alternative: center on vote (for date), extend windows to both sides
+# Center on vote (for date), extend windows to both sides
 I <- nrow (vot)
-#J <- 15;
 item <- 1:I  # Need to define I before
 inicio <- item-15; inicio[inicio<0] <- 1
 final  <- item+15; final[final>I] <- I
-S <- length(inicio)
 item.date <- vot$date #ymd(vot$yr*10000+vot$mo*100+vot$dy)
+S <- length(inicio)
 
 # Added March 19: We need a matrix showing whether each councilor is actually in IFE the moment the vote takes place
-IsCouncilor <- matrix (1, ncol=J, nrow=max(final))
-## IsCouncilor[ item.date > ymd("20071217"),1 ] <- NA # OLD, MISSES LATE ENTRANTS
-## IsCouncilor[ item.date > ymd("20080814"),2 ] <- NA
-## IsCouncilor[ item.date > ymd("20101027"),3 ] <- NA
-## IsCouncilor[ item.date > ymd("20101027"),4 ] <- NA
-## IsCouncilor[ item.date > ymd("20080814"),5 ] <- NA
-## IsCouncilor[ item.date > ymd("20071217"),6 ] <- NA
-## IsCouncilor[ item.date > ymd("20080814"),7 ] <- NA
-## IsCouncilor[ item.date > ymd("20071217"),8 ] <- NA
-## IsCouncilor[ item.date > ymd("20101027"),9 ] <- NA
-## IsCouncilor[ item.date < ymd("20080215"),10] <- NA
-## IsCouncilor[ item.date < ymd("20080215"),11] <- NA
-## IsCouncilor[ item.date < ymd("20080215"),12] <- NA
-## IsCouncilor[ item.date < ymd("20080829"),13] <- NA
-## IsCouncilor[ item.date < ymd("20080829"),14] <- NA
-## IsCouncilor[ item.date < ymd("20080829"),15] <- NA
-## #IsCouncilor[ item.date < ymd("20111215"),16] <- NA
-## #IsCouncilor[ item.date < ymd("20111215"),17] <- NA
-## #IsCouncilor[ item.date < ymd("20111215"),18] <- NA
-IsCouncilor[ vot$term < 4 & vot$term >  4,1 ] <- NA
-IsCouncilor[ vot$term < 4 & vot$term >  6,2 ] <- NA
-IsCouncilor[ vot$term < 4 & vot$term >  7,3 ] <- NA
-IsCouncilor[ vot$term < 4 & vot$term >  7,4 ] <- NA
-IsCouncilor[ vot$term < 4 & vot$term >  6,5 ] <- NA
-IsCouncilor[ vot$term < 4 & vot$term >  5,6 ] <- NA
-IsCouncilor[ vot$term < 4 & vot$term >  6,7 ] <- NA
-IsCouncilor[ vot$term < 4 & vot$term >  5,8 ] <- NA
-IsCouncilor[ vot$term < 4 & vot$term >  7,9 ] <- NA
-IsCouncilor[ vot$term < 6 & vot$term > 10,10] <- NA
-IsCouncilor[ vot$term < 6 & vot$term > 11,11] <- NA
-IsCouncilor[ vot$term < 6 & vot$term > 11,12] <- NA
-IsCouncilor[ vot$term < 7 & vot$term > 10,13] <- NA
-IsCouncilor[ vot$term < 7 & vot$term > 10,14] <- NA
-IsCouncilor[ vot$term < 7 & vot$term > 10,15] <- NA
-#IsCouncilor[ vot$term < 9 & vot$term > 11,16] <- NA
-#IsCouncilor[ vot$term < 9 & vot$term > 11,17] <- NA
-#IsCouncilor[ vot$term < 9 & vot$term >  9,18] <- NA
+IsCouncilor <- matrix (1, ncol=J, nrow=S)
+IsCouncilor[ vot$term < 4 | vot$term >  4,1 ] <- NA  #      ugalde
+IsCouncilor[ vot$term < 4 | vot$term >  6,2 ] <- NA  #        albo
+IsCouncilor[ vot$term < 4 | vot$term >  7,3 ] <- NA  #     andrade
+IsCouncilor[ vot$term < 4 | vot$term >  7,4 ] <- NA  #    alcantar
+IsCouncilor[ vot$term < 4 | vot$term >  6,5 ] <- NA  #    glezluna
+IsCouncilor[ vot$term < 4 | vot$term >  5,6 ] <- NA  #      latapi
+IsCouncilor[ vot$term < 4 | vot$term >  6,7 ] <- NA  # lopezflores
+IsCouncilor[ vot$term < 4 | vot$term >  5,8 ] <- NA  #     morales
+IsCouncilor[ vot$term < 4 |(vot$term >  7 & vot$term!=12),9 ] <- NA  #     sanchez
+IsCouncilor[ vot$term < 6 | vot$term > 10,10] <- NA  #      valdes
+IsCouncilor[ vot$term < 6 | vot$term > 14,11] <- NA  #       banos
+IsCouncilor[ vot$term < 6 | vot$term > 14,12] <- NA  #       nacif
+IsCouncilor[ vot$term < 7 | vot$term > 10,13] <- NA  #    elizondo
+IsCouncilor[ vot$term < 7 | vot$term > 10,14] <- NA  #    figueroa
+IsCouncilor[ vot$term < 7 | vot$term > 10,15] <- NA  #    guerrero
 
 #Da la impresión de que alrededor del voto 900 se invierte la polaridad del espacio. Para entonces los priors semi-informativos que anclaron el norte y el sur han quedado muy atrás. Quizás esto pueda arreglarse dándole a córdova un prior centrado en -2. O quizás sea posible recentrar a Baños (supongo qu es quien sube cerca del 800 y baja abruptamente) en +2 o a Figueroa (el extremo sur que se vuelve norte) en -2 poco después de la entrada de Córdova, García Ramírez y Marván.
 
@@ -236,9 +194,9 @@ IsCouncilor[ vot$term < 7 & vot$term > 10,15] <- NA
 ## Entran Marvan (PAN), Cordova (PRD), Garcia Ramirez (PRI)
 
 # Initial ideal points to anchor ideological space
-#                 u  a  a  a  g  l  l  m  s  v  b  n  e  f  g  m  c  g
-#                 g  l  n  l  l  a  p  o  a  a  a  a  l  i  u  a  o  a
-#                 a  b  d  c  z  t  z  r  n  l  ñ  c  i  g  e  r  r  r
+#                 u  a  a  a  g  l  l  m  s  v  b  n  e  f  g  c  g  m  
+#                 g  l  n  l  l  a  p  o  a  a  a  a  l  i  u  o  a  a  
+#                 a  b  d  c  z  t  z  r  n  l  ñ  c  i  g  e  r  r  r  
 x.location <-   c(1, 0, 0, 2,-2, 0, 0, 2,-2, 0, 0, 0, 0, 0, 0, 0, 0, 0)
 x.precision  <- c(4, 1, 1, 4, 4, 1, 1, 4, 4, 0, 0, 0, 0, 0, 0, 0, 0, 0)
 window.results <- list () ## ADD SESSION'S RESULTS TO OBJECT HOLDING ALL RESULTS

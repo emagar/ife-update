@@ -26,7 +26,6 @@ workdir <- c("/home/eric/Dropbox/data/rollcall/ife_cg/ife-update/data/")
 setwd(workdir)
 
 
-
 # Define colors and plotting names
 ids <- matrix(c("Woldenberg", "woldenberg", "PRI", 23,
                 "Barragán",   "barragan",   "PRD", 23,
@@ -50,11 +49,31 @@ ids <- matrix(c("Woldenberg", "woldenberg", "PRI", 23,
 #
 #
 #
+#
+#
+#
+#
+#
+#
+#
+#
+#
+#
+#
+#
+#
+#
 ids <- as.data.frame(ids, stringsAsFactors = FALSE)
 colnames(ids) <- c("name", "column", "pty", "tenure")                                           
 ids$tenure <- as.numeric(ids$tenure)
-ids <- within(ids, party <- ifelse (pty=="PRI", 1, ifelse (pty=="PAN", 2, ifelse (pty=="PRD", 3, 4))))
-ids <- within(ids, color <- ifelse (pty=="PRI", "red", ifelse (pty=="PAN", "blue", ifelse (pty=="PRD", "gold", "green"))))
+ids <- within(ids, party <- ifelse (pty=="PRI", 1,
+                            ifelse (pty=="PAN", 2,
+                            ifelse (pty=="PRD", 3, 
+                            ifelse(pty=="PVEM", 4, 5)))))
+ids <- within(ids, color <- ifelse (pty=="PRI", "red",
+                            ifelse (pty=="PAN", "blue",
+                            ifelse (pty=="PRD", "gold",
+                            ifelse(pty=="PVEM", "green", "orangered4")))))
 
 # select term 2, 3 or both
 sel    <- grep(pattern = "[23]", ids$tenure)
@@ -72,6 +91,14 @@ column <- ids$column[sel]
 ## Read votes (includes informative votes only, exported by code/data-prep.r ##
 ###############################################################################
 vot <-read.csv("v23.csv",  header=TRUE)
+#
+# subset to chosen periods
+sel.r <- which(vot$term %in% 2:3)
+drop.c <- ids$column[grep(pattern = "[23]", ids$tenure)] # column names not in terms 2-3
+drop.c <- setdiff(ids$column, drop.c)
+drop.c <- which(colnames(vot) %in% drop.c)
+if (length(drop.c)>0) vot <- vot[sel.r, -drop.c]
+colnames(vot)
 # total members
 J <- length(name)
 
@@ -93,29 +120,6 @@ sel <- which(vot$dunan==1)
 vot <- vot[-sel,] # drop uncontested votes
 vs  <- vs [-sel,] # drop uncontested votes
 
-
-## # sort by date and add session counter
-## tmp <- vot
-## xx <- rep(0, nrow(tmp)); xx[1] <- 1;
-## tmp <- tmp[order(tmp$yr, tmp$mo, tmp$dy, tmp$folio),]
-## tmp$sess <- rep(0, nrow(tmp)); tmp$date <- tmp$yr*10000+tmp$mo*100+tmp$dy
-## tmp$sess[1] <- 1
-## for (i in 2:nrow(tmp)){
-## 	tmp$sess[i] <- ifelse(tmp$date[i]==tmp$date[i-1], tmp$sess[i-1], tmp$sess[i-1]+1);
-## 	xx[i] <- ifelse(tmp$date[i]==tmp$date[i-1], 0, 1);
-## }
-## all23 <- tmp
-## rm(tmp)
-
-## ## Create object with session traits (choose one)
-## tmp <- vot
-## nv <- as.numeric(table(tmp$date)); tmp <- tmp[xx==1,]
-## tmp2 <- rep(NA, max(tmp$sess))
-## sess.dat <- data.frame(sess=1:max(tmp$sess), yr=tmp2, mo=tmp2, dy=tmp2, date=tmp2, nvot=tmp2, term=tmp2)
-## sess.dat$yr <- tmp$yr; sess.dat$mo <- tmp$mo; sess.dat$dy <- tmp$dy; sess.dat$date <- tmp$date; sess.dat$term <- tmp$term
-## sess.dat$nvot <- nv; sess.dat$term <- tmp$term;
-## sess.dat$date <- ymd(sess.dat$date)
-
 ###########################
 ###     WOLDENBERG      ###
 ###########################
@@ -126,7 +130,7 @@ model1Dj.irt <- function() {
 		for (i in 1:I){              ## loop over items
 			v[j,i] ~ dbern(p[j,i]);                                 ## voting rule
 			probit(p[j,i]) <- mu[j,i];                              ## sets 0<p<1 as function of mu
-			mu[j,i] <- signal[i]*x[j] - difficulty[i];                            ## utility differential
+			mu[j,i] <- signal[i]*x[j] - difficulty[i];              ## utility differential
 		}
 	}
 	## priors ################
@@ -143,16 +147,8 @@ model1Dj.irt <- function() {
 }
 #end model##############
 
-
-
+# Center on vote (for date), extend windows to both sides
 I <- nrow(vot)
-## # Establish moving windows of 30 votes each
-## inicio <- c ( 1:553 )
-## final  <- c ( 30:582 )
-## # set window's date to middle
-## tmp <- ymd(paste(all23$yr,all23$mo,all23$dy,sep="-"))
-## item.date <- tmp[inicio+14]; rm(tmp)
-### Alternative: center on vote (for date), extend windows to both sides
 item <- 1:I
 inicio <- item-15; inicio[inicio<0] <- 0
 final  <- item+15; final[final>I] <- I
@@ -160,7 +156,7 @@ item.date <- vot$date
 S <- length(inicio)
 
 # Added March 19: We need a matrix showing whether each councilor is actually in IFE the moment the vote takes place
-IsCouncilor <- matrix (1, ncol=11, nrow=S)
+IsCouncilor <- matrix (1, ncol=J, nrow=S)
 IsCouncilor[item.date > ymd(20001114), c(7,9)] <- NA # Last Molinar, Zebadua vote
 IsCouncilor[item.date < ymd(20010130), c(10,11)] <- NA # First Rivera, Luken vote
 
