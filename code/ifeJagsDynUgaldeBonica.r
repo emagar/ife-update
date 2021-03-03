@@ -289,6 +289,11 @@ for (s in 1:S){        # <= BIG FUNCTION STARTS (loop over 1081 windows)
 	# Precision prior is always constant at 100, implying standard deviation = sqrt (1/100) = 0.1
 }  # <---   END OF LOOP OVER WINDOWS
 
+# rename object with posterior sims
+window.results.45678 <- window.results
+ls()
+rm(window.results)
+
 
 # Save window.results, containing all chains from all runs
 # save (window.results, file="DynUgaldeBonicaMarch21.RData") # With more anchors
