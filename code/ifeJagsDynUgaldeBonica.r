@@ -26,51 +26,67 @@ workdir <- c("/home/eric/Dropbox/data/rollcall/ife_cg/ife-update/data/")
 setwd(workdir)
 
 # Define colors and plotting names
-# OJO: en tenure term==10 es 0, term==11 es 1 etc. Si se juntaran más de 13 terms, habría que replantear la codificación... 
-ids <- matrix(c("Ugalde",           "ugalde",      "PRI",  4,
-                "Albo",             "albo",        "PAN",  456,
-                "Andrade",          "andrade",     "PRI",  4567, 
-                "Gmz. Alcántar",    "alcantar",    "PVEM", 4567,
-                "Glez. Luna",       "glezluna",    "PAN",  456,
-                "Latapí",           "latapi",      "PRI",  45,
-                "López Flores",     "lopezflores", "PRI",  456,
-                "Morales",          "morales",     "PAN",  45,
-                "Sánchez",          "sanchez",     "PAN",  4567,
-                "Valdés",           "valdes",      "PRD",    67890,
-                "Baños",            "banos",       "PRI",    678901,
-                "Nacif",            "nacif",       "PAN",    678901,
-                "Elizondo",         "elizondo",    "PAN",     7890,
-                "Figueroa",         "figueroa",    "PRD",     7890,
-                "Guerrero",         "guerrero",    "PRI",     7890,
-                "Marván",           "marvan",      "PAN",       901,
-                "Córdova",          "cordova",     "PRD",       901,
-                "García Rmz.",      "garcia",      "PRI",       9  ),
+# OJO: en tenure term==10 es a, term==11 es b etc. 
+ids <- matrix(c("Ugalde",           "ugalde",      "PRI",  "4",
+                "Albo",             "albo",        "PAN",  "456",
+                "Andrade",          "andrade",     "PRI",  "4567", 
+                "Gmz. Alcántar",    "alcantar",    "PVEM", "4567",
+                "Glez. Luna",       "glezluna",    "PAN",  "456",
+                "Latapí",           "latapi",      "PRI",  "45",
+                "López Flores",     "lopezflores", "PRI",  "456",
+                "Morales",          "morales",     "PAN",  "45",
+                "Sánchez",          "sanchez",     "PAN",  "4567c",
+                "Valdés",           "valdes",      "PRD",    "6789a",
+                "Baños",            "banos",       "PRI",    "6789abcde",
+                "Nacif",            "nacif",       "PAN",    "6789abcde",
+                "Elizondo",         "elizondo",    "PAN",     "789a",
+                "Figueroa",         "figueroa",    "PRD",     "789a",
+                "Guerrero",         "guerrero",    "PRI",     "789a",
+                "Córdova",          "cordova",     "PRD",       "9abcdef",
+                "García Rmz.",      "garcia",      "PRI",       "9"  ,
+                "Marván",           "marvan",      "PAN",       "9abcd",
+                "Andrade",          "andrade2",    "",             "cde",
+                "Favela",           "favela",      "",             "cdef",
+                "Santiago",         "santiago",    "",             "c",
+                "Galindo",          "galindo",     "",             "c",
+                "Murayama",         "favela",      "",             "cdef",
+                "Ruiz Saldaña",     "ruiz",        "",             "cdef",
+                "San Martín",       "snmartin",    "",             "cde",
+                "Santiago",         "santiago",    "",             "c",
+                "Ravel",            "ravel",       "",              "def",
+                "Rivera",           "rivera2",     "",              "def",
+                "Zavala",           "zavala",      "",              "def",
+                "De la Cruz",       "magana",      "",                "f",
+                "Faz",              "faz",         "",                "f",
+                "Humphrey",         "humphrey",    "",                "f",
+                "Kib",              "kib",         "",                "f"),
               ncol = 4,
               byrow = TRUE)
 #
 ids <- as.data.frame(ids, stringsAsFactors = FALSE)
 colnames(ids) <- c("name", "column", "pty", "tenure")                                           
 ids$tenure <- as.numeric(ids$tenure)
-ids <- within(ids, party <- ifelse (pty=="PRI", 1, ifelse (pty=="PAN", 2, ifelse (pty=="PRD", 3, 4))))
-ids <- within(ids, color <- ifelse (pty=="PRI", "red", ifelse (pty=="PAN", "blue", ifelse (pty=="PRD", "gold", "green"))))
-#str(ids)
-# terms 4-8
+ids <- within(ids, party <- ifelse (pty=="PRI", 1,
+                            ifelse (pty=="PAN", 2,
+                            ifelse (pty=="PRD", 3, 
+                            ifelse(pty=="PVEM", 4, 5)))))
+ids <- within(ids, color <- ifelse (pty=="PRI", "red",
+                            ifelse (pty=="PAN", "blue",
+                            ifelse (pty=="PRD", "gold",
+                            ifelse (pty=="PVEM", "green", "orangered4")))))
+
+# select terms 4-8, or more
 sel    <- grep(pattern = "[45678]", ids$tenure)
+#sel    <- grep(pattern = "[45678901]", ids$tenure)
 name   <- ids$name[sel]
 party  <- ids$party[sel]
 color  <- ids$color[sel]
 column <- ids$column[sel]
 
-# ... or terms 4-11
-sel    <- grep(pattern = "[45678901]", ids$tenure)
-name   <- ids$name[sel]
-party  <- ids$party[sel]
-color  <- ids$color[sel]
-column <- ids$column[sel]
 
-####################################################################################
-## Read votes (includes only informative votes only, exported by code/data-prep.r ##
-####################################################################################
+###############################################################################
+## Read votes (includes informative votes only, exported by code/data-prep.r ##
+###############################################################################
 # subset votes to given terms (and members in those terms only)
 vot <-read.csv("v45678901.csv",  header=TRUE)
 sel.r <- which(vot$term %in% 4:8)

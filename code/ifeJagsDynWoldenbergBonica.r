@@ -1,9 +1,13 @@
 ##################################################################################
 # Woldenberg a la Bonica
 # This code runs a Bonica-like algorithm to provide a dynamic view of Woldenberg's
-# IFE.  The first run has already been saved ("DynWoldenbergBonica.RData")
+# IFE.  The first run has already been saved ("posterior-samples/wold23-window-results-compress.RData")
 # March 19, 2013: Add party-based priors for councilors coming in from outside
 ##################################################################################
+
+
+
+
 
 library (arm)
 library (MCMCpack)
@@ -21,6 +25,9 @@ rm(list = ls())
 workdir <- c("/home/eric/Dropbox/data/rollcall/ife_cg/ife-update/data/")
 setwd(workdir)
 
+
+
+# Define colors and plotting names
 ids <- matrix(c("Woldenberg", "woldenberg", "PRI", 23,
                 "Barragán",   "barragan",   "PRD", 23,
                 "Cantú",      "cantu",      "PRD", 23,
@@ -34,6 +41,14 @@ ids <- matrix(c("Woldenberg", "woldenberg", "PRI", 23,
                 "Luken",      "luken",      "PAN",  3),
               ncol = 4,
               byrow = TRUE)
+#
+#
+#
+#
+#
+#
+#
+#
 #
 ids <- as.data.frame(ids, stringsAsFactors = FALSE)
 colnames(ids) <- c("name", "column", "pty", "tenure")                                           
@@ -53,7 +68,9 @@ column <- ids$column[sel]
 ## rgb.23[c(2:4,9)]    <- rgb(1, 215/255, 0, 0.6) #gold
 ## rgb.23[c(5,7,11)]   <- rgb(0,       0, 1, 0.6) #blue
 
-# Read Woldenberg IFE's votes, only informative votes
+###############################################################################
+## Read votes (includes informative votes only, exported by code/data-prep.r ##
+###############################################################################
 vot <-read.csv("v23.csv",  header=TRUE)
 # total members
 J <- length(name)
