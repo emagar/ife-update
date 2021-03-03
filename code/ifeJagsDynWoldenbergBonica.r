@@ -219,10 +219,8 @@ for (s in 1:S){        # <= BIG FUNCTION STARTS (loop over 552 windows)
 	time.elapsed <- round(((proc.time()-start.time)[3])/60,2); rm(start.time)
 	print(cat("\tTime elapsed in estimation:", time.elapsed, "minutes", "\n")); rm(time.elapsed)
 
-#	results[[3]] <- councilors
-       
+	# ADD COUNCILOR NAMES TO RESULTS OBJECT
         results <- c(results, councilors=list(councilors)); # should be faster than results[[length(results)+1]] <- councilors;
-    summary(window.results)
         window.results <- c(window.results, list(results)); # should be faster than window.results[length(window.results)+1] <- list(results) ## ADD SESSION'S RESULTS TO OBJECT HOLDING ALL RESULTS
 
 	# Update location of ideal point at time s, to be used as location prior at time s+1

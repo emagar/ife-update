@@ -165,13 +165,16 @@ IsCouncilor[ vot$term < 4 | vot$term >  6,5 ] <- NA  #    glezluna
 IsCouncilor[ vot$term < 4 | vot$term >  5,6 ] <- NA  #      latapi
 IsCouncilor[ vot$term < 4 | vot$term >  6,7 ] <- NA  # lopezflores
 IsCouncilor[ vot$term < 4 | vot$term >  5,8 ] <- NA  #     morales
-IsCouncilor[ vot$term < 4 |(vot$term >  7 & vot$term!=12),9 ] <- NA  #     sanchez
+IsCouncilor[ vot$term < 4 |(vot$term >  7 & vot$term!=12),9 ] <- NA  # sanchez
 IsCouncilor[ vot$term < 6 | vot$term > 10,10] <- NA  #      valdes
 IsCouncilor[ vot$term < 6 | vot$term > 14,11] <- NA  #       banos
 IsCouncilor[ vot$term < 6 | vot$term > 14,12] <- NA  #       nacif
 IsCouncilor[ vot$term < 7 | vot$term > 10,13] <- NA  #    elizondo
 IsCouncilor[ vot$term < 7 | vot$term > 10,14] <- NA  #    figueroa
 IsCouncilor[ vot$term < 7 | vot$term > 10,15] <- NA  #    guerrero
+#IsCouncilor[ vot$term < 9 | vot$term > 15,16] <- NA  #     cordova 
+#IsCouncilor[ vot$term < 9 | vot$term >  9,17] <- NA  #  garcia rmz
+#IsCouncilor[ vot$term < 9 | vot$term > 13,18] <- NA  #      marvan
 
 #Da la impresión de que alrededor del voto 900 se invierte la polaridad del espacio. Para entonces los priors semi-informativos que anclaron el norte y el sur han quedado muy atrás. Quizás esto pueda arreglarse dándole a córdova un prior centrado en -2. O quizás sea posible recentrar a Baños (supongo qu es quien sube cerca del 800 y baja abruptamente) en +2 o a Figueroa (el extremo sur que se vuelve norte) en -2 poco después de la entrada de Córdova, García Ramírez y Marván.
 
@@ -197,38 +200,39 @@ IsCouncilor[ vot$term < 7 | vot$term > 10,15] <- NA  #    guerrero
 #                 u  a  a  a  g  l  l  m  s  v  b  n  e  f  g  c  g  m  
 #                 g  l  n  l  l  a  p  o  a  a  a  a  l  i  u  o  a  a  
 #                 a  b  d  c  z  t  z  r  n  l  ñ  c  i  g  e  r  r  r  
-x.location <-   c(1, 0, 0, 2,-2, 0, 0, 2,-2, 0, 0, 0, 0, 0, 0, 0, 0, 0)
-x.precision  <- c(4, 1, 1, 4, 4, 1, 1, 4, 4, 0, 0, 0, 0, 0, 0, 0, 0, 0)
+x.location <-   c(1, 0, 0, 2,-2, 0, 0, 2,-2, 0, 0, 0, 0, 0, 0, 0, 0, 0)[1:J] # 1:J restrincts to members in estimation
+x.precision  <- c(4, 1, 1, 4, 4, 1, 1, 4, 4, 0, 0, 0, 0, 0, 0, 0, 0, 0)[1:J]
 window.results <- list () ## ADD SESSION'S RESULTS TO OBJECT HOLDING ALL RESULTS
 partyPlacement <- rep (NA,J)
 x.mean <- numeric ()
 x.tau  <- numeric ()
 
-item.date[s+14]
-ids
 s <- 174 ## LA PRIMERA VENTANA EN QUE ENTRAN VALDÉS NACIF Y BAÑOS... SE ROMPE EL CÓDIGO. COMPARARLO CON EL DE WOLDENBERG BONICA QUE SI FUNCIONA
-for (s in 174:S){        # <= BIG FUNCTION STARTS (loop over 1081 windows)
+for (s in 1:S){        # <= BIG FUNCTION STARTS (loop over 1081 windows)
 
 	# Added March 19: We include councilors (and their party IDs) only if they were actual councilors for at least one vote
 	# This means that the length of estimated ideal points is either
 	# 9 (for most votes) or 11 (when there is some overlap: two councilors are leaving , two are coming in)
 	councilor.in <- apply (IsCouncilor[inicio[s]:final[s],], 2, invalid)
-	councilors   <- name[councilor.in==FALSE]
+	councilors   <- name [councilor.in==FALSE]
 	parties      <- party[councilor.in==FALSE]
 
 	for (c in 1:15){
-		x.mean[c] <- ifelse (councilor.in[c]==TRUE, NA, ifelse (!is.na(x.location[c]), x.location[c], ifelse (parties[c]==1, 2, ifelse (parties[c]==3, -2, -1))))
-		x.tau[c]  <- ifelse (councilor.in[c]==TRUE, NA, ifelse (!is.na(x.precision[c]), x.precision[c], 4))
+		x.mean[c] <- ifelse (!is.na(x.location[c]), x.location[c], partyPlacement[sponsors[c]])
+		x.tau[c]  <- ifelse (!is.na(x.precision[c]), x.precision[c], 4)
+#		x.mean[c] <- ifelse (councilor.in[c]==TRUE, NA, ifelse (!is.na(x.location[c]), x.location[c], ifelse (parties[c]==1, 2, ifelse (parties[c]==3, -2, -1))))
+#		x.tau[c]  <- ifelse (councilor.in[c]==TRUE, NA, ifelse (!is.na(x.precision[c]), x.precision[c], 4))
 	}
 
-	x.mean <- as.numeric (na.omit (x.mean))
-	x.tau  <- as.numeric (na.omit (x.tau))
-
-	v <- vs[inicio[s]:final[s],1:15][,councilor.in==FALSE]; ## EXTRACT 30 VOTES EACH TIME
+#	x.mean <- as.numeric (na.omit (x.mean))
+#	x.tau  <- as.numeric (na.omit (x.tau))
+    
+	v <- vs[inicio[s]:final[s], 1:15][, councilor.in==FALSE]; ## EXTRACT 30 VOTES EACH TIME
+#21-02#	v[v==0] <- NA; v[v==-1] <- 0    ## Version probit requiere 0s y 1s
 	v <- t(v)                       ## ROLL CALLS NEED ITEMS IN COLUMNS, LEGISLATORS IN ROWS
 	J <- nrow(v); I <- ncol(v)      ## SESSION TOTALS
 
-	ife.data <- list ("J","I","v","x.mean","x.tau","party")
+	ife.data <- list ("J", "I", "v", "x.mean", "x.tau", "party")
 	ife.inits <- function (){
 		list (
 			x=rnorm(J),
@@ -238,7 +242,7 @@ for (s in 174:S){        # <= BIG FUNCTION STARTS (loop over 1081 windows)
 	}
 	ife.parameters <- c("x", "signal", "difficulty", "partyPos")
 
-	print(cat("Session no.",s,"of",S,", with", I, "votes \n"))
+	print(cat("Session no.", s, "of", S, ", with", I, "votes \n"))
 
 	#full JAGS run
 	start.time <- proc.time()
@@ -248,37 +252,39 @@ for (s in 174:S){        # <= BIG FUNCTION STARTS (loop over 1081 windows)
 #            mclapply(1:2, function(x) {
 #		model.jags.re <- try(
                                  jags (data=ife.data, inits=ife.inits, ife.parameters,
-								   model.file=model1Dj.irt, n.chains=1,
- 								   n.iter=600, n.burnin=300, n.thin=3)
-#								   n.iter=60000, n.burnin=30000, n.thin=300)
+#								   model.file=model1Dj.irt, n.chains=1,
+								   model.file=model1Dj.irt, n.chains=2,
+#								   n.iter=600, n.burnin=300, n.thin=30)
+								   n.iter=50000, n.burnin=30000, n.thin=200)
 #		)
 #		if(inherits(model.jags.re,"try-error")) {return()}
 #		return(model.jags.re)
 #	}, mc.cores=2 )
 	time.elapsed <- round(((proc.time()-start.time)[3])/60,2); rm(start.time)
-	print(cat("\tTime elapsed in estimation:",time.elapsed,"minutes","\n")); rm(time.elapsed)
+	print(cat("\tTime elapsed in estimation:", time.elapsed, "minutes", "\n")); rm(time.elapsed)
 
 	# Quick check on convergence of ideal point chains
 #	GHconv <- gelman.diag(mcmc.list(list (as.mcmc (results[[2]]$BUGSoutput$sims.list$x), as.mcmc (results[[1]]$BUGSoutput$sims.list$x))))[[2]]
 #	print (cat ("Gelman-Rubin R-hat:", GHconv, "\n"))
 
-	results[[length(results)+1]] <- councilors;
+	# ADD COUNCILOR NAMES TO RESULTS OBJECT
+        results <- c(results, councilors=list(councilors)); # should be faster than results[[length(results)+1]] <- councilors;
+        window.results <- c(window.results, list(results)); # should be faster than window.results[length(window.results)+1] <- list(results) ## ADD SESSION'S RESULTS TO OBJECT HOLDING ALL RESULTS
 #        results[[4]] <- GHconv; rm (GHconv)
- 	window.results[length(window.results)+1] <- list(results) ## ADD SESSION'S RESULTS TO OBJECT HOLDING ALL RESULTS
 
 	# Update location of ideal point at time s, to be used as location prior at time s+1
-	x.location  <- rep (NA, J)
-	x.precision <- rep (100, J)
+	x.location  <- rep (NA, 15)
+	x.precision <- rep (100, 15)
 #	locs <- apply( rbind (results[[1]]$BUGSoutput$sims.list$x, results[[2]]$BUGSoutput$sims.list$x), 2, median)
-	locs <- apply( results$BUGSoutput$sims.list$x, 2, median)
 #	partyPlacement <- apply( rbind (results[[1]]$BUGSoutput$sims.list$partyPos, results[[2]]$BUGSoutput$sims.list$partyPos), 2, median)
+	locs <- apply( results$BUGSoutput$sims.list$x, 2, median)
 	partyPlacement <- apply( results$BUGSoutput$sims.list$partyPos, 2, median)
 	for (n in 1:15){
-		if (length (which (councilors==names45678901[n]))==0) {
+		if (length (which (councilors==name[n]))==0) {
 			x.location[n] <- NA
 			x.precision[n] <- NA
 		}
-		else { x.location[n] <-  locs[which (councilors==names45678901[n])] }
+		else { x.location[n] <-  locs[which (councilors==name[n])] }
 	}
 	# Precision prior is always constant at 100, implying standard deviation = sqrt (1/100) = 0.1
 }  # <---   END OF LOOP OVER WINDOWS
