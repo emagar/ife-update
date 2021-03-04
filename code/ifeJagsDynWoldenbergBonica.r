@@ -142,7 +142,7 @@ model1Dj.irt <- function() {
 		difficulty[i] ~ dnorm(0, 0.25);
 	}
 	for (p in 1:3){
-		partyPos[p] <- mean (x[party[p]]);
+		partyPos[p] <- median (x[party[p]]); # 4mar21: was mean, changed to median
 	}
 }
 #end model##############
@@ -169,6 +169,8 @@ x.mean <- numeric ()
 x.tau  <- numeric ()
 
 s <- 1
+## Save overall totals for use later (I J redefined to session totals in next loop)
+J.all <- J; I.all <- I
 for (s in 1:S){        # <= BIG FUNCTION STARTS (loop over 552 windows)
 
 	# Added March 19: We include councilors (and their party IDs) only if they were actual councilors for at least one vote
@@ -178,13 +180,12 @@ for (s in 1:S){        # <= BIG FUNCTION STARTS (loop over 552 windows)
 	councilors   <- name [councilor.in==FALSE]
 	sponsors     <- party[councilor.in==FALSE]
 	
-	for (c in 1:11){
+	for (c in 1:J.all){
 		x.mean[c] <- ifelse (!is.na(x.location[c]), x.location[c], partyPlacement[sponsors[c]])
 		x.tau[c]  <- ifelse (!is.na(x.precision[c]), x.precision[c], 4)
 	}
 
-	v <- vs[inicio[s]:final[s], 1:11][, councilor.in==FALSE]; ## EXTRACT 30 VOTES EACH TIME
-#21-02#	v[v==0] <- NA; v[v==-1] <- 0    ## Version probit requiere 0s y 1s
+	v <- vs[inicio[s]:final[s], 1:J.all][, councilor.in==FALSE]; ## EXTRACT 30 VOTES EACH TIME
 	v <- t(v)                       ## ROLL CALLS NEED ITEMS IN COLUMNS, LEGISLATORS IN ROWS
 	J <- nrow(v); I <- ncol(v)      ## SESSION TOTALS
 
@@ -219,27 +220,29 @@ for (s in 1:S){        # <= BIG FUNCTION STARTS (loop over 552 windows)
 	time.elapsed <- round(((proc.time()-start.time)[3])/60,2); rm(start.time)
 	print(cat("\tTime elapsed in estimation:", time.elapsed, "minutes", "\n")); rm(time.elapsed)
 
-	# ADD COUNCILOR NAMES TO RESULTS OBJECT
+	# ADD COUNCILOR NAMES AND VOTE INFO TO RESULTS OBJECT
         results <- c(results, councilors=list(councilors)); # should be faster than results[[length(results)+1]] <- councilors;
         results <- c(results, folio.date=list(vot[s,c("folio","dy","mo","yr")])); # add vote on which window is centered
         window.results <- c(window.results, list(results)); # should be faster than window.results[length(window.results)+1] <- list(results) ## ADD SESSION'S RESULTS TO OBJECT HOLDING ALL RESULTS
 
 	# Update location of ideal point at time s, to be used as location prior at time s+1
-	x.location  <- rep (NA, 11)
-	x.precision <- rep (100, 11)
+	x.location  <- rep (NA, J.all)
+	x.precision <- rep (100, J.all)
 #	locs <- apply( rbind (results[[1]]$BUGSoutput$sims.list$x, results[[2]]$BUGSoutput$sims.list$x), 2, median)
 #	partyPlacement <- apply( rbind (results[[1]]$BUGSoutput$sims.list$partyPos, results[[2]]$BUGSoutput$sims.list$partyPos), 2, median)
 	locs <- apply( results$BUGSoutput$sims.list$x, 2, median)
 	partyPlacement <- apply( results$BUGSoutput$sims.list$partyPos, 2, median)
-	for (n in 1:11){
-		if (length (which (councilors==name[n]))==0) {
-			x.location[n] <- NA
-			x.precision[n] <- NA
+	for (n in 1:J.all){
+		if (length( which(councilors==name[n]) )==0) {               # if councilor not member current round
+			x.location[n] <- NA                                  # then prior for next round set to NA
+			x.precision[n] <- NA                                 # (and line above sets it to party placement)
 		}
-		else { x.location[n] <-  locs[which (councilors==name[n])] }
+		else { x.location[n] <-  locs[which (councilors==name[n])] } # councilor's prior for next round is current x 
 	}
 	# Precision prior is always constant at 100, implying standard deviation = sqrt (1/100) = 0.1
 }  # <---   END OF LOOP OVER WINDOWS
+## Restore overall totals
+J <- J.all; I <- I.all; rm(J.all, I.all)
 
 # rename object with posterior sims
 window.results.23 <- window.results

@@ -75,8 +75,8 @@ ids <- within(ids, color <- ifelse (pty=="PRI", "red",
                             ifelse (pty=="PRD", "gold",
                             ifelse(pty=="PVEM", "green", "orangered4")))))
 
-# select terms 4-8, or more
-sel    <- grep(pattern = "[45678]", ids$tenure) #sel    <- grep(pattern = "[456789ab]", ids$tenure)
+# select terms 4-8, more or less
+sel    <- grep(pattern = "[45]", ids$tenure) #sel    <- grep(pattern = "[456789ab]", ids$tenure)
 name   <- ids$name[sel]
 party  <- ids$party[sel]
 color  <- ids$color[sel]
@@ -93,8 +93,8 @@ column <- ids$column[sel]
 vot <-read.csv("v456789ab.csv",  header=TRUE)
 #
 # subset to chosen periods
-sel.r <- which(vot$term %in% 4:8)
-drop.c <- ids$column[grep(pattern = "[45678]", ids$tenure)] # column names not in terms 4-8
+sel.r <- which(vot$term %in% 4:5)
+drop.c <- ids$column[grep(pattern = "[45]", ids$tenure)] # column names not in terms selected
 drop.c <- setdiff(ids$column, drop.c)
 drop.c <- which(colnames(vot) %in% drop.c)
 if (length(drop.c)>0) vot <- vot[sel.r, -drop.c]
@@ -141,8 +141,8 @@ model1Dj.irt <- function() {
 		signal[i] ~ dnorm(0, 0.1);
 		difficulty[i] ~ dnorm(0, 0.25);
 	}
-	for (p in 1:4){
-		partyPos[p] <- mean (x[party[p]]);
+	for (p in 1:4){ # need 5 when morena also considered
+		partyPos[p] <- median (x[party[p]]); # 4mar21: was mean, changed to median
 	}
 }
 #end model##############
@@ -155,7 +155,7 @@ final  <- item+15; final[final>I] <- I
 item.date <- vot$date #ymd(vot$yr*10000+vot$mo*100+vot$dy)
 S <- length(inicio)
 
-# Added March 19: We need a matrix showing whether each councilor is actually in IFE the moment the vote takes place
+# We need a matrix showing whether each councilor is actually in IFE the moment the vote takes place
 IsCouncilor <- matrix (1, ncol=J, nrow=S)
 IsCouncilor[ vot$term < 4 | vot$term >  4,1 ] <- NA  #      ugalde
 IsCouncilor[ vot$term < 4 | vot$term >  6,2 ] <- NA  #        albo
@@ -166,12 +166,12 @@ IsCouncilor[ vot$term < 4 | vot$term >  5,6 ] <- NA  #      latapi
 IsCouncilor[ vot$term < 4 | vot$term >  6,7 ] <- NA  # lopezflores
 IsCouncilor[ vot$term < 4 | vot$term >  5,8 ] <- NA  #     morales
 IsCouncilor[ vot$term < 4 |(vot$term >  7 & vot$term!=12),9 ] <- NA  # sanchez
-IsCouncilor[ vot$term < 6 | vot$term > 10,10] <- NA  #      valdes
-IsCouncilor[ vot$term < 6 | vot$term > 14,11] <- NA  #       banos
-IsCouncilor[ vot$term < 6 | vot$term > 14,12] <- NA  #       nacif
-IsCouncilor[ vot$term < 7 | vot$term > 10,13] <- NA  #    elizondo
-IsCouncilor[ vot$term < 7 | vot$term > 10,14] <- NA  #    figueroa
-IsCouncilor[ vot$term < 7 | vot$term > 10,15] <- NA  #    guerrero
+#IsCouncilor[ vot$term < 6 | vot$term > 10,10] <- NA  #      valdes
+#IsCouncilor[ vot$term < 6 | vot$term > 14,11] <- NA  #       banos
+#IsCouncilor[ vot$term < 6 | vot$term > 14,12] <- NA  #       nacif
+#IsCouncilor[ vot$term < 7 | vot$term > 10,13] <- NA  #    elizondo
+#IsCouncilor[ vot$term < 7 | vot$term > 10,14] <- NA  #    figueroa
+#IsCouncilor[ vot$term < 7 | vot$term > 10,15] <- NA  #    guerrero
 #IsCouncilor[ vot$term < 9 | vot$term > 15,16] <- NA  #     cordova 
 #IsCouncilor[ vot$term < 9 | vot$term >  9,17] <- NA  #  garcia rmz
 #IsCouncilor[ vot$term < 9 | vot$term > 11,18] <- NA  #      marvan
@@ -182,32 +182,23 @@ IsCouncilor[ vot$term < 7 | vot$term > 10,15] <- NA  #    guerrero
 
 #No agregué nuevos priors para los nuevos consejeros.  Siguen comenzando con el prior del partido que los postuló, con dos adendos: 1) La posición del partido es la mediana de sus integrantes, no la media, con el objeto de descontar extremistas.  2) La precisión del prior para los nuevos consejeros es un poco más alta: 10, en lugar de 4.
 
-## # ESTO VIENE DE ANTES Y TIENE IMPRECISIONES
-## which(vot$date==ymd("20080215"))
-## [1] 209 210 211 212 213 214 215 216 217
-## Salen Ugalde (PRI), Latapi (PAN), y Morales (PRI)
-## Entran Valdes (PRD), Baños (PRI), Nacif (PAN)
-## which (vot$date==ymd("20080829"))
-## [1] 262 263 264 265
-## Salen Albo (PAN), Glez. Luna (PAN), Lopez Flores (PRI)
-## Entran Elizondo (PAN), Figueroa (PRD), Guerrero (PRI)
-## > which (vot$date==20101022)
-## [1] 721 722 723 724 725 726 727 728 729 730 731
-## Salen Andrade (PRI), Alcantar (VERDE), Sanchez (PAN)
-## Entran Marvan (PAN), Cordova (PRD), Garcia Ramirez (PRI)
-
-# Initial ideal points to anchor ideological space
-#                 u  a  a  a  g  l  l  m  s  v  b  n  e  f  g  c  g  m  
-#                 g  l  n  l  l  a  p  o  a  a  a  a  l  i  u  o  a  a  
-#                 a  b  d  c  z  t  z  r  n  l  ñ  c  i  g  e  r  r  r  
-x.location <-   c(1, 0, 0, 2,-2, 0, 0, 2,-2, 0, 0, 0, 0, 0, 0, 0, 0, 0)[1:J] # 1:J restrincts to members in estimation
-x.precision  <- c(4, 1, 1, 4, 4, 1, 1, 4, 4, 0, 0, 0, 0, 0, 0, 0, 0, 0)[1:J]
-window.results <- list () ## ADD SESSION'S RESULTS TO OBJECT HOLDING ALL RESULTS
+# Round 1 ideal points to anchor ideological space
+# (later entrants at party mean)
+#                 u  a  a  a  g  l  l  m  s  v  b  n  e  f  g  c  g  m  a  f  g  m  r  s  s  
+#                 g  l  n  l  l  a  p  o  a  a  a  a  l  i  u  o  a  a  n  a  a  u  u  n  a
+#                 a  b  d  c  z  t  z  r  n  l  ñ  c  i  g  e  r  r  r  d  v  l  r  i  m  n
+#                 l  o  r  a  l  a  f  a  c  d  o  i  z  u  r  d  c  v  r  e  i  a  z  a  t
+x.location <-   c(1, 0, 0, 2,-2, 0, 0, 2,-2, 0, 2,-2, 0, 0, 0, 0, 2,-2, 0, 0, 0, 0, 0, 0, 0)[1:J] # 1:J = members in estimation
+x.precision  <- c(4, 1, 1, 4, 4, 1, 1, 4, 4, 1, 4, 4, 1, 1, 1, 1, 4, 4, 1, 1, 1, 1, 1, 1, 1)[1:J]
+window.results <- list () ## WILL ADD SESSION'S RESULTS TO OBJECT HOLDING ALL RESULTS
 partyPlacement <- rep (NA,J)
 x.mean <- numeric ()
 x.tau  <- numeric ()
 
+
 s <- 174 ## LA PRIMERA VENTANA EN QUE ENTRAN VALDÉS NACIF Y BAÑOS... SE ROMPE EL CÓDIGO. COMPARARLO CON EL DE WOLDENBERG BONICA QUE SI FUNCIONA
+## Save overall totals for use later (I J redefined to session totals in next loop)
+J.all <- J; I.all <- I
 for (s in 1:S){        # <= BIG FUNCTION STARTS (loop over 1081 windows)
 
 	# Added March 19: We include councilors (and their party IDs) only if they were actual councilors for at least one vote
@@ -217,18 +208,12 @@ for (s in 1:S){        # <= BIG FUNCTION STARTS (loop over 1081 windows)
 	councilors   <- name [councilor.in==FALSE]
 	sponsors     <- party[councilor.in==FALSE]
 
-	for (c in 1:15){
+	for (c in 1:J.all){
 		x.mean[c] <- ifelse (!is.na(x.location[c]), x.location[c], partyPlacement[sponsors[c]])
 		x.tau[c]  <- ifelse (!is.na(x.precision[c]), x.precision[c], 4)
-#		x.mean[c] <- ifelse (councilor.in[c]==TRUE, NA, ifelse (!is.na(x.location[c]), x.location[c], ifelse (parties[c]==1, 2, ifelse (parties[c]==3, -2, -1))))
-#		x.tau[c]  <- ifelse (councilor.in[c]==TRUE, NA, ifelse (!is.na(x.precision[c]), x.precision[c], 4))
 	}
 
-#	x.mean <- as.numeric (na.omit (x.mean))
-#	x.tau  <- as.numeric (na.omit (x.tau))
-    
-	v <- vs[inicio[s]:final[s], 1:15][, councilor.in==FALSE]; ## EXTRACT 30 VOTES EACH TIME
-#21-02#	v[v==0] <- NA; v[v==-1] <- 0    ## Version probit requiere 0s y 1s
+	v <- vs[inicio[s]:final[s], 1:J.all][, councilor.in==FALSE]; ## EXTRACT 30 VOTES EACH TIME
 	v <- t(v)                       ## ROLL CALLS NEED ITEMS IN COLUMNS, LEGISLATORS IN ROWS
 	J <- nrow(v); I <- ncol(v)      ## SESSION TOTALS
 
@@ -252,10 +237,10 @@ for (s in 1:S){        # <= BIG FUNCTION STARTS (loop over 1081 windows)
 #            mclapply(1:2, function(x) {
 #		model.jags.re <- try(
                                  jags (data=ife.data, inits=ife.inits, ife.parameters,
-#								   model.file=model1Dj.irt, n.chains=1,
-								   model.file=model1Dj.irt, n.chains=2,
-#								   n.iter=600, n.burnin=300, n.thin=30)
-								   n.iter=40000, n.burnin=30000, n.thin=100)
+								   model.file=model1Dj.irt, n.chains=1,
+#								   model.file=model1Dj.irt, n.chains=2,
+								   n.iter=600, n.burnin=300, n.thin=30)
+#								   n.iter=40000, n.burnin=30000, n.thin=100)
 #		)
 #		if(inherits(model.jags.re,"try-error")) {return()}
 #		return(model.jags.re)
@@ -267,33 +252,34 @@ for (s in 1:S){        # <= BIG FUNCTION STARTS (loop over 1081 windows)
 #	GHconv <- gelman.diag(mcmc.list(list (as.mcmc (results[[2]]$BUGSoutput$sims.list$x), as.mcmc (results[[1]]$BUGSoutput$sims.list$x))))[[2]]
 #	print (cat ("Gelman-Rubin R-hat:", GHconv, "\n"))
 
-	# ADD COUNCILOR NAMES TO RESULTS OBJECT
+	# ADD COUNCILOR NAMES AND VOTE INFO TO RESULTS OBJECT
         results <- c(results, councilors=list(councilors)); # should be faster than results[[length(results)+1]] <- councilors;
         results <- c(results, folio.date=list(vot[s,c("folio","dy","mo","yr")])); # add vote on which window is centered
         window.results <- c(window.results, list(results)); # should be faster than window.results[length(window.results)+1] <- list(results) ## ADD SESSION'S RESULTS TO OBJECT HOLDING ALL RESULTS
 #        results[[4]] <- GHconv; rm (GHconv)
 
 	# Update location of ideal point at time s, to be used as location prior at time s+1
-	x.location  <- rep (NA, 15)
-	x.precision <- rep (100, 15)
+	x.location  <- rep (NA, J.all)
+	x.precision <- rep (100, J.all)
 #	locs <- apply( rbind (results[[1]]$BUGSoutput$sims.list$x, results[[2]]$BUGSoutput$sims.list$x), 2, median)
 #	partyPlacement <- apply( rbind (results[[1]]$BUGSoutput$sims.list$partyPos, results[[2]]$BUGSoutput$sims.list$partyPos), 2, median)
 	locs <- apply( results$BUGSoutput$sims.list$x, 2, median)
 	partyPlacement <- apply( results$BUGSoutput$sims.list$partyPos, 2, median)
-	for (n in 1:15){
-		if (length (which (councilors==name[n]))==0) {
-			x.location[n] <- NA
-			x.precision[n] <- NA
+	for (n in 1:J.all){
+		if (length( which(councilors==name[n]) )==0) {               # if councilor not member current round
+			x.location[n] <- NA                                  # then prior for next round set to NA
+			x.precision[n] <- NA                                 # (and line above sets it to party placement)
 		}
-		else { x.location[n] <-  locs[which (councilors==name[n])] }
+		else { x.location[n] <-  locs[which (councilors==name[n])] } # councilor's prior for next round is current x 
 	}
 	# Precision prior is always constant at 100, implying standard deviation = sqrt (1/100) = 0.1
 }  # <---   END OF LOOP OVER WINDOWS
+## Restore overall totals
+J <- J.all; I <- I.all; rm(J.all, I.all)
 
 # rename object with posterior sims
-summary(window.results[[1669]])
-window.results.45678 <- window.results[-(1:835)]
-ls()
+summary(window.results[[166]]$folio.date)
+window.results.45678 <- window.results
 rm(window.results)
 
 # clean
@@ -304,8 +290,8 @@ rm(x.location, x.mean, x.precision, x.tau, item, results, item.date)
 rm(color, column, locs, name, party, partyPlacement)
 
 # save
-summary(window.results.45678) # 9 members
-summary(window.results[[232]]) # 11 members, overlap
+summary(window.results.45678) # 15 members
+#summary(window.results[[232]]) # 11 members, overlap
 save.image(file = "posterior-samples/ugal45678-window-results-compress.RData", compress = "xz")
 #save(window.results.23, file = "posterior-samples/wold23-window-results-compress.RData")
 x

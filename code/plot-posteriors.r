@@ -7,20 +7,23 @@ setwd(workdir)
 
 # load posterior sims
 load(file = "posterior-samples/wold23-window-results-compress.RData") # woldenberg
+load(file = "posterior-samples/ugal45678-window-results-compress.RData") # ugalde 4-8
 ls()
 x
 
 # determine which posterior draws to plot
 window.results <- window.results.23
+window.results <- window.results.45678
 
 # how many members will be plotted
 J <- 11
+J <- 15
 
 ideal.points <- as.data.frame(matrix (NA, nrow=S, ncol=J))
-colnames(ideal.points) <- ids$column
-name <- ids$name
-column <- ids$column
-color <- ids$color
+colnames(ideal.points) <- ids$column[1:J]
+name <- ids$name[1:J]
+column <- ids$column[1:J]
+color <- ids$color[1:J]
 for (i in 1:S){
 #	i <- 290 # debug
 	sel <- which(name %in% window.results[[i]]$councilors) # select columns with member councilors in window sessions
@@ -33,6 +36,7 @@ for (i in 1:S){
 
 
 tit <- "Woldenberg I and II, Bonica method"
+tit <- "Ugalde IV-VIII, Bonica method"
 plot(c(1:S), ideal.points[1:S,1], main=tit, ylim=c(-4,4), type="n", xlab="", ylab="Ideal points")
 #abline (h=summary (EstVarCases)[[1]][,1], lty=3, lwd=2, col=colors)
 for (j in 1:J){
