@@ -174,7 +174,7 @@ IsCouncilor[ vot$term < 7 | vot$term > 10,14] <- NA  #    figueroa
 IsCouncilor[ vot$term < 7 | vot$term > 10,15] <- NA  #    guerrero
 #IsCouncilor[ vot$term < 9 | vot$term > 15,16] <- NA  #     cordova 
 #IsCouncilor[ vot$term < 9 | vot$term >  9,17] <- NA  #  garcia rmz
-#IsCouncilor[ vot$term < 9 | vot$term > 13,18] <- NA  #      marvan
+#IsCouncilor[ vot$term < 9 | vot$term > 11,18] <- NA  #      marvan
 
 #Da la impresión de que alrededor del voto 900 se invierte la polaridad del espacio. Para entonces los priors semi-informativos que anclaron el norte y el sur han quedado muy atrás. Quizás esto pueda arreglarse dándole a córdova un prior centrado en -2. O quizás sea posible recentrar a Baños (supongo qu es quien sube cerca del 800 y baja abruptamente) en +2 o a Figueroa (el extremo sur que se vuelve norte) en -2 poco después de la entrada de Córdova, García Ramírez y Marván.
 
@@ -215,7 +215,7 @@ for (s in 1:S){        # <= BIG FUNCTION STARTS (loop over 1081 windows)
 	# 9 (for most votes) or 11 (when there is some overlap: two councilors are leaving , two are coming in)
 	councilor.in <- apply (IsCouncilor[inicio[s]:final[s],], 2, invalid)
 	councilors   <- name [councilor.in==FALSE]
-	parties      <- party[councilor.in==FALSE]
+	sponsors     <- party[councilor.in==FALSE]
 
 	for (c in 1:15){
 		x.mean[c] <- ifelse (!is.na(x.location[c]), x.location[c], partyPlacement[sponsors[c]])
@@ -255,7 +255,7 @@ for (s in 1:S){        # <= BIG FUNCTION STARTS (loop over 1081 windows)
 #								   model.file=model1Dj.irt, n.chains=1,
 								   model.file=model1Dj.irt, n.chains=2,
 #								   n.iter=600, n.burnin=300, n.thin=30)
-								   n.iter=50000, n.burnin=30000, n.thin=200)
+								   n.iter=40000, n.burnin=30000, n.thin=100)
 #		)
 #		if(inherits(model.jags.re,"try-error")) {return()}
 #		return(model.jags.re)
