@@ -221,6 +221,7 @@ for (s in 1:S){        # <= BIG FUNCTION STARTS (loop over 552 windows)
 
 	# ADD COUNCILOR NAMES TO RESULTS OBJECT
         results <- c(results, councilors=list(councilors)); # should be faster than results[[length(results)+1]] <- councilors;
+        results <- c(results, folio.date=list(vot[s,c("folio","dy","mo","yr")])); # add vote on which window is centered
         window.results <- c(window.results, list(results)); # should be faster than window.results[length(window.results)+1] <- list(results) ## ADD SESSION'S RESULTS TO OBJECT HOLDING ALL RESULTS
 
 	# Update location of ideal point at time s, to be used as location prior at time s+1

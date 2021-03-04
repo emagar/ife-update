@@ -269,6 +269,7 @@ for (s in 1:S){        # <= BIG FUNCTION STARTS (loop over 1081 windows)
 
 	# ADD COUNCILOR NAMES TO RESULTS OBJECT
         results <- c(results, councilors=list(councilors)); # should be faster than results[[length(results)+1]] <- councilors;
+        results <- c(results, folio.date=list(vot[s,c("folio","dy","mo","yr")])); # add vote on which window is centered
         window.results <- c(window.results, list(results)); # should be faster than window.results[length(window.results)+1] <- list(results) ## ADD SESSION'S RESULTS TO OBJECT HOLDING ALL RESULTS
 #        results[[4]] <- GHconv; rm (GHconv)
 
@@ -290,9 +291,25 @@ for (s in 1:S){        # <= BIG FUNCTION STARTS (loop over 1081 windows)
 }  # <---   END OF LOOP OVER WINDOWS
 
 # rename object with posterior sims
-window.results.45678 <- window.results
+summary(window.results[[1669]])
+window.results.45678 <- window.results[-(1:835)]
 ls()
 rm(window.results)
+
+# clean
+ls()
+rm(c, s, n, i, v, sel, ife.inits, ife.parameters, ife.data)
+rm(councilors, sponsors, inicio, final, councilor.in)
+rm(x.location, x.mean, x.precision, x.tau, item, results, item.date)
+rm(color, column, locs, name, party, partyPlacement)
+
+# save
+summary(window.results.45678) # 9 members
+summary(window.results[[232]]) # 11 members, overlap
+save.image(file = "posterior-samples/ugal45678-window-results-compress.RData", compress = "xz")
+#save(window.results.23, file = "posterior-samples/wold23-window-results-compress.RData")
+x
+
 
 
 # Save window.results, containing all chains from all runs
