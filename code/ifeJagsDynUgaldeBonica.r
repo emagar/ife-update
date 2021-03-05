@@ -76,7 +76,7 @@ ids <- within(ids, color <- ifelse (pty=="PRI", "red",
                             ifelse(pty=="PVEM", "green", "orangered4")))))
 
 # select terms 4-8, more or less
-sel    <- grep(pattern = "[45]", ids$tenure) #sel    <- grep(pattern = "[456789ab]", ids$tenure)
+sel    <- grep(pattern = "[456]", ids$tenure) #sel    <- grep(pattern = "[456789ab]", ids$tenure)
 name   <- ids$name[sel]
 party  <- ids$party[sel]
 color  <- ids$color[sel]
@@ -93,14 +93,14 @@ column <- ids$column[sel]
 vot <-read.csv("v456789ab.csv",  header=TRUE)
 #
 # subset to chosen periods
-sel.r <- which(vot$term %in% 4:5)
-drop.c <- ids$column[grep(pattern = "[45]", ids$tenure)] # column names not in terms selected
+sel.r <- which(vot$term %in% 4:6)
+drop.c <- ids$column[grep(pattern = "[456]", ids$tenure)] # column names not in terms selected
 drop.c <- setdiff(ids$column, drop.c)
 drop.c <- which(colnames(vot) %in% drop.c)
 if (length(drop.c)>0) vot <- vot[sel.r, -drop.c]
 colnames(vot)
 # total members
-J <- length(name)
+J <- length(name); J
 
 ########################
 ## recode vote values ##
@@ -119,6 +119,10 @@ table(factor(vot$dunan, labels = c("contested","not")), useNA = "ifany")
 sel <- which(vot$dunan==1)
 vot <- vot[-sel,] # drop uncontested votes
 vs  <- vs [-sel,] # drop uncontested votes
+
+# inspect indices
+table(vot$term)
+x
 
 #############################
 ###     UGALDE ET AL      ###
@@ -142,7 +146,7 @@ model1Dj.irt <- function() {
 		difficulty[i] ~ dnorm(0, 0.25);
 	}
 	for (p in 1:4){ # need 5 when morena also considered
-		partyPos[p] <- median (x[party[p]]); # 4mar21: was mean, changed to median
+		partyPos[p] <- mean (x[party[p]]); # 4mar21: should be median, unknown function in bugs?
 	}
 }
 #end model##############
@@ -166,12 +170,12 @@ IsCouncilor[ vot$term < 4 | vot$term >  5,6 ] <- NA  #      latapi
 IsCouncilor[ vot$term < 4 | vot$term >  6,7 ] <- NA  # lopezflores
 IsCouncilor[ vot$term < 4 | vot$term >  5,8 ] <- NA  #     morales
 IsCouncilor[ vot$term < 4 |(vot$term >  7 & vot$term!=12),9 ] <- NA  # sanchez
-#IsCouncilor[ vot$term < 6 | vot$term > 10,10] <- NA  #      valdes
-#IsCouncilor[ vot$term < 6 | vot$term > 14,11] <- NA  #       banos
-#IsCouncilor[ vot$term < 6 | vot$term > 14,12] <- NA  #       nacif
-#IsCouncilor[ vot$term < 7 | vot$term > 10,13] <- NA  #    elizondo
-#IsCouncilor[ vot$term < 7 | vot$term > 10,14] <- NA  #    figueroa
-#IsCouncilor[ vot$term < 7 | vot$term > 10,15] <- NA  #    guerrero
+IsCouncilor[ vot$term < 6 | vot$term > 10,10] <- NA  #      valdes
+IsCouncilor[ vot$term < 6 | vot$term > 14,11] <- NA  #       banos
+IsCouncilor[ vot$term < 6 | vot$term > 14,12] <- NA  #       nacif
+IsCouncilor[ vot$term < 7 | vot$term > 10,13] <- NA  #    elizondo
+IsCouncilor[ vot$term < 7 | vot$term > 10,14] <- NA  #    figueroa
+IsCouncilor[ vot$term < 7 | vot$term > 10,15] <- NA  #    guerrero
 #IsCouncilor[ vot$term < 9 | vot$term > 15,16] <- NA  #     cordova 
 #IsCouncilor[ vot$term < 9 | vot$term >  9,17] <- NA  #  garcia rmz
 #IsCouncilor[ vot$term < 9 | vot$term > 11,18] <- NA  #      marvan
@@ -197,7 +201,7 @@ x.tau  <- numeric ()
 
 
 s <- 174 ## LA PRIMERA VENTANA EN QUE ENTRAN VALDÉS NACIF Y BAÑOS... SE ROMPE EL CÓDIGO. COMPARARLO CON EL DE WOLDENBERG BONICA QUE SI FUNCIONA
-## Save overall totals for use later (I J redefined to session totals in next loop)
+## Save overall totals for use later (I J redefined to window s totals in next loop)
 J.all <- J; I.all <- I
 for (s in 1:S){        # <= BIG FUNCTION STARTS (loop over 1081 windows)
 
@@ -239,8 +243,8 @@ for (s in 1:S){        # <= BIG FUNCTION STARTS (loop over 1081 windows)
                                  jags (data=ife.data, inits=ife.inits, ife.parameters,
 								   model.file=model1Dj.irt, n.chains=1,
 #								   model.file=model1Dj.irt, n.chains=2,
-								   n.iter=600, n.burnin=300, n.thin=30)
-#								   n.iter=40000, n.burnin=30000, n.thin=100)
+#								   n.iter=600, n.burnin=300, n.thin=30)
+								   n.iter=20000, n.burnin=10000, n.thin=100)
 #		)
 #		if(inherits(model.jags.re,"try-error")) {return()}
 #		return(model.jags.re)
@@ -278,21 +282,21 @@ for (s in 1:S){        # <= BIG FUNCTION STARTS (loop over 1081 windows)
 J <- J.all; I <- I.all; rm(J.all, I.all)
 
 # rename object with posterior sims
-summary(window.results[[166]]$folio.date)
-window.results.45678 <- window.results
+summary(window.results[[190]])
+window.results.4567 <- window.results
 rm(window.results)
 
 # clean
 ls()
-rm(c, s, n, i, v, sel, ife.inits, ife.parameters, ife.data)
+rm(c, s, n, v, sel, ife.inits, ife.parameters, ife.data)
 rm(councilors, sponsors, inicio, final, councilor.in)
 rm(x.location, x.mean, x.precision, x.tau, item, results, item.date)
 rm(color, column, locs, name, party, partyPlacement)
 
 # save
-summary(window.results.45678) # 15 members
+summary(window.results.4567) # 15 members
 #summary(window.results[[232]]) # 11 members, overlap
-save.image(file = "posterior-samples/ugal45678-window-results-compress.RData", compress = "xz")
+save.image(file = "posterior-samples/ugal4567-window-results-compress.RData", compress = "xz")
 #save(window.results.23, file = "posterior-samples/wold23-window-results-compress.RData")
 x
 

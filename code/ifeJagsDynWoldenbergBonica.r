@@ -41,28 +41,6 @@ ids <- matrix(c("Woldenberg", "woldenberg", "PRI", 23,
               ncol = 4,
               byrow = TRUE)
 #
-#
-#
-#
-#
-#
-#
-#
-#
-#
-#
-#
-#
-#
-#
-#
-#
-#
-#
-#
-#
-#
-#
 ids <- as.data.frame(ids, stringsAsFactors = FALSE)
 colnames(ids) <- c("name", "column", "pty", "tenure")                                           
 ids$tenure <- as.numeric(ids$tenure)
@@ -142,7 +120,7 @@ model1Dj.irt <- function() {
 		difficulty[i] ~ dnorm(0, 0.25);
 	}
 	for (p in 1:3){
-		partyPos[p] <- median (x[party[p]]); # 4mar21: was mean, changed to median
+		partyPos[p] <- mean (x[party[p]]); # 4mar21: should be median, unknown function in bugs?
 	}
 }
 #end model##############
@@ -169,7 +147,7 @@ x.mean <- numeric ()
 x.tau  <- numeric ()
 
 s <- 1
-## Save overall totals for use later (I J redefined to session totals in next loop)
+## Save overall totals for use later (I J redefined to window s totals in next loop)
 J.all <- J; I.all <- I
 for (s in 1:S){        # <= BIG FUNCTION STARTS (loop over 552 windows)
 
@@ -209,10 +187,10 @@ for (s in 1:S){        # <= BIG FUNCTION STARTS (loop over 552 windows)
 #            mclapply(1:2, function(x) {
 #		model.jags.re <- try(
                                  jags (data=ife.data, inits=ife.inits, ife.parameters,
-#								   model.file=model1Dj.irt, n.chains=1,
-								   model.file=model1Dj.irt, n.chains=2,
+								   model.file=model1Dj.irt, n.chains=1,
+#								   model.file=model1Dj.irt, n.chains=2,
 #								   n.iter=600, n.burnin=300, n.thin=30)
-								   n.iter=50000, n.burnin=30000, n.thin=200)
+								   n.iter=20000, n.burnin=10000, n.thin=100)
 #		)
 #		if(inherits(model.jags.re,"try-error")) {return()}
 #		return(model.jags.re)
