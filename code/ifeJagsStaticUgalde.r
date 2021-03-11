@@ -208,11 +208,13 @@ term.results <- list () ## WILL ADD TERM'S RESULTS TO OBJECT HOLDING ALL RESULTS
 partyPlacement <- rep (NA,J)
 x.mean <- numeric ()
 x.tau  <- numeric ()
-
+#
+tees <- 6:7
+T <- length(tees)
 
 ## Save overall totals for use later (I J redefined to window s totals in next loop)
 J.all <- J; I.all <- I
-for (t in 6:7){        # <= BIG FUNCTION STARTS (loop over terms with constant membership)
+for (t in tees){        # <= BIG FUNCTION STARTS (loop over terms with constant membership)
 #
 	# Added March 19: We include councilors (and their party IDs) only if they were actual councilors for at least one vote
 	# This means that the length of estimated ideal points is either
@@ -254,10 +256,10 @@ for (t in 6:7){        # <= BIG FUNCTION STARTS (loop over terms with constant m
 #            mclapply(1:2, function(x) {
 #		model.jags.re <- try(
                                  jags (data=ife.data, inits=ife.inits, ife.parameters,
-					model.file=model1Dj.irt, n.chains=1,
-#					model.file=model1Dj.irt, n.chains=2,
-					n.iter=500, n.burnin=250, n.thin=25)
-#					n.iter=10000, n.burnin=5000, n.thin=50)
+#					model.file=model1Dj.irt, n.chains=1,
+					model.file=model1Dj.irt, n.chains=2,
+#					n.iter=500, n.burnin=250, n.thin=25)
+					n.iter=20000, n.burnin=10000, n.thin=100)
 #		)
 #		if(inherits(model.jags.re,"try-error")) {return()}
 #		return(model.jags.re)
@@ -296,14 +298,30 @@ for (t in 6:7){        # <= BIG FUNCTION STARTS (loop over terms with constant m
 J <- J.all; I <- I.all; rm(J.all, I.all)
 
 # plot results
-tit <- "Terms 67 (Valdés 2007-2010), Bonica method"
-source("../code/plot-posteriors.r")
-x
+ideal.points <- as.data.frame(matrix (NA, nrow=T, ncol=J))
+colnames(ideal.points) <- ids$column[sel.members]
+name <- ids$name[sel.members]
+column <- ids$column[sel.members]
+#color <- ids$color[sel.members] # party colors
+library(RColorBrewer)
+color <- brewer.pal(n = J, name = "Paired")
+for (i in 1:T){
+#	i <- 2 # debug
+	sel <- which(name %in% term.results[[i]]$councilors) # select columns with member councilors in window sessions
+#	ideal.points[i,sel] <- apply (rbind (window.results[[i]][[1]]$BUGSoutput$sims.list$x, window.results[[i]][[2]]$BUGSoutput$sims.list$x), 2, median) # merge both chains, report median
+	ideal.points[i,sel] <- apply (term.results[[i]]$BUGSoutput$sims.list$x, 2, median) # merge both chains, report median
+}
+sel <- which(!is.na(ideal.points[1,]))
+plot(rep(6,J)[sel], ideal.points[1,sel], col = color[sel], pch = 19)
+sel <- which(!is.na(ideal.points[2,]))
+points(rep(7,J)[sel], ideal.points[2,sel], col = color[sel], pch = 19)
+
+
 
 # rename object with posterior sims
-summary(window.results[[190]])
-window.results.67 <- window.results
-rm(window.results)
+summary(term.results[[1]])
+term.results.67 <- term.results
+rm(term.results)
 
 # clean
 ls()
@@ -313,9 +331,9 @@ rm(x.location, x.mean, x.precision, x.tau, item, results, item.date)
 rm(color, column, locs, name, party, partyPlacement)
 
 # save
-summary(window.results.67)
+summary(term.results.67)
 #summary(window.results[[232]]) # 11 members, overlap
-save.image(file = "posterior-samples/vald67-window-results-compress.RData", compress = "xz")
+save.image(file = "posterior-samples/vald67-term-results-compress.RData", compress = "xz")
 #save(window.results.23, file = "posterior-samples/wold23-window-results-compress.RData")
 x
 
