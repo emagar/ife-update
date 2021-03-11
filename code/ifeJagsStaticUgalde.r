@@ -203,7 +203,8 @@ x.precision  <- c(4, 1, 1, 4, 4, 4, 1, 4, 4, 1, 4, 4, 4, 1, 4, 4, 4, 4, 1, 1, 1,
 x.prior.location <-  x.location
 x.prior.precision <- x.precision
 #
-window.results <- list () ## WILL ADD SESSION'S RESULTS TO OBJECT HOLDING ALL RESULTS
+term <- vot$term
+term.results <- list () ## WILL ADD TERM'S RESULTS TO OBJECT HOLDING ALL RESULTS
 partyPlacement <- rep (NA,J)
 x.mean <- numeric ()
 x.tau  <- numeric ()
@@ -211,25 +212,25 @@ x.tau  <- numeric ()
 
 ## Save overall totals for use later (I J redefined to window s totals in next loop)
 J.all <- J; I.all <- I
-for (s in 1:S){        # <= BIG FUNCTION STARTS (loop over 1081 windows)
+for (t in 6:7){        # <= BIG FUNCTION STARTS (loop over terms with constant membership)
 #
 	# Added March 19: We include councilors (and their party IDs) only if they were actual councilors for at least one vote
 	# This means that the length of estimated ideal points is either
 	# 9 (for most votes) or 11 (when there is some overlap: two councilors are leaving , two are coming in)
-	councilor.in <- apply (IsCouncilor[inicio[s]:final[s],], 2, invalid)
+	councilor.in <- apply (IsCouncilor[term==t,], 2, invalid)
 	councilors   <- name [councilor.in==FALSE]
 	sponsors     <- party[councilor.in==FALSE]
 #
 	for (c in 1:J.all){
 # 5mar21: this uses partyPlacement for new entrants
-		x.mean[c] <- ifelse (!is.na(x.location[c]),  x.location[c],  partyPlacement[sponsors[c]])
+		x.mean[c] <- ifelse (!is.na(x.location [c]), x.location [c],  partyPlacement[sponsors[c]])
 		x.tau[c]  <- ifelse (!is.na(x.precision[c]), x.precision[c], 4)
 # 5mar21: this uses fixed x0 prior for new entrants
 #		x.mean[c] <- ifelse (!is.na(x.location [c]), x.location [c], x.prior.location [c])
 #		x.tau[c]  <- ifelse (!is.na(x.precision[c]), x.precision[c], x.prior.precision[c])
 	}
 #
-	v <- vs[inicio[s]:final[s], 1:J.all][, councilor.in==FALSE]; ## EXTRACT 30 VOTES EACH TIME
+	v <- vs[term==t, 1:J.all][, councilor.in==FALSE]; ## EXTRACT ALL VOTES FROM TERM t
 	v <- t(v)                       ## ROLL CALLS NEED ITEMS IN COLUMNS, LEGISLATORS IN ROWS
 	J <- nrow(v); I <- ncol(v)      ## SESSION TOTALS
 #
@@ -243,7 +244,7 @@ for (s in 1:S){        # <= BIG FUNCTION STARTS (loop over 1081 windows)
 	}
 	ife.parameters <- c("x", "signal", "difficulty", "partyPos")
 #
-	print(cat("Session no.", s, "of", S, ", with", I, "votes \n"))
+	print(cat("Term no.", t,", with", I, "votes \n"))
 #
 	#full JAGS run
 	start.time <- proc.time()
@@ -255,8 +256,8 @@ for (s in 1:S){        # <= BIG FUNCTION STARTS (loop over 1081 windows)
                                  jags (data=ife.data, inits=ife.inits, ife.parameters,
 					model.file=model1Dj.irt, n.chains=1,
 #					model.file=model1Dj.irt, n.chains=2,
-#					n.iter=600, n.burnin=300, n.thin=30)
-					n.iter=10000, n.burnin=5000, n.thin=50)
+					n.iter=500, n.burnin=250, n.thin=25)
+#					n.iter=10000, n.burnin=5000, n.thin=50)
 #		)
 #		if(inherits(model.jags.re,"try-error")) {return()}
 #		return(model.jags.re)
@@ -270,8 +271,8 @@ for (s in 1:S){        # <= BIG FUNCTION STARTS (loop over 1081 windows)
 #
 	# ADD COUNCILOR NAMES AND VOTE INFO TO RESULTS OBJECT
         results <- c(results, councilors=list(councilors)); # should be faster than results[[length(results)+1]] <- councilors;
-        results <- c(results, folio.date=list(vot[s,c("folio","dy","mo","yr")])); # add vote on which window is centered
-        window.results <- c(window.results, list(results)); # should be faster than window.results[length(window.results)+1] <- list(results) ## ADD SESSION'S RESULTS TO OBJECT HOLDING ALL RESULTS
+        results <- c(results, term=t); # add term
+        term.results <- c(term.results, list(results)); ## ADD TERM'S RESULTS TO OBJECT HOLDING ALL RESULTS
 #        results[[4]] <- GHconv; rm (GHconv)
 #
 	# Update location of ideal point at time s, to be used as location prior at time s+1
