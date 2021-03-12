@@ -76,6 +76,9 @@ ids <- within(ids, color <- ifelse (pty=="PRI", "red",
                             ifelse(pty=="PVEM", "green", "orangered4")))))
 
 # select terms 4-8, more or less
+tees <- 6:7
+T <- length(tees)
+
 sel    <- grep(pattern = "[67]", ids$tenure) #sel    <- grep(pattern = "[456789ab]", ids$tenure)
 name   <- ids$name[sel]
 party  <- ids$party[sel]
@@ -93,8 +96,8 @@ column <- ids$column[sel]
 vot <-read.csv("v456789ab.csv",  header=TRUE)
 #
 # subset to chosen periods
-sel.r <- which(vot$term %in% 6:7)
-drop.c <- ids$column[grep(pattern = "[67]", ids$tenure)] # column names not in terms selected
+sel.r <- which(vot$term %in% tees)
+drop.c <- ids$column[sel] # column names not in terms selected
 drop.c <- setdiff(ids$column, drop.c)
 drop.c <- which(colnames(vot) %in% drop.c)
 if (length(drop.c)>0) vot <- vot[sel.r, -drop.c]
@@ -148,17 +151,17 @@ model1Dj.irt <- function() {
 }
 #end model##############
 
-# Center on vote (for date), extend windows to both sides
 I <- nrow (vot)
-item <- 1:I  # Need to define I before
-inicio <- item-15; inicio[inicio<0] <- 1
-final  <- item+15; final[final>I] <- I
-item.date <- vot$date #ymd(vot$yr*10000+vot$mo*100+vot$dy)
-S <- length(inicio)
+## # Center on vote (for date), extend windows to both sides
+## item <- 1:I
+## inicio <- item-15; inicio[inicio<0] <- 1
+## final  <- item+15; final[final>I] <- I
+## item.date <- vot$date #ymd(vot$yr*10000+vot$mo*100+vot$dy)
+## S <- length(inicio)
 
 
 # We need a matrix showing whether each councilor is actually in IFE the moment the vote takes place --- will be subset to J below
-IsCouncilor <- matrix (1, ncol=18, nrow=S)
+IsCouncilor <- matrix (1, ncol=18, nrow=I)
 IsCouncilor[ vot$term < 4 | vot$term >  4,1 ] <- NA  #      ugalde
 IsCouncilor[ vot$term < 4 | vot$term >  6,2 ] <- NA  #        albo
 IsCouncilor[ vot$term < 4 | vot$term >  7,3 ] <- NA  #     andrade
@@ -184,12 +187,6 @@ sel.members <- which(ids$name %in% name)
 IsCouncilor <- IsCouncilor[, sel.members]
 
 
-#Da la impresión de que alrededor del voto 900 se invierte la polaridad del espacio. Para entonces los priors semi-informativos que anclaron el norte y el sur han quedado muy atrás. Quizás esto pueda arreglarse dándole a córdova un prior centrado en -2. O quizás sea posible recentrar a Baños (supongo qu es quien sube cerca del 800 y baja abruptamente) en +2 o a Figueroa (el extremo sur que se vuelve norte) en -2 poco después de la entrada de Córdova, García Ramírez y Marván.
-
-#En la versión trimestral, anclar a Figueroa y a Córdova ambos en dnorm(-2,4) permitió producir estimaciones que aparecen en la gráfica que he guardado en el directorio correspondiente. Si fuera necesario, trate de poner a García Ramírez en dnorm(2,4).
-
-#No agregué nuevos priors para los nuevos consejeros.  Siguen comenzando con el prior del partido que los postuló, con dos adendos: 1) La posición del partido es la mediana de sus integrantes, no la media, con el objeto de descontar extremistas.  2) La precisión del prior para los nuevos consejeros es un poco más alta: 10, en lugar de 4.
-
 # Round 1 ideal points to anchor ideological space
 # (later entrants at party mean)
 #                 1  2  3  4  5  6  7  8  9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25
@@ -208,9 +205,6 @@ term.results <- list () ## WILL ADD TERM'S RESULTS TO OBJECT HOLDING ALL RESULTS
 partyPlacement <- rep (NA,J)
 x.mean <- numeric ()
 x.tau  <- numeric ()
-#
-tees <- 6:7
-T <- length(tees)
 
 ## Save overall totals for use later (I J redefined to window s totals in next loop)
 J.all <- J; I.all <- I
@@ -259,7 +253,7 @@ for (t in tees){        # <= BIG FUNCTION STARTS (loop over terms with constant 
 #					model.file=model1Dj.irt, n.chains=1,
 					model.file=model1Dj.irt, n.chains=2,
 #					n.iter=500, n.burnin=250, n.thin=25)
-					n.iter=20000, n.burnin=10000, n.thin=100)
+					n.iter=50000, n.burnin=30000, n.thin=200)
 #		)
 #		if(inherits(model.jags.re,"try-error")) {return()}
 #		return(model.jags.re)
