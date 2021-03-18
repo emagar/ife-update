@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 ##################################################################################
 # Ugalde et al a la Bonica
 # This code runs a Bonica-like algorithm to provide a dynamic view of Ugalde's
@@ -30,28 +32,28 @@ setwd(workdir)
 ids <- matrix(c("Ugalde",           "ugalde",      "PRI",  "4",
                 "Albo",             "albo",        "PAN",  "456",
                 "Andrade",          "andrade",     "PRI",  "4567", 
-                "Gmz. Alcántar",    "alcantar",    "PVEM", "4567",
+                "Gmz. AlcÃ¡ntar",    "alcantar",    "PVEM", "4567",
                 "Glez. Luna",       "glezluna",    "PAN",  "456",
-                "Latapí",           "latapi",      "PRI",  "45",
-                "López Flores",     "lopezflores", "PRI",  "456",
+                "LatapÃ­",           "latapi",      "PRI",  "45",
+                "LÃ³pez Flores",     "lopezflores", "PRI",  "456",
                 "Morales",          "morales",     "PAN",  "45",
-                "Sánchez",          "sanchez",     "PAN",  "4567c",
-                "Valdés",           "valdes",      "PRD",    "6789a",
-                "Baños",            "banos",       "PRI",    "6789abcde",
+                "SÃ¡nchez",          "sanchez",     "PAN",  "4567c",
+                "ValdÃ©s",           "valdes",      "PRD",    "6789a",
+                "BaÃ±os",            "banos",       "PRI",    "6789abcde",
                 "Nacif",            "nacif",       "PAN",    "6789abcde",
                 "Elizondo",         "elizondo",    "PAN",     "789a",
                 "Figueroa",         "figueroa",    "PRD",     "789a",
                 "Guerrero",         "guerrero",    "PRI",     "789a",
-                "Córdova",          "cordova",     "PRD",       "9abcdef",
-                "García Rmz.",      "garcia",      "PRI",       "9"  ,
-                "Marván",           "marvan",      "PAN",       "9ab",
+                "CÃ³rdova",          "cordova",     "PRD",       "9abcdef",
+                "GarcÃ­a Rmz.",      "garcia",      "PRI",       "9"  ,
+                "MarvÃ¡n",           "marvan",      "PAN",       "9ab",
                 "E. Andrade",       "andrade2",    "",             "cde",
                 "Favela",           "favela",      "",             "cdef",
                 "Santiago",         "santiago",    "",             "c",
                 "Galindo",          "galindo",     "",             "c",
                 "Murayama",         "murayama",    "",             "cdef",
-                "Ruiz Saldaña",     "ruiz",        "",             "cdef",
-                "San Martín",       "snmartin",    "",             "cde",
+                "Ruiz SaldaÃ±a",     "ruiz",        "",             "cdef",
+                "San MartÃ­n",       "snmartin",    "",             "cde",
                 "Santiago",         "santiago",    "",             "c",
                 "Ravel",            "ravel",       "",              "def",
                 "J. Rivera",        "rivera2",     "",              "def",
@@ -192,7 +194,7 @@ IsCouncilor <- IsCouncilor[, sel.members]
 #                 1  2  3  4  5  6  7  8  9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25
 #                 u  a  a  a  g  l  l  m  s  v  b  n  e  f  g  c  g  m  a  f  g  m  r  s  s  
 #                 g  l  n  l  l  a  p  o  a  a  a  a  l  i  u  o  a  a  n  a  a  u  u  n  a
-#                 a  b  d  c  z  t  z  r  n  l  ñ  c  i  g  e  r  r  r  d  v  l  r  i  m  n
+#                 a  b  d  c  z  t  z  r  n  l  Ã±  c  i  g  e  r  r  r  d  v  l  r  i  m  n
 #                 l  o  r  a  l  a  f  a  c  d  o  i  z  u  r  d  c  v  r  e  i  a  z  a  t
 x.location <-   c(1, 0, 0, 2,-2, 0, 0, 2,-2, 0, 2,-1,-2, 0, 2,-2, 2,-2, 0, 0, 0, 2, 0, 0, 0)[sel.members] # sel = members in estimation
 x.precision  <- c(4, 1, 1, 4, 4, 4, 1, 4, 4, 1, 4, 4, 4, 1, 4, 4, 4, 4, 1, 1, 1, 4, 1, 1, 1)[sel.members]
@@ -230,7 +232,7 @@ for (t in tees){        # <= BIG FUNCTION STARTS (loop over terms with constant 
 	v <- t(v)                       ## ROLL CALLS NEED ITEMS IN COLUMNS, LEGISLATORS IN ROWS
 	J <- nrow(v); I <- ncol(v)      ## SESSION TOTALS
 #
-	ife.data <- list ("J", "I", "v", "x.mean", "x.tau", "sponsors") # emm 9mar21: no debería ir sponsors en vez de party?
+	ife.data <- list ("J", "I", "v", "x.mean", "x.tau", "sponsors") # emm 9mar21: no deberÃ­a ir sponsors en vez de party?
 	ife.inits <- function (){
 		list (
 			x=rnorm(J),
@@ -473,7 +475,7 @@ for (s in snapshot){
 	for (j in 1:J){
 		lines ( Smooth[[j]]$x[1:s], Smooth[[j]]$y[1:s], lwd=6, col=rgb.45678901[j])
 	}
-	# Eric: Creo que tú tienes más información para hacer los cambios en las siguientes tres líneas
+	# Eric: Creo que tÃº tienes mÃ¡s informaciÃ³n para hacer los cambios en las siguientes tres lÃ­neas
 	legend ("topright", bty="n", legend=paste ("vote", s, sep=" ")) #Change the legend for the date of the vote
 	# Add vertical lines for elections here, but only for some realizations of S
 	# Add names of councilors here as well, but only for some realizations of S
