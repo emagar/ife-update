@@ -133,7 +133,8 @@ cjr.parameters = c("theta", "alpha", "beta", "deviance")
 cjr.inits <- function() {
   dump.format(
     list(
-      theta = c(NA, NA, rnorm(max(leg.index)-2))
+#      theta = c(NA, NA, rnorm(max(leg.index)-2))
+      theta = c(rnorm(3), NA, rnorm(4), NA, rnorm(max(leg.index)-9))
       , alpha = rnorm(max(vote.index))
       , beta = rnorm(max(vote.index))
       ,'.RNG.name'="base::Wichmann-Hill"
@@ -151,9 +152,15 @@ for (j in 1:n.item){ alpha[j] ~ dnorm(0, 0.25) }
 # Beta (discrimination, dimension 1)
 for (j in 1:n.item){ beta[j] ~ dnorm(0, 0.1) }   
 # ideal points
-theta[1] <- 1
-theta[2] <- 0 
-for(i in 3:n.legs)  { theta[i] ~ dnorm(0,1) }
+theta[4] <- 1
+theta[9] <- 0 
+
+theta[4] ~ normal truncada en 0, + # buscar en manual jags Plummer
+theta[9] ~ normal truncada en 0, -
+
+for(i in 1:3)  { theta[i] ~ dnorm(0,1) }
+for(i in 5:8)  { theta[i] ~ dnorm(0,1) }
+for(i in 10:n.legs)  { theta[i] ~ dnorm(0,1) }
 }"
 
 cjr.model.v <- run.jags(
@@ -183,7 +190,7 @@ plot (colMeans (Beta.v))   # signal
 par (las=2, mar=c(7,3,2,2))
 plot (1:length(vot$date), colMeans (Beta.v)
       , type="n"
-      , axes=F, ylim=c(-0,1)
+      , axes=F, ylim=c(-1,1)
       , xlab="", ylab="Ideal point")
 axis (1, at=seq(1,length(vot$date),8)
       , labels=vot$date[seq(1,length(vot$date),8)], cex=0.8)
@@ -191,11 +198,10 @@ par (las=0)
 mtext (side=1, line=6, text="Dates")
 axis (2)
 for (i in 1:ncol(Theta.v)){
-  segments (x0=min (c(1:length(vot$date))[vot[,i] != 0])
+    segments (x0=min (c(1:length(vot$date))[vot[,i] != 0])
           , x1=max (c(1:length(vot$date))[vot[,i] != 0])
           , y0=colMeans (Theta.v)[i]
           , y1=colMeans (Theta.v)[i]
           , col=ids$color[i], lwd=3)
 }
-
 

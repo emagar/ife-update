@@ -198,7 +198,7 @@ IsCouncilor <- IsCouncilor[, sel.members]
 #                 l  o  r  a  l  a  f  a  c  d  o  i  z  u  r  d  c  v  r  e  i  a  z  a  t
 x.location <-   c(1, 0, 0, 2,-2, 0, 0, 2,-2, 0, 2,-1,-2, 0, 2,-2, 2,-2, 0, 0, 0, 2, 0, 0, 0)[sel.members] # sel = members in estimation
 x.precision  <- c(4, 1, 1, 4, 4, 4, 1, 4, 4, 1, 4, 4, 4, 1, 4, 4, 4, 4, 1, 1, 1, 4, 1, 1, 1)[sel.members]
-# x.location and x.precision are amipulated by loop, keep a version to use as prior for new antrants instead of party mean
+# x.location and x.precision are amipulated by loop, keep a version to use as prior for new entrants instead of party mean
 x.prior.location <-  x.location
 x.prior.precision <- x.precision
 #
