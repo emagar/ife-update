@@ -13,3 +13,5 @@ Last revision: 2021-02-05
 The repository contains files for analysis of our re-loaded IFE project---see our [[https://github.com/emagar/ep3/blob/master/lecturas/EstevezMagarRosasIfeElecStud2008.pdf][publication]]. 
 * License
 This repository in under the MIT License, see http://opensource.org/licenses/MIT. The sole condition to use the data is to cite it as follows: Federico Estévez, Eric Magar and Guillermo Rosas. 2008. Partisanship in non-partisan electoral agencies and democratic compliance: Evidence from Mexico's Federal Electoral Institute. /Electoral Studies/ vol. 27, pp. 257-271.
+* Acknowledgements
+Many research assistants over many years have contributed to this repository. Thanks to sonorense, Gustavo Robles Peiro, Mauricio Fernández Duque, Francisco Cantú, Lucía Motolinía, ..., Daniela Guzmán Lerma, Sonia Kuri
