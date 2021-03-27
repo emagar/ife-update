@@ -1,4 +1,6 @@
 *.*~
+\#*.*\#
+.\#*.*
 
 # leave posterior samples out, too large
 data/posterior-samples/
