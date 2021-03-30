@@ -152,11 +152,10 @@ for (j in 1:n.item){ alpha[j] ~ dnorm(0, 0.25) }
 # Beta (discrimination, dimension 1)
 for (j in 1:n.item){ beta[j] ~ dnorm(0, 0.1) }   
 # ideal points
-theta[4] <- 1
-theta[9] <- 0 
-
-theta[4] ~ normal truncada en 0, + # buscar en manual jags Plummer
-theta[9] ~ normal truncada en 0, -
+#theta[4] <- 1
+#theta[9] <- 0 
+theta[4] ~ dnorm( 1,4)T(0,) # normal + truncada
+theta[9] ~ dnorm(-1,4)T(,0) # normal - truncada
 
 for(i in 1:3)  { theta[i] ~ dnorm(0,1) }
 for(i in 5:8)  { theta[i] ~ dnorm(0,1) }
@@ -202,6 +201,6 @@ for (i in 1:ncol(Theta.v)){
           , x1=max (c(1:length(vot$date))[vot[,i] != 0])
           , y0=colMeans (Theta.v)[i]
           , y1=colMeans (Theta.v)[i]
-          , col=ids$color[i], lwd=3)
+          , col=color[i], lwd=3)
 }
 
