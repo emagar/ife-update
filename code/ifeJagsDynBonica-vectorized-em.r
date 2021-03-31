@@ -15,6 +15,9 @@ library (R2jags)
 library (mcmcplots)
 library (sm)
 library(lubridate)
+#
+library (runjags)
+library (coda)
 
 
 rm(list = ls())
@@ -25,17 +28,17 @@ setwd(workdir)
 # OJO: en tenure term==10 es a, term==11 es b etc. 
 
 ids <- matrix(c(
-    "Woldenberg",       "woldenberg", "PRI", "23",
-    "Barragán",         "barragan",   "PRD", "23",
-    "Cantú",            "cantu",      "PRD", "23",
-    "Cárdenas",         "cardenas",   "PRD", "23",
-    "Lujambio",         "lujambio",   "PAN", "23",
-    "Merino",           "merino",     "PRI", "23",
-    "Molinar",          "molinar",    "PAN", "2" ,
-    "Peschard",         "peschard",   "PRI", "23",
-    "Zebadúa",          "zebadua",    "PRD", "2" ,
-    "Rivera",           "rivera",     "PRI",  "3",
-    "Luken",            "luken",      "PAN",  "3",
+    ## "Woldenberg",       "woldenberg", "PRI", "23",
+    ## "Barragán",         "barragan",   "PRD", "23",
+    ## "Cantú",            "cantu",      "PRD", "23",
+    ## "Cárdenas",         "cardenas",   "PRD", "23",
+    ## "Lujambio",         "lujambio",   "PAN", "23",
+    ## "Merino",           "merino",     "PRI", "23",
+    ## "Molinar",          "molinar",    "PAN", "2" ,
+    ## "Peschard",         "peschard",   "PRI", "23",
+    ## "Zebadúa",          "zebadua",    "PRD", "2" ,
+    ## "Rivera",           "rivera",     "PRI",  "3",
+    ## "Luken",            "luken",      "PAN",  "3",
     #
     "Ugalde",           "ugalde",      "PRI",  "4",
     "Albo",             "albo",        "PAN",  "456",
@@ -90,7 +93,6 @@ ids # inspect
 ####################################################################
 ## select terms for analysis, e.g. for 4-11(b) "[456789ab]" works ##
 ####################################################################
-
 tees <- c("6","7","8","9","a")
 tees.grep <- "[6789a]"
 T <- length(tees)
@@ -107,19 +109,16 @@ column <- ids$column[sel]
 ## rgb.23[c(5,7,11)]   <- rgb(0,       0, 1, 0.6) #blue
 
 ############################################
-## Read votes --- informative votes only, ##
+## Read votes                             ##
 ## exported to disk by code/data-prep.r   ##
 ############################################
 vot23  <- read.csv("v23.csv"        ,  header=TRUE)
 vot4on <- read.csv(  "v456789ab.csv",  header=TRUE)
-colnames(vot23)
-colnames(vot4on)
-
 # choose what votes will be analyzed
 #vot <- vot23  # Woldenberg
 vot <- vot4on # Ugalde-Valdés-Córdova
-
-# subset to chosen periods
+#colnames(vot)
+# subset to votes in chosen periods
 sel.r <- which(vot$term %in% tees)
 drop.c <- ids$column[grep(pattern = tees.grep, ids$tenure)] # column names not in terms selected
 drop.c <- setdiff(ids$column, drop.c)
@@ -149,36 +148,60 @@ if (length(sel)>0){
     vs  <- vs [-sel,] # drop uncontested votes
 }
 
-###################
-## Vectorization ##
-###################
 
 
+## ###########
+## ## MODEL ##
+## ###########
+## model1Dj.irt <- function() {
+##     for (j in 1:J){        ## loop over respondents
+##         for (i in 1:I){## loop over items
+##             v[j,i] ~ dbern(p[j,i]); ## voting rule
+##             probit(p[j,i]) <- mu[j,i]; ## sets 0<p<1 as function of mu
+##             mu[j,i] <- signal[i]*x[j] - difficulty[i];              ## utility differential
+## 		}
+## 	}
+## 	## priors ################
+## 	for (j in 1:J){
+## 		x[j] ~ dnorm (x.mean[j], x.tau[j]);
+## 	}
+## 	for (i in 1:I){
+## 		signal[i] ~ dnorm(0, 0.1);
+## 		difficulty[i] ~ dnorm(0, 0.25);
+## 	}
+## 	for (p in 1:4){ # need 5 when morena also considered
+##             partyPos[p] <- mean (x[sponsors[p]]); # 4mar21: should be median, unknown function in bugs?
+## 	}
+## }
+## #end model##############
 
 ###########
 ## MODEL ##
 ###########
-model1Dj.irt <- function() {
-    for (j in 1:J){        ## loop over respondents
-        for (i in 1:I){## loop over items
-            v[j,i] ~ dbern(p[j,i]); ## voting rule
-            probit(p[j,i]) <- mu[j,i]; ## sets 0<p<1 as function of mu
-            mu[j,i] <- signal[i]*x[j] - difficulty[i];              ## utility differential
-		}
-	}
-	## priors ################
-	for (j in 1:J){
-		x[j] ~ dnorm (x.mean[j], x.tau[j]);
-	}
-	for (i in 1:I){
-		signal[i] ~ dnorm(0, 0.1);
-		difficulty[i] ~ dnorm(0, 0.25);
-	}
-	for (p in 1:4){ # need 5 when morena also considered
-            partyPos[p] <- mean (x[sponsors[p]]); # 4mar21: should be median, unknown function in bugs?
-	}
-}
-#end model##############
+## alpha is vote's   difficulty
+## beta  is vote's   signal strength
+## theta is member's ideal point
+ife.vector <- "model {
+    for (n in 1:n.obs) {
+        y[n] ~ dbern (pi[n])
+        probit(pi[n]) <- beta[vote[n]]*theta[member[n]] - alpha[vote[n]]
+    }
+    # PRIORS
+    for (j in 1:n.item){
+        alpha[j] ~ dnorm(0, 0.25);   
+        beta [j] ~ dnorm(0, 0.1)
+    }
+    for (p in 1:4){ # need 5 when morena also considered
+        partyPos[p] <- mean (x[sponsors[p]]); # 4mar21: should be median, unknown to jags?
+    }
+    # IDEAL POINTS, auto-regressive process --- 31mar21 DUDO QUE LE GUSTE north==NA CUANDO OCURRA
+    for(i in setdiff(1:n.members, c(north, south))){
+        theta[i] ~ dnorm ( x.mean[i], x.tau[i] ) 
+    }
+    theta[north] ~ dnorm ( x.mean[north], x.tau[north] ) T(0, ) # truncated positive normal
+    theta[south] ~ dnorm ( x.mean[south], x.tau[south] ) T( ,0) # truncated negative normal
+}"
+### END MODEL ######
 
 # Center on vote (for date), extend windows to both sides
 I <- nrow (vot)
@@ -227,7 +250,7 @@ x.location <-   c(0, 0, 0, 2, 0, 0, 0, 0,-2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
 x.precision  <- c(1, 1, 1, 4, 1, 1, 1, 1, 4, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1)[sel.members]
 #x.location <-   c(1, 0, 0, 2,-2, 0, 0, 2,-2, 0, 2,-1,-2, 0, 2,-2, 2,-2, 0, 0, 0, 2, 0, 0, 0)[sel.members] # sel = members in estimation
 #x.precision  <- c(4, 1, 1, 4, 4, 4, 1, 4, 4, 1, 4, 4, 4, 1, 4, 4, 4, 4, 1, 1, 1, 4, 1, 1, 1)[sel.members]
-# x.location and x.precision are amipulated by loop, keep a version to use as prior for new entrants instead of party mean
+# x.location and x.precision are manipulated by loop, keep a version to use as prior for new entrants instead of party mean
 x.prior.location <-  x.location
 x.prior.precision <- x.precision
 #
@@ -237,80 +260,132 @@ x.mean <- numeric ()
 x.tau  <- numeric ()
 
 
-## Save overall totals for use later (I J redefined to window s totals in next loop)
-J.all <- J; I.all <- I
-for (s in 1:S){        # <= BIG FUNCTION STARTS (loop over S windows)
-#
-	# Added March 19: We include councilors (and their party IDs) only if they were actual councilors for at least one vote
-	# This means that the length of estimated ideal points is either
-	# 9 (for most votes) or 11 (when there is some overlap: two councilors are leaving , two are coming in)
+for (s in 1:S){        # <= loop over S windows
+    #
     #s <- 1 # debug
-	councilor.in <- apply (IsCouncilor[inicio[s]:final[s],], 2, invalid)
-	councilors   <- name [councilor.in==FALSE] # window's info
-	sponsors     <- party[councilor.in==FALSE] # window's info
-#
-	for (c in 1:J.all){
+    councilor.in <- apply (IsCouncilor[inicio[s]:final[s],], 2, invalid)
+    councilors   <- name [councilor.in==FALSE] # window's info
+    abbrev       <- column [councilor.in==FALSE] # window's info
+    sponsors     <- party[councilor.in==FALSE] # window's info
+    #
+    for (c in 1:J){ # does it for all councilors whther or not present in window (hence J)
 # 5mar21: this uses partyPlacement for new entrants
-		x.mean[c] <- ifelse (!is.na(x.location[c]),  x.location[c],  partyPlacement[sponsors[c]])
-		x.tau[c]  <- ifelse (!is.na(x.precision[c]), x.precision[c], 4)
+#        x.mean[c] <- ifelse (!is.na(x.location[c]),  x.location[c],  partyPlacement[sponsors[c]])
+#        x.tau[c]  <- ifelse (!is.na(x.precision[c]), x.precision[c], 4)
 # 5mar21: this uses fixed x0 prior for new entrants
-#		x.mean[c] <- ifelse (!is.na(x.location [c]), x.location [c], x.prior.location [c])
-#		x.tau[c]  <- ifelse (!is.na(x.precision[c]), x.precision[c], x.prior.precision[c])
-	}
-#
-	v <- vs[inicio[s]:final[s], 1:J.all][, councilor.in==FALSE]; ## EXTRACT 30 VOTES EACH TIME
-	v <- t(v)                       ## ROLL CALLS NEED ITEMS IN COLUMNS, LEGISLATORS IN ROWS
-	J <- nrow(v); I <- ncol(v)      ## SESSION TOTALS
-#
-	ife.data <- list ("J", "I", "v", "x.mean", "x.tau", "sponsors") # emm 9mar21: no debería ir sponsors en vez de party?
-	ife.inits <- function (){
-		list (
-			x=rnorm(J),
-			signal=rnorm(I),
-			difficulty=rnorm(I)
-		)
-	}
-	ife.parameters <- c("x", "signal", "difficulty", "partyPos")
-#
-	print(cat("Session no.", s, "of", S, ", with", I, "votes \n"))
-#
-	#full JAGS run
-	start.time <- proc.time()
-#
-	# Use dual core capabilities
-	results <-
-#            mclapply(1:2, function(x) {
-#		model.jags.re <- try(
-                                 jags (data=ife.data, inits=ife.inits, ife.parameters,
-					model.file=model1Dj.irt, n.chains=1,
-#					model.file=model1Dj.irt, n.chains=2,
-#					n.iter=600, n.burnin=300, n.thin=30)
-					n.iter=10000, n.burnin=5000, n.thin=50)
-#		)
-#		if(inherits(model.jags.re,"try-error")) {return()}
-#		return(model.jags.re)
-#	}, mc.cores=2 )
-	time.elapsed <- round(((proc.time()-start.time)[3])/60,2); rm(start.time)
-	print(cat("\tTime elapsed in estimation:", time.elapsed, "minutes", "\n")); rm(time.elapsed)
-#
-	# Quick check on convergence of ideal point chains
-#	GHconv <- gelman.diag(mcmc.list(list (as.mcmc (results[[2]]$BUGSoutput$sims.list$x), as.mcmc (results[[1]]$BUGSoutput$sims.list$x))))[[2]]
-#	print (cat ("Gelman-Rubin R-hat:", GHconv, "\n"))
-#
+        x.mean[c] <- ifelse (!is.na(x.location [c]), x.location [c], x.prior.location [c])
+        x.tau[c]  <- ifelse (!is.na(x.precision[c]), x.precision[c], x.prior.precision[c])
+    }
+    #
+    v <- vs[inicio[s]:final[s], 1:J][, councilor.in==FALSE]; ## EXTRACT 30 VOTES EACH TIME
+    v <- as.data.frame(t(v))        ## ROLL CALLS NEED ITEMS IN COLUMNS, LEGISLATORS IN ROWS
+    #
+    ###################
+    ## Vectorization ##
+    ###################
+    #J <- nrow(v); I <- ncol(v)      ## SESSION TOTALS
+    member.index  <- 1:nrow(v)
+    vote.index <- 1:ncol(v)
+    
+    ## Melt RC
+    rc <- as.data.frame (v)
+    colnames (rc) <- vote.index
+    rc$member <- member.index
+    #
+    # determine north/south indexes in vote window
+    north <- which(rownames(rc)=="alcantar")
+    north <- ifelse (length(north)==0, NA, north) # NA if member absent, else her index 
+    south <- which(rownames(rc)=="sanchez")
+    south <- ifelse (length(south)==0, NA, south) # NA if member absent, else her index 
+    #
+    molten.rc <- reshape2::melt(rc, id.vars="member", variable.name="vote", value.name="rc")
+    #molten.rc$rc <- car::recode (molten.rc$rc, "0=NA")
+    molten.rc <- na.omit (molten.rc)
+    #molten.rc$rc <- car::recode (molten.rc$rc, "2=0; c(3,4,5)=NA")
+    #
+    ife.data.vector <- dump.format(list(
+        y         = molten.rc$rc
+      , n.members = max(member.index)
+      , n.item    = max(vote.index)
+      , n.obs     = nrow(molten.rc)
+      , vote      = molten.rc$vote
+      , member    = molten.rc$member
+      , north     = north
+      , south     = south
+      , x.mean    = x.mean
+      , x.tau     = x.tau
+      , sponsors  = sponsors
+    ))
+    #
+    ife.parameters = c("theta", "alpha", "beta", "partyPos", "deviance")
+    #
+    ife.inits <- function() {
+        dump.format(
+            list(
+                theta = rnorm(max(member.index))
+                #theta = c(rnorm(3), NA, rnorm(4), NA, rnorm(max(member.index)-9)) # NAs sólo en caso de spike priors, correcto?
+              , alpha = rnorm(max(vote.index))
+              , beta = rnorm(max(vote.index))
+              , '.RNG.name'="base::Wichmann-Hill"
+              , '.RNG.seed'= 1971)   #randomNumbers(n = 1, min = 1, max = 1e+04,col=1))
+        )
+    }
+    #
+    ife.model.v <- run.jags(
+        model   = ife.vector,
+        monitor = ife.parameters,
+        method  = "parallel",
+        data    = ife.data.vector,
+        inits   = list (ife.inits(), ife.inits()),
+        n.chains=2, thin=50, burnin=10000, sample=200,
+        #n.chains=1, thin=5,  burnin=200,   sample=3,
+        check.conv=FALSE, plots=FALSE
+    )
+    #
+    chainsIFE.v <- mcmc.list(list (ife.model.v$mcmc[[1]], ife.model.v$mcmc[[2]])) 
+    gelman.diag (chainsIFE.v, multivariate=F)
+    #
+    Alpha.v <- rbind ( chainsIFE.v[[1]][,grep("alpha", colnames(chainsIFE.v[[1]]))]
+                    , chainsIFE.v[[2]][,grep("alpha", colnames(chainsIFE.v[[2]]))])
+    Beta.v <- rbind ( chainsIFE.v[[1]][,grep("beta", colnames(chainsIFE.v[[1]]))]
+                   , chainsIFE.v[[2]][,grep("beta", colnames(chainsIFE.v[[2]]))])
+    Theta.v <- rbind ( chainsIFE.v[[1]][,grep("theta", colnames(chainsIFE.v[[1]]))]
+                    , chainsIFE.v[[2]][,grep("theta", colnames(chainsIFE.v[[2]]))])
+    #
+    plot (colMeans (Alpha.v))  # difficulties
+    plot (colMeans (Beta.v))   # signal
+    #
+    par (las=2, mar=c(7,3,2,2))
+    plot (1:length(vot$date), colMeans (Beta.v)
+        , type="n"
+        , axes=F, ylim=c(-1,1)
+        , xlab="", ylab="Ideal point")
+    axis (1, at=seq(1,length(vot$date),8)
+        , labels=vot$date[seq(1,length(vot$date),8)], cex=0.8)
+    par (las=0)
+    mtext (side=1, line=6, text="Dates")
+    axis (2)
+    for (i in 1:ncol(Theta.v)){
+        segments (x0=min (c(1:length(vot$date))[vot[,i] != 0])
+                , x1=max (c(1:length(vot$date))[vot[,i] != 0])
+                , y0=colMeans (Theta.v)[i]
+                , y1=colMeans (Theta.v)[i]
+                , col=ids$color[i], lwd=3)
+    }
 	# ADD COUNCILOR NAMES AND VOTE INFO TO RESULTS OBJECT
-        results <- c(results, councilors=list(councilors)); # should be faster than results[[length(results)+1]] <- councilors;
+        results <- c(results, councilors=list(councilors), abbrev=list(abbrev));
         results <- c(results, folio.date=list(vot[s,c("folio","dy","mo","yr")])); # add vote on which window is centered
-        window.results <- c(window.results, list(results)); # should be faster than window.results[length(window.results)+1] <- list(results) ## ADD SESSION'S RESULTS TO OBJECT HOLDING ALL RESULTS
+        window.results <- c(window.results, list(results)); ## ADD SESSION'S RESULTS TO OBJECT HOLDING ALL RESULTS
 #        results[[4]] <- GHconv; rm (GHconv)
 #
 	# Update location of ideal point at time s, to be used as location prior at time s+1
-	x.location  <- rep (NA, J.all)
-	x.precision <- rep (100, J.all)
+	x.location  <- rep (NA, J)
+	x.precision <- rep (100, J)
 #	locs <- apply( rbind (results[[1]]$BUGSoutput$sims.list$x, results[[2]]$BUGSoutput$sims.list$x), 2, median)
 #	partyPlacement <- apply( rbind (results[[1]]$BUGSoutput$sims.list$partyPos, results[[2]]$BUGSoutput$sims.list$partyPos), 2, median)
 	locs <- apply( results$BUGSoutput$sims.list$x, 2, median)
 	partyPlacement <- apply( results$BUGSoutput$sims.list$partyPos, 2, median)
-	for (n in 1:J.all){
+	for (n in 1:J){
 		if (length( which(councilors==name[n]) )==0) {               # if councilor not member current round
 			x.location[n] <- NA                                  # then prior for next round set to NA
 			x.precision[n] <- NA                                 # (and line above sets it to party placement)
@@ -319,9 +394,7 @@ for (s in 1:S){        # <= BIG FUNCTION STARTS (loop over S windows)
 	}
 	# Precision prior is always constant at 100, implying standard deviation = sqrt (1/100) = 0.1
 }  # <---   END OF LOOP OVER WINDOWS
-#
-## Restore overall totals
-J <- J.all; I <- I.all; rm(J.all, I.all)
+
 
 # plot results
 tit <- "Terms 67 (Valdés 2007-2010), Bonica method"

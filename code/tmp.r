@@ -1,41 +1,63 @@
+
+###########
+## MODEL ##
+###########
+## alpha is vote's   difficulty
+## beta  is vote's   signal strength
+## theta is member's ideal point
+ife.vector <- function(){
+    for (i in 1:n.obs) {
+        y[i] ~ dbern (pi[i])
+        probit(pi[i]) <- beta[vote[i]]*theta[member[i]] - alpha[vote[i]]
+    }
+    # PRIORS
+    for (j in 1:n.item){
+        alpha[j] ~ dnorm(0, 0.25);   
+        beta [j] ~ dnorm(0, 0.1)
+    }   
+    # IDEAL POINTS
+    north <- which(column=="alcantar")
+    south <- which(column=="sanchez")
+    theta[north] ~ dnorm( 1,4)T(0,) # normal + truncada
+    theta[south] ~ dnorm(-1,4)T(,0) # normal - truncada
+    for(i in setdiff(c(north, south), 1:n.item)){
+        theta[i] ~ dnorm( 0,1)
+    }
+}
+
 ###################
 ## Vectorization ##
 ###################
-sel <- which(vot$dunan==1)
-vot <- vot[-sel,] # drop uncontested votes
-
-J <- length(name) # How many councilors in period chosen
-
-library (runjags)
-library (coda)
-rc <- as.data.frame(t(vs)) # as.data.frame(t(vot[,1:J]))
-leg.index  <- 1:nrow(rc)
-vote.index <- 1:ncol(rc)
+member.index  <- 1:nrow(v)
+vote.index <- 1:ncol(v)
 
 ## Melt RC
-rc.2 <- as.data.frame (rc)
-colnames (rc.2) <- vote.index
-rc.2$leg <- leg.index
-molten.rc <- reshape2::melt(rc.2, id.vars="leg", variable.name="vote", value.name="rc")
-molten.rc$rc <- car::recode (molten.rc$rc, "0=NA")
+rc <- as.data.frame (v)
+colnames (rc) <- vote.index
+rc$member <- member.index
+molten.rc <- reshape2::melt(rc, id.vars="member", variable.name="vote", value.name="rc")
+#molten.rc$rc <- car::recode (molten.rc$rc, "0=NA")
 molten.rc <- na.omit (molten.rc)
-molten.rc$rc <- car::recode (molten.rc$rc, "2=0; c(3,4,5)=NA")
+#molten.rc$rc <- car::recode (molten.rc$rc, "2=0; c(3,4,5)=NA")
 
-cjr.data.vector <- dump.format(list(y=molten.rc$rc
-                                    , n.legs=max(leg.index)
-                                    , n.item=max(vote.index)
-                                    , n.obs=nrow(molten.rc)
-                                    , vote=molten.rc$vote
-                                    , dep=molten.rc$leg
+ife.data.vector <- dump.format(list(
+    y         = molten.rc$rc
+  , n.members = max(member.index)
+  , n.item    = max(vote.index)
+  , n.obs     = nrow(molten.rc)
+  , vote      = molten.rc$vote
+  , member    = molten.rc$member
+  , north     = north
+  , south     = south
 ))
 
-cjr.parameters = c("theta", "alpha", "beta", "deviance")
+ife.parameters = c("theta", "alpha", "beta", "deviance")
 
-cjr.inits <- function() {
+ife.inits <- function() {
   dump.format(
     list(
-#      theta = c(NA, NA, rnorm(max(leg.index)-2))
-      theta = c(rnorm(3), NA, rnorm(4), NA, rnorm(max(leg.index)-9))
+        theta = rnorm(max(member.index))
+#      theta = c(rnorm(3), NA, rnorm(4), NA, rnorm(max(member.index)-9)) # NAs sólo en caso de spike priors, correcto?
       , alpha = rnorm(max(vote.index))
       , beta = rnorm(max(vote.index))
       ,'.RNG.name'="base::Wichmann-Hill"
@@ -43,53 +65,26 @@ cjr.inits <- function() {
   )
 }
 
-## MODEL
-cjr.vector <- function(){
-	for (i in 1:n.obs) {
-		y[i] ~ dbern (pi[i])
-		probit(pi[i]) <- beta[vote[i]]*theta[dep[i]] - alpha[vote[i]]
-	}
-        # PRIORS
-        for (j in 1:n.item){ alpha[j] ~ dnorm(0, 0.25) }   
-        # Beta (discrimination, dimension 1)
-        for (j in 1:n.item){ beta[j] ~ dnorm(0, 0.1) }   
-        # ideal points
-        north <- which(column=="alcantar")
-        south <- which(column=="sanchez")
-        for(i in setdiff(c(north, south), 1:n.item)){
-            theta[i] ~ dnorm( 0,1)
-        }
-        theta[north] ~ dnorm( 1,4)T(0,) # normal + truncada
-        theta[south] ~ dnorm(-1,4)T(,0) # normal - truncada
-        ## for(i in 1:3)        { theta[i] ~ dnorm(0,1) }
-        ## theta[4] ~ dnorm( 1,4)T(0,) # normal + truncada
-        ## for(i in 5:8)        { theta[i] ~ dnorm(0,1) }
-        ## theta[9] ~ dnorm(-1,4)T(,0) # normal - truncada
-        ## for(i in 10:n.legs)  { theta[i] ~ dnorm(0,1) }
-}
-
-cjr.model.v <- run.jags(
-  model=cjr.vector,
-  monitor=cjr.parameters,
-  method="parallel",
-  n.chains=2,
-#  n.chains=1,
-  data=cjr.data.vector,
-  inits=list (cjr.inits(), cjr.inits()),
-  thin=50, burnin=10000, sample=200,
-#  thin=5,  burnin=200,   sample=3,
+ife.model.v <- run.jags(
+  model   = ife.vector,
+  monitor = ife.parameters,
+  method  = "parallel",
+  data    = ife.data.vector,
+  inits   = list (ife.inits(), ife.inits()),
+  n.chains=2, thin=50, burnin=10000, sample=200,
+#  n.chains=1, thin=5,  burnin=200,   sample=3,
   check.conv=FALSE, plots=FALSE
 )
 
-chainsCJR.v <- mcmc.list(list (cjr.model.v$mcmc[[1]], cjr.model.v$mcmc[[2]]))
-gelman.diag (chainsCJR.v, multivariate=F) # convergence looks fine for both models
+chainsIFE.v <- mcmc.list(list (ife.model.v$mcmc[[1]], ife.model.v$mcmc[[2]])) 
+gelman.diag (chainsIFE.v, multivariate=F)
 
-Alpha.v <- rbind ( chainsCJR.v[[1]][,grep("alpha", colnames(chainsCJR.v[[1]]))]
-                   , chainsCJR.v[[2]][,grep("alpha", colnames(chainsCJR.v[[2]]))])
-Beta.v <- rbind ( chainsCJR.v[[1]][,grep("beta", colnames(chainsCJR.v[[1]]))]
-                  , chainsCJR.v[[2]][,grep("beta", colnames(chainsCJR.v[[2]]))])
-Theta.v <- rbind ( chainsCJR.v[[1]][,grep("theta", colnames(chainsCJR.v[[1]]))]
-                   , chainsCJR.v[[2]][,grep("theta", colnames(chainsCJR.v[[2]]))])
+Alpha.v <- rbind ( chainsIFE.v[[1]][,grep("alpha", colnames(chainsIFE.v[[1]]))]
+                   , chainsIFE.v[[2]][,grep("alpha", colnames(chainsIFE.v[[2]]))])
+Beta.v <- rbind ( chainsIFE.v[[1]][,grep("beta", colnames(chainsIFE.v[[1]]))]
+                  , chainsIFE.v[[2]][,grep("beta", colnames(chainsIFE.v[[2]]))])
+Theta.v <- rbind ( chainsIFE.v[[1]][,grep("theta", colnames(chainsIFE.v[[1]]))]
+                   , chainsIFE.v[[2]][,grep("theta", colnames(chainsIFE.v[[2]]))])
 
 plot (colMeans (Alpha.v))  # difficulties
 plot (colMeans (Beta.v))   # signal
