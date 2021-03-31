@@ -112,7 +112,7 @@ column <- ids$column[sel]
 ## Read votes                             ##
 ## exported to disk by code/data-prep.r   ##
 ############################################
-vot23  <- read.csv("v23.csv"        ,  header=TRUE)
+#vot23  <- read.csv("v23.csv"        ,  header=TRUE)
 vot4on <- read.csv(  "v456789ab.csv",  header=TRUE)
 # choose what votes will be analyzed
 #vot <- vot23  # Woldenberg
