@@ -1,0 +1,131 @@
+Ruling politics
+
+
+
+Carroll Nalepa paper: Efficient Polish secret
+
+A. Despite centralized of agenda power in the hands of the Speaker of the Polish Sejm in the late 1990s (date?), private MPs remained influential for a while. The paradox stemmed from lack of unity of the (post-Solidaity) AWS coalition that adopted rules change. It was only after the next election, when SLD---the very coalition that reformers wished to constrain---that the consequences of rules change became manifest. 
+
+B. Centralization created incentives for long coalitions to cristalize around a new ideological alignment.
+
+Evidence
+
+a. Government became much less likely to be rolled in the legislative process. 
+
+b. Ideal point scaling reveals changing MP segmentation.
+
+
+
+Slater paper
+Q: Are formal rules institutions? A: Only partially. The missing part is a set of norms and informal institutions that complete the picture.
+
+Paper is provocative, getting into the opaque realm of unwritten, informal institutions. 
+
+Case study: 2004 Indonesian reform from semi- to presidentialism. 
+
+When putting up a cabinet, the reform should have replaced a "Proportionality" (Gamson)" logic with a "Victory" (winner-take-all) logic. Yet the 2004 reform did not, there was a continued reliance on powersharing---indicating the stickiness of informal institutions. 
+
+Stickiness stems from multiple and potentially conflictual strategic logics on which norms rest. If single logic shared by all, then reform of formal institution will change behavior. If logics are contested and even opaque, it might not. 
+
+
+
+Both papers are tackling issues that North's later work never addressed. 
+
+North: Istitutions are humanly devised constraints on individual action. They bring a degree of predictability to individual behavior, reducing transaction consts. 
+
+Two types: 
+
+Formal = constitutions, laws, contracts. State-enforced-
+
+Informal = codes of conduct, social norms, conventions. Self-enforcing (or decentralized enforcement---ostracism)
+
+Informal are also human made, yet North leaves their origin, adoption, evolution, and demise mostly unaddressed in the book. They fill many gaps in incomplete contracts. 
+
+This is a worthy research agenda. But also a difficult one---which is why much institutional work takes institutions as exogenous. 
+
+Some challenges:
+
+1. Define the line between formal and informal institutions. Are parties formal? Framers would think NOT. Is the adoption of asymmetric legislative rights that defines modern legislatures formal or informal?
+
+2. Institutionalization seems to be a precondition to do institutional studies. Both papers are studying early years of democratic transition, when new rules are being adopted and their real consequences are being figured out. Institutional reform is very uncertain---Philadelphia---so separating the effect of formal (expected) from informal (unexpected) institutions seems difficul. 
+
+3. Very short time span. It took one general election after the rules change for the Sejm to become cartelized. That was fast. 
+
+4. Premise in Slater that the logic of appointing a cabinet under presidentialism is winner-take-all is wrong. Only when either the president has a majority or is willing live with divided government. Minority presidents in worldwide (Saiegh, Cheibub) systematically attempt to buy support in the assembly by giving cabinet posts (with a Gamson logic) to opposition parties. Not sure why reform in Indonesia should have changed the "logic". 
+
+5. Both paper: what were the intended consequences of reform? Argument that changes brought unintended consequences requires to show that there were no hidden agendas in the process. Also, what other constraints are at play (material? cognitive?). 
+
+Both papers are very promising, studying cases that offer a fresh perspective to legislative studies. 
+
+
+
+
+
+EMM counter example: formally in Mexico City, green means go, yellow means slow down, red means stop. Informally, yellow means speed-up, red speed a lot for a few seconds then stop, green means wait for a few seconds, then go. "Strategic logic" seems shared, yet can't see how changing formal rule might change behavior... Who wants to change it and why? To roundabout?
+
+
+ in Indonesia to navigate towards WTA, but continued reliance on G challenges centrality of formal institutions. EMM : true only if G is only expected in semi-pres and WTA only way to operate in presidentialism---False: minority presidents in Brazil, Uruguay, and elsewhere systematically buy support by Gamson approach.
+
+
+
+
+EMM: Provocative. But define institution: man-made constraints to human action? If so the project points to rediscovering significant constraints? Structure? Culture?
+
+ONly later do we get the info that the alternative is informal norms.
+
+
+
+Cartel (a la Katz-Mair) formed before reform to make executive subservient to parliament. Reform returned president full authority.
+
+EMM: If cartel had means/will to dominate over executive, they presumably could also block constitutional reform. How was 2004 change adopted? Unintended consequence?
+
+EMM PRI 1934--1997 operated likewise but centralizing authority in executive at Congress' expense. 
+
+Need to understand how formal rules and informal powersharing interacted in Indonesia. Informal "institutions" (p.5) must be unpacked to understand the informal strategic logic(s) upon which they rest. 
+
+If single logic shared by all, then formal change that undermines that logic will kill the informal arrangement.
+
+If logics are contested and even opaque, formal change will not kill informal arrangement. 
+
+p.6: primary claim: when informal institutions rest upon multiple and potentially conflictual strategic logics, formal ruel changes can produce partial political change by shifting political actors' relative reliance on those different informal logics, rather than replacing informal logics with formally rule-governed behavior. 
+
+EMM counter example: formally in Mexico City, green means go, yellow means slow down, red means stop. Informally, yellow means speed-up, red speed a lot for a few seconds then stop, green means wait for a few seconds, then go. "Strategic logic" seems shared, yet can't see how changing formal rule might change behavior... Who wants to change it and why? To roundabout?
+
+Illustration: "Gamson (Proportionality)" logic v "winner-takes-all (Victory)" logic. 2004 reform would predict powersharing in Indonesia to navigate towards WTA, but continued reliance on G challenges centrality of formal institutions. EMM : true only if G is only expected in semi-pres and WTA only way to operate in presidentialism---False: minority presidents in Brazil, Uruguay, and elsewhere systematically buy support by Gamson approach.
+
+EMM Ten informal approaches are too many... 
+
+EMM How does a cartel differ from a coalition? Does coalescing once to capture cabinet qualify as cartelization? (p.10)
+
+EMM p10. Gamson conquered Riker in Indonesia is FALSE---Oversized coalition conquered Riker's MWC (both Gamsonian, though). 
+
+
+
+
+
+EMM pre-reactions
+
+Parties seen through the framework of the volume are a form of "informal" institution: they "twist" (some might say "corrupt") the intended goals of formal institutions. 
+
+Take SOP as example: UG aligns the will of branches that formally should be checking each other. Founding fathers would turn in their graves if they learnt about modern political parties. 
+
+Or institutionalized legislatures: they annul the formal equality of all members creating an informal structure creating tiers of influence. 
+
+Strawman? Old institutionalism read formal rules to explain behavior. New one rules + preferences + strategy --> behavior and outcomes. 
+
+Isn't the debate making a strawman by describing institutionalism as the old type?
+
+
+
+
+1992 Sejm standing rules allowed small groups and even individual MPs to challenge the government. Agenda power vested in Prezydium of speaker and four vice-speakers. Private members could introduce bills at will, amend legislation, influence committees.
+
+yrxx reform centralized agenda power in the Marszalek (Speaker), granting him discretion over bill's committee jurisdiction and even denying them committee consideration. 
+
+Yet centralizing effects of reform were delayed. Why? reform designed to constrain one strong opposition party, and reformers were themselves too divided to (EMM) exert positive agenda control (what about negative?) Successors did. 
+
+Solidarity-coalition unarticulated. With highly proportional system, 1991 produced 9.8 parties.
+
+1993: 5 to 8 percent threshold adopted, leaving many out. EMM: who adopted this? 
+   
+
