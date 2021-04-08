@@ -1,0 +1,130 @@
+\begin{thebibliography}{xx}
+
+\harvarditem{Aparicio \harvardand\ M{\'a}rquez}{2010}{aparicio.marquez.2010}
+Aparicio, Gustavo \harvardand\ Javier M{\'a}rquez. 2010.
+\newblock ``Tamaño del Congreso, redistritación y umbral de representación.''
+  Unpublished manuscript, CIDE.
+
+\harvarditem{Black}{1958}{black.1958}
+Black, Duncan. 1958.
+\newblock {\em The Theory of Committees and Elections}.
+\newblock Cambridge:  Cambridge University Press.
+
+\harvarditem[Carrubba, Gabel \harvardand\ Hankla]{Carrubba, Gabel \harvardand\
+  Hankla}{2008}{carruba.etal.ECJ.2008}
+Carrubba, Clifford~J., Matthew Gabel \harvardand\ Charles Hankla. 2008.
+\newblock ``Judicial Behavior under Political Constraints: Evidence from the
+  European Court of Justice.'' {\em American Political Science Review}
+  102(4):435--452.
+
+\harvarditem[Clinton, Jackman \harvardand\ Rivers]{Clinton, Jackman
+  \harvardand\ Rivers}{2004}{clinton.jackman.rivers.2004}
+Clinton, Joshua, Simon Jackman \harvardand\ Douglas Rivers. 2004.
+\newblock ``Statistical Analysis of Roll Call Data.'' {\em American Political
+  Science Review} 98(2):355--70.
+
+\harvarditem{Cox}{2001}{cox.2001}
+Cox, Gary~W. 2001.
+\newblock ``Introduction to the Special Issue.'' {\em Political Analysis}
+  9(3):189--91.
+
+\harvarditem[Est{\'e}vez, Magar \harvardand\ Rosas]{Est{\'e}vez, Magar
+  \harvardand\ Rosas}{2008}{estevez.magar.rosas.2008}
+Est{\'e}vez, Federico, Eric Magar \harvardand\ Guillermo Rosas. 2008.
+\newblock ``Partisanship in Non-Partisan Electoral Agencies and Democratic
+  Compliance: Evidence from {M}exico's {F}ederal {E}lectoral {I}nstitute.''
+  {\em Electoral Studies} 27(2):257--71.
+
+\harvarditem{Gelman \harvardand\ Hill}{2007}{gelman.hill.2007}
+Gelman, Andrew \harvardand\ Jennifer Hill. 2007.
+\newblock {\em Data Analysis Using Regression and Multilevel/Hierarchical
+  Models}.
+\newblock Cambridge University Press.
+
+\harvarditem{Gely \harvardand\ Spiller}{1990}{gely.spiller.1990}
+Gely, Rafael \harvardand\ Pablo~T. Spiller. 1990.
+\newblock ``A Rational Choice Theory of Supreme Court Statutory Decisions with
+  Applications to the \emph{State Farm} and \emph{Grove City} Cases.'' {\em
+  Journal of Law, Economics, \& Organization} 6(2):263--300.
+
+\harvarditem{Heller \harvardand\
+  Mershon}{2005}{heller.mershon.PtySwitchIt.2005}
+Heller, William~B. \harvardand\ Carol Mershon. 2005.
+\newblock ``Party Switching in the Italian Chamber of Deputies, 1996--2001.''
+  {\em Journal of Politics} 67(2):536--59.
+
+\harvarditem{Jackman}{2001}{jackman.2001}
+Jackman, Simon. 2001.
+\newblock ``Multidimensional Analysis of Roll Call Data via {B}ayesian
+  Simulation: Identification, Estimation, Inference, and Model Checking.'' {\em
+  Political Analysis} 9(3):227--41.
+
+\harvarditem{Londregan}{2000}{londregan.2000b}
+Londregan, John~B. 2000.
+\newblock ``Estimating Legislators’ Preferred Points.'' {\em Political
+  Analysis} 8(1):35--56.
+
+\harvarditem[Lunn et~al.]{Lunn, Thomas, Best \harvardand\
+  Spiegelhalter}{2000}{winbugs.2000}
+Lunn, D.J., A. Thomas, N. Best \harvardand\ D. Spiegelhalter. 2000.
+\newblock ``WinBUGS -- a Bayesian modelling framework: concepts, structure, and
+  extensibility.'' {\em Statistics and Computing} 10:325--337.
+\newline\harvardurl{\url{www.mrc-bsu.cam.ac.uk/bugs}}
+
+\harvarditem{Martin \harvardand\ Quinn}{2002}{martin.quinn.2002}
+Martin, Andrew~D. \harvardand\ Kevin~M. Quinn. 2002.
+\newblock ``Dynamic Ideal Point Estimation via {M}arkov {C}hain {M}onte {C}arlo
+  for the U.S.\ {S}upreme {C}ourt.'' {\em Political Analysis} 10(2):134--53.
+
+\harvarditem{Mayhew}{1974}{mayhew.1974}
+Mayhew, David~R. 1974.
+\newblock {\em Congress: The Electoral Connection}.
+\newblock New Haven:  Yale University Press.
+
+\harvarditem[McCubbins, Noll \harvardand\ Weingast]{McCubbins, Noll
+  \harvardand\ Weingast}{1987}{mcnollgast.1987}
+McCubbins, Mathew~D., Roger~G. Noll \harvardand\ Barry~R. Weingast. 1987.
+\newblock ``Administrative Procedures as Instruments of Political Control.''
+  {\em Journal of Law, Economics, \& Organization} 3(1):243--77.
+
+\harvarditem{Poole \harvardand\ Rosenthal}{1997}{poole.rosenthal.1997}
+Poole, Keith~T. \harvardand\ Howard Rosenthal. 1997.
+\newblock {\em Congress: A Political-Economic History of Roll Call Voting}.
+\newblock New York:  Oxford University Press.
+
+\harvarditem{Poole \harvardand\ Romer}{1993}{poole.romer.1993}
+Poole, Keith~T. \harvardand\ Thomas Romer. 1993.
+\newblock ``Ideology, ``Shirking'', and Representation.'' {\em Public Choice}
+  77:185--96.
+
+\harvarditem{{R Development Core Team}}{2009}{r.cite.2009}
+{R Development Core Team}. 2009.
+\newblock {\em R: A Language and Environment for Statistical Computing}.
+\newblock Vienna, Austria:  R Foundation for Statistical Computing.
+\newblock {ISBN} 3-900051-07-0.
+\newline\harvardurl{\url{http://www.R-project.org}}
+
+\harvarditem{Weingast}{1984}{weingast.1984}
+Weingast, Barry~R. 1984.
+\newblock ``The Congressional-Bureaucratic System: A Principal Agent
+  Perspective (with Applications to the SEC).'' {\em Public Choice} 44:147--91.
+
+\harvarditem{Weingast \harvardand\ Marshall}{1988}{weingast.marshall.1988}
+Weingast, Barry~R. \harvardand\ William~J. Marshall. 1988.
+\newblock ``The Industrial Organization of Congress; or Why Legislatures, Like
+  Firms, Are Not Organized as Markets.'' {\em Journal of Political Economy}
+  96(1):132--63.
+
+\harvarditem{Woldenberg}{2008}{woldenberg.2008}
+Woldenberg, José. 2008.
+\newblock ``La difícil autonomía.'' {\em Reforma} .
+
+\harvarditem[Wood et~al.]{Wood, Keith, Lanier \harvardand\
+  Ogundele}{1998}{wood.et.al.acclimationSpCt.1998}
+Wood, Sandra~L., Linda~Camp Keith, Drew~Noble Lanier \harvardand\ Ayo Ogundele.
+  1998.
+\newblock ````Acclimation effects'' for {S}upreme {C}ourt justices: A
+  cross-validation 1888--1940.'' {\em American Journal of Political Science}
+  42(2):690--7.
+
+\end{thebibliography}

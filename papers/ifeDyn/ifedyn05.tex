@@ -1,0 +1,1364 @@
+\documentclass[letter,12pt]{article}
+%\usepackage[letterpaper,right=1in,left=1in,top=1in,bottom=1in]{geometry}
+\usepackage[letterpaper,right=1.25in,left=1.25in,top=1.25in,bottom=1.25in]{geometry}
+\usepackage[longnamesfirst, sort]{natbib}\bibpunct{(}{)}{,}{a}{}{,}
+\usepackage{ae} % or {zefonts}
+\usepackage[T1]{fontenc}
+\usepackage[ansinew]{inputenc}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{url}
+\usepackage{lscape} %landcape pages support
+\usepackage{setspace} %allows to change linespacing
+%\setstretch{2} %linespacing
+%\onehalfspacing
+%\doublespacing
+
+% avoid clubs and widows
+\clubpenalty=9000 \widowpenalty=9000
+% \displaywidowpenalty=9999
+
+\usepackage[pdftex]{graphicx}
+%\usepackage{graphicx}
+\graphicspath{"d:/01/Dropbox/data"}
+\usepackage{color}
+%\usepackage[colorlinks]{hyperref}
+\usepackage{tikz} % Easier syntax to draw pgf files (invokes pgf automatically)
+\usetikzlibrary{arrows,shapes.geometric}
+\usepackage{pgfmath}
+
+\usepackage{multirow} %allows multiple rows in tables
+\usepackage{rotating}% allows sideways tables or other stuff
+
+%for submission: sends figs and tables to last pages, other turns footnotes to endnotes
+%if endnotes used, place \listofendnotes where you want the endnotes to appear (it must be after the last endnote).
+%el archivo "endfloat.cfg" (disponible en C:...\miktex\tex\latex\endfloat) debe guardarse en el directorio de trabajo para jalar sidewaystable al final con demás tablas
+%%\RequirePackage[nomarkers,nolists]{endfloat}
+%%\RequirePackage{endnotes}
+%%\let\footnote=\endnote
+%%\newcommand{\listofendnotes}{
+%%   \begingroup
+%%   \parindent 0pt
+%%   \parskip 2ex
+%%   \def\enotesize{\normalsize}
+%%   \theendnotes
+%%   \endgroup
+%%}
+
+% titlepage without author and date
+%\renewcommand{\maketitle}{
+%%   \begin{spacing}{1.5}
+%%   \centering
+%%   \LARGE{\textbf{\@title}}
+%%   \end{spacing}
+%%}
+
+% to change margins in a section -- type \begin{changemargin}{deltaLEFT}{deltaRIGHT}
+\def\changemargin#1#2{\list{}{\rightmargin#2\leftmargin#1}\item[]}
+\let\endchangemargin=\endlist
+
+%permiten añadir espacio arriba o abajo del texto de un renglón en una tabla
+\newcommand\T{\rule{0pt}{2.6ex}}         % Top strut at least 2.6ex
+\newcommand\B{\rule[­1.2ex]{0pt}{0pt}}   % Bottom strut at least 2.6ex
+%usage
+%\begin{tabular}[t]{|c|c|}
+% \hline
+% \multicolumn{2}{|c|}{Laplace transforms\T\B}  \\\hline
+% $f(t)$ \T        & $(p)$ \B                     \\\hline
+% $\delta(t)$      & $1$ \T                       \\[.5ex]
+% $\cos\omega_0t$  & $\frac{p}{p^2+\omega_0^2\B}$ \\\hline
+%\end{tabular}
+
+%\bibdata{d://01//mydocs//1new//}
+
+%adds comma-separator to thousands
+%\usepackage[np]{numprint}
+
+\usepackage{tikz} % Easier syntax to draw pgf files (invokes pgf automatically)
+\usetikzlibrary{arrows}
+
+\begin{document}
+
+\title{Partisanship Among the Experts: The Dynamic Party Watchdog Model of IFE, 1996-2010\thanks{
+     Paper presented at the Electoral Administration in Mexico research workshop organized by the Center for U.S.--Mexican Studies of the University of California, San Diego, September 23, 2010. We are grateful to Andrew Martin for comments and critiques and to Omar Alejandre for sharing his data on originating IFE committees. Authors are responsible for any errors.} }
+\author{Eric Magar\\ITAM\\ {\small \url{emagar@itam.mx}}
+    \and Federico Estévez\\ITAM\\ {\small\url{festevez@itam.mx}}
+    \and Guillermo Rosas\\Washington Univ., St.\ Louis\\ {\small \url{grosas@wustl.edu}} }
+\date{\today}
+\maketitle
+% \thispagestyle{empty}  %% removes page numbers
+% \pagestyle{empty}      %% removes page numbers part 2
+
+%\begin{center}\textbf{Draft} --- not for circulation --- comments very welcome\end{center}
+
+\begin{abstract}
+\noindent We use a dynamic item response theory model \citep{martin.quinn.2002} to investigate ideal point drift and stability in IFE's Council General, charged with federal electoral regulation and composed of non-partisan experts selected by Congress.  Results indicate that stability has predominated, but that several council members drifted over time to distinct positions as revealed by their propensities to vote with or against other councilors.  We present evidence about some of the factors generating such movements, highlighting two sets of countervailing influences.  One set, important for the relative stability of voting patterns, is the persistent bias introduced by partisan selection of council members, particularly pronounced during election season, when the council has weak control over its agenda, but also reflecting sponsors' long-term strategic imperatives in electoral regulation. Another set of influences is related to IFE's institutional set-up, especially its committee system and the need for cooperation among councilors with divergent party sponsors. The gains from trade may be strong enough to offset partisan segmentation of the council, as was arguably the case during a five-year spell for the Woldenberg council, but not the remaining nine years examined.
+\end{abstract}
+
+%FRAMING FUTURO
+% Clinton Jackman Rivers dicen que sin sincere voting Nominate está mal (creo).
+% En realidad no está mal el número, pero sí su interpretación.
+% Sin voto sincero Nominate (y Theta) deja de ser medida de ideología
+% para volverse un mero resumen de los determinantes del voto.
+% Para entenderlo hay que entender primero los determinantes.
+
+We seek evidence of stability in representative bodies by using Martin and Quinn's \citeyearpar{martin.quinn.2002} dynamic estimation method for ideal points in a regulatory board. The case study is Mexico's Federal Election Institute (IFE), whose Council General decides all aspects of election regulation and oversaw Mexico's transition to a system of competitive elections. We argued in our previous work \citep{estevez.magar.rosas.2008} that IFE is an agent of the congressional parties who appoint and can impeach the council's nine members.  This essential factor would argue in favor of relative stability in ideal points, except to the extent that the strategic needs of the principals should change with regard to electoral regulation.  Yet councilors' voting records reveal a surprising amount of movement over time, of two kinds.  One consists of singular shocks followed by return to a central tendency; the other of continuous monotonic drift of ideal points that reposition councilors in the spatial map. This second type of drift we attribute to the institutional incentives for vote-trading across IFE-based issue areas.
+
+It is common in the literature on ideal point estimation to infer ideological placement from uncovered ideal points.  We are more agnostic about this convention, as we discuss in section 1, because ideal points recovered by scaling techniques are valid measures of personal beliefs only under quite stringent conditions. It seems more prudent to take them for what they are --- a metric of voting records on divisive issues within the decision-making body. In section 2, we survey the evidence for stability and drift in the Council General, isolating those examples of drift that impact directionality in council decisions. Sections 3 and 4 offer discussions of some key strategic motives that induce ideal point movement in representative bodies. These factors are associated with principal or constituent interests, with the structure and process of decision-making, and with vote-trading.
+
+\section{Dynamic ideal point estimation}\label{S:model}
+
+Scaling techniques to infer ideal points rely on a standard spatial
+model of voting \citep{black.1958,poole.rosenthal.1997}. The
+approach assumes that policy and preferences can be mapped in the
+same space (as points in a line or plane) wherein distance determines
+utility and voting. Voters in this context differ from one another
+in their locations in the policy space, each choosing the
+alternative closer to his or her ideal point. The aim is to use
+observed votes to estimate voters' ideal points and other parameters
+of interest.
+
+We specify a one-dimensional version of the model. In accordance
+with the spatial approach, voting `aye' ($v=1$) or
+`nay' ($v=0$) on an issue %(we here drop $i$ subscripts for convenience)
+depends on the relative locations of policy outcomes vis-à-vis voter
+$j$'s ideal point $x_j$ in space. Voting is sincere (we revisit this
+assumption in section 3). If $x^{(A)},x^{(N)} \in \mathbb{R}$ denote
+the outcomes of the aye and the nay votes, respectively, it is their
+midpoint $m=(x^{(A)}+x^{(N)})/2$ that matters for analysis. The
+voter will prefer the alternative falling on the same side of $m$ as
+his or her ideal point. Formally, $j$'s vote propensity is $v^*_{j}=
+\delta(x_j - m) +\text{error}$,\footnote{Item response theory models
+designed to infer a latent trait (eg. intellectual ability or
+ideology) from allegedly related subjects' traits (eg. answers to
+items in the GRE test or roll call votes) are routinely used in
+ideal point estimation. In IRT context, $m$ is the item difficulty
+parameter and $x_j$ the ability parameter. When relying on quadratic
+utility functions, as we do, $\delta = -2(x^{(A)} - x^{(N)})$.
+Estimation does not recover the coordinates of the aye and nay
+policy alternatives, only their midpoint. As the distance between
+them increases, their choice becomes likelier to arouse passions
+between voters, which is precisely what $\delta$ is intended to
+capture.} where $x_j-m$ is the deterministic part of voting,
+$\text{error}$ is random noise, and $\delta \in \mathbb{R}$ is the
+signal-to-noise ratio. The $\delta$'s sign fixes issue polarity (so
+that conservatives can also vote aye) while its size in absolute
+value weighs the importance of the systematic part of the vote
+relative to the random part. In the extreme $\delta=0$ and voting is
+entirely determined by the random disturbance. The voting rule is
+$v_{j}=1 \iff v^*_{j} \geq 0$, otherwise $v_{j}=0$.
+
+\begin{figure}
+ \begin{center}
+%%    \includegraphics[width=.8\textwidth]{d:/01/data/rollcall/ife_cg/graphs/all+divVotsSemestre.pdf} \\
+    \includegraphics[width=.8\textwidth]{../graphs/all+divVotsSemestre.pdf} \\
+ \caption{\emph{Universe of roll-call votes and analyzed subset.}
+ Left dotted line marks a partial Council renewal, the right one a
+ full renewal. Stars on x-axis mark federal election semesters.}\label{F:all+div}
+ \end{center}
+\end{figure}
+
+We analyze all contested roll call votes reported on IFE's Council
+General between October 1996 and April 2010. (We aggregate data in
+semesters; since cycles at IFE most often began in late October,
+periodization begins in that month and the start of our series will
+be referred to as the the first semester 1997 from here on.) A vote
+qualifies as contested when, ignoring absences, at least one
+councilor voted contrary to the rest or abstained. This filter
+removes from the dataset 3,334 unanimous votes which fail to
+distinguish councilors from one another, leaving our empirical base
+with 1,245 roll call votes, 27 percent of all. The raw descriptives
+of this dataset are displayed in Figure \ref{F:all+div}, which also
+shows variations across semesters in the degree of conflict observed
+in council voting. The Council General, a nine-member board, was
+newly appointed at the start of the period we scrutinize, and
+underwent partial renewal in December 2000, when two members
+resigned and took executive appointments.  Mandatory full
+replacement occurred in October 2003. After the 2007 election
+reform, partial renewals of three members were undertaken in
+February and then again August of 2008. These moments of replacement
+appear as vertical dotted lines in Figure 1 (and later figures as
+well), which serve to separate five distinct ``periods'' of IFE
+history corresponding to shifts in Council General composition.
+
+We specified a version of Martin and Quinn's \citeyearpar{martin.quinn.2002} dynamic IRT model to estimate members' ideal points by semester from the dataset of contested roll calls. At the core of their model is the assumption that a voter's ideal point may not be constant over time, as standard IRT models assume. Estimating the model separately for discrete time periods (semesters in our case) would be an obvious alternative, but one assuming that a member's ideal point at time $t$ is independent from her ideal point at time $t-1$.
+
+Instead, the dynamic model
+posits a temporal dependency for member $j$'s ideal point $x$ in
+semester $t$, such that $x_{j,t} \sim \mathrm{N}( x_{j,t-1},S )$
+where $S$, the slack, governs how much past determines present:
+$S=0$ makes the model equivalent to the classic or static one, while $S
+\to \infty$ assumes time independence. We ran the model with
+different slack values, opting for $S=.02$ in the results we
+present, the standard deviation of which is one-fourteenth of the
+full left-right spectrum we define below. We detect drift in ideal
+points even with this small a value for slack.\footnote{Using larger
+values for $S$ did not change the direction nor magnitude of changes
+in the full periods covered, but allowed for high one-semester
+volatility. Our choice of $S=.02$ smoothes the short-term trends.}
+
+A separate model was estimated for period III because it shares no
+members with the first two periods; periods I and II, sharing 7 of
+11 councilors, were estimated jointly (as were periods III, IV and
+V). Small committees, of course, raise complications for model
+estimation \citep{londregan.2000b}.  Using period III, with $J=9$
+councilors and $I=336$ contested items to illustrate, $J \times
+I=3024$ data points are available to estimate $2 \times I+J=681$
+parameters. With only slightly more than 4 observations per
+parameter, likelihood-based estimation becomes problematic for a
+case such as IFE.  Bayesian methods, implemented via MCMC simulation
+\citep{clinton.jackman.rivers.2004}, can overcome such
+problems.\footnote{Three chains were updated 200 thousand times
+each, preserving every 100th observation from the second half. We
+thus obtained a sample of $3\times1000=3000$ posterior simulations
+to derive our results. Gelman and Hill's
+\citeyearpar{gelman.hill.2007} $\hat{R} \approx 1$, suggesting that
+the chains had converged towards a steady state. BUGS
+\citep{winbugs.2000} was used for model estimation, invoking it from
+R \citep{r.cite.2009}, also used for post-analysis. The appendix to
+the paper provides a sample of our code.}
+
+The Bayesian approach requires prior probabilities for un-modeled
+parameters to be estimated: $x_{j,0}$ (the start of ideal point
+series at $t=0$), $m_i$ and $\delta_i$ ($i=1\cdots I$ and $j=1\cdots
+J$). We adopted non-informative priors (i.e., a zero-mean normal
+distribution with variance one) for all parameters except two
+extremist councilors' starting  ideal points. These --- borrowing
+from the issue-anchored IRT model in Estévez, Magar and Rosas (2008)
+--– were instead given semi-informative priors to set the arbitrary
+scale on which estimates are mapped and to give a sense of what
+directionality in IFE's issue space actually signifies.\footnote{In
+periods I and II, Cárdenas anchors one end with $x_j \sim N(-2,.25)$
+while Barragán the other with $x_j \sim N(2,.25)$; in period III
+González Luna and Gómez Alcántar assume the extremes.}  We designate
+these directions as ``north'' and ``south'', mainly in order to
+avoid confusion with broader ideological referents more common to
+the literature.
+
+Poole and Rosenthal \citeyearpar{poole.rosenthal.1997}, for example,
+explicitly interpret the scores recovered by their W-Nominate
+algorithm as estimates of representatives' ideology on a left--right
+or liberal--conservative scale.  This work was received with such
+enthusiasm in the discipline that the interpretation of ideal points
+as cardinal translations of the ideological divide is accepted by
+many with little discussion.  But the interpretation remains
+questionable. The translation of legislative scaling scores into
+degrees of ideology is perfectly valid when personal beliefs are the
+sole determinant of voting.  If this stringent condition is met,
+ideal points reflect sincere preferences and votes --– the standard
+assumption of voting models and of ideal point estimation methods.
+Any other influences on voting --- constituent or principal
+interests and pressures, non-neutral institutions and procedures in
+the assembly, and vote-trading are frequently cited
+\citep[see][]{cox.2001} --– involve one degree or another of
+strategic behavior which may overwhelm and invalidate sincerity in
+preference revelation.  Positive political theory has shown the near
+ubiquity and the many guises of strategy in politics and all
+determinants of voting in committees except for personal beliefs are
+incarnations of strategic behavior. Thus, we prefer to be agnostic
+about the premise of sincerity in voting behavior in representative
+bodies.  Sincere preferences may well undergird councilors' votes at
+IFE, but the presence of factors inducing more strategic
+representation of preferences over electoral regulation counsels one
+to avoid easy but potentially erroneous simplifications.
+
+%Previous paragraph can be connected with elaboration on ideology: directionality, issue voting, and Moreno's 2nd dimension.
+
+\section{Drift and stability in a regulatory council}\label{S:results}
+
+Recent developments in the field of ideal point estimation
+\citep{martin.quinn.2002,clinton.jackman.rivers.2004} have provided
+a method to measure temporal shifts in voting records in one small
+body that is unique in its attributes.\footnote{There are other
+dynamic methods available. Discuss Poole and Rosenthal's (not useful
+for small committee) as well as that paper using optimal
+classification of a daily basis. Jackman also has a daily thing in
+his web page.} The U.S.\ Supreme Court, with life tenure for its
+members and full docket or agenda control, is so designed that
+justices are free to follow their sincere preferences when voting.
+Estimates reveal that many court members have changed voting
+criteria, often substantially, relative to other members over the
+course of their careers.  This is taken to mean that ideological
+drift occurs which quite possibly counters the initial expectations
+held when selecting and ratifying them to their posts.
+
+In representative assemblies, tenure is insecure and agenda control
+often concentrated in legislative party government. Members of
+assemblies not formally insulated from external political pressures
+nor enjoying unbiased rules and procedures in internal affairs, are
+much more likely to engage in strategic voting. Abundant evidence
+for this has been accumulated for the House \citep{mayhew.1974},
+congressional committees \citep{weingast.marshall.1988}, regulatory
+boards \citep{mcnollgast.1987}, and lower courts
+\citep{gely.spiller.1990}, all in the United States. Recent
+scholarship has applied the same logic beyond the U.S., to the
+European Court of Justice \citep{carruba.etal.ECJ.2008}, the Italian
+Chamber of Deputies \citep{heller.mershon.PtySwitchIt.2005}, and
+Mexico's IFE. These studies share the view that if personal beliefs
+matter at all in how members of representative bodies vote, they are
+relegated by much more important and systematic forces.
+Representatives' votes are driven by the interests and preferences
+of their constituents and mediated by relevant institutions
+endogenous to the assembly. It follows that if neither the
+priorities of their constituents nor mediating circumstances change,
+a representative's voting record should remain unchanged over time,
+reflecting the equilibrium of forces supporting it. Even Poole and
+Romer \citeyearpar{poole.romer.1993} argue as much, in an early
+article on ``structured'' roll calls that induce ideological
+stability in the U.S.\ House of Representatives.
+
+\begin{figure}
+ \begin{center}
+  \begin{tabular}{cc}
+    (a) & (b) \\
+%%    \includegraphics[width=.48\textwidth]{d:/01/data/rollcall/ife_cg/graphs/1dimDynWold9703jmayorPrecision.pdf} &
+%%    \includegraphics[width=.48\textwidth]{d:/01/data/rollcall/ife_cg/graphs/1dimDynUgaVal0410j.pdf} \\
+    \includegraphics[width=.48\textwidth]{../graphs/1dimDynWold9703jmayorPrecision.pdf} &
+    \includegraphics[width=.48\textwidth]{../graphs/1dimDynUgaVal0410j.pdf} \\
+  \end{tabular}
+  \caption{\emph{Councilors' ideal points in three councils.} Bands
+  contain 95\% of the councilor's posterior ideal point density (otherwise known as 95\% Bayesian confidence intervals); lines report the median of that density. Colors
+  indicate councilor's sponsoring party: blue = PAN, red = PRI, gold = PRD,
+  orange = PT, green = Green.}\label{F:idealPointMatrices}
+ \end{center}
+\end{figure}
+
+Let us apply this simple schematic logic to IFE's Council General.
+Figures \ref{F:idealPointMatrices}a and \ref{F:idealPointMatrices}b
+report the individual trajectories of all councilors at IFE since
+1997, mapping the central tendency of the posterior $x_{j,t}$
+density, our dynamic estimate of ideal points, and the standard
+measure of uncertainty over time (the 95\% Bayesian confidence
+interval). Colors identify members' sponsoring parties (PRI in red,
+PAN in blue, PRD in yellow, PT in orange and PVEM in green), which
+our previous work (2008) showed to be a key variable driving voting
+on the council. A fair degree of movement in ideal points is evident
+at first glance, although IFE periods can be distinguished in
+important ways. In the first two periods (the Woldenberg council),
+only two members can be said to have something like flat or stable
+lines –-- Cárdenas at the southern extreme and Luken in the second
+half of that council. Changes in one semester were followed by
+contrary movements in the next few, so these two ended their tenure
+in positions very close to those they exhibited at the outset. This
+is presumably the pattern expected for ideal point stability, with
+small deviations balanced by regress to the individual mean. All
+other members on the Woldenberg council appear to undergo, in
+varying degrees, monotonic change in the location of their ideal
+points over the course of their tenure. This is less acute among
+PRI-sponsored councilors, but the gradual northerly drift of their
+voting choices is readily apparent. Both councilors who quit early,
+Molinar and Zebadúa, show slightly steeper drift, also in a
+northerly direction, enough so to cross the equator of IFE's map.
+The remaining three councilors experienced the most pronounced
+movements in ideal points. In the largest displacement, Barragán, as
+the only member with a southward path, went from the northern
+extreme to the center of the spectrum.  Given that this councilor
+abstained in 22\% of all contested votes over seven years, and in
+over 40\% of them during the last three years of the Woldenberg
+council, his belated centrism may be a show of indifference between
+northern and southern policy options. The other two with strong
+displacements over time, Lujambio and Cantú, abandoned early
+southern positions and migrated far north toward the zone occupied
+by the PRI-sponsored contingent.
+
+For the new council appointed in 2003 with partial renewals in 2008,
+some drift or monotonic change in ideal points is also present but
+to a much lesser degree than before. Indeed, relative stability in
+ideal point location seems to characterize the council after 2003.
+Of the fifteen councilors who have participated since that year, ten
+reveal fairly stable profiles.  One (López Flores) migrated north
+while four trekked southward. The PVEM-sponsored councilor (Gómez
+Alcántar) drifted slowly toward the south until rebounding in 2007
+and again sliding south, but nonetheless remaining the northern
+extremist since his appointment. Councilors Morales and more
+recently Baños also drifted toward the center of the map, but only
+current Council President Valdés has crossed the equator. Previous
+Council President Ugalde crossed the equator in the election
+semester of 2006 only to quickly cross back to his earlier and
+stabler position south-of-center. It should be stressed that
+councilors' behavior from late 2007 through mid-2008, when
+congressional parties were deciding the order of premature
+dismissals from the council, was frankly anomalous. Spatial
+movements in that vulnerable period reflect extreme noise, and
+erratic movements are discernible for several council members.
+Ignoring that period would show stability after early drifts for
+Gómez Alcántar and López Flores. %Prediction from last paragraph: Are deltas smaller in the very noisy period at the end of period III? They should.
+
+In contrast to the Woldenberg council, those under Ugalde and Valdés have shown greater stability among individual councilors and no trace of a major directional shift toward one extreme or another.  While jumps in ideal points are visible for virtually all members after 2003, they tend to be followed by regress to the individual means.  Does this summary overstate the drift under Woldenberg and understate that under Ugalde and Valdés?
+
+\begin{figure}
+ \begin{center}
+  \begin{tabular}{cc}
+    (a) & (b) \\
+%%    \includegraphics[width=.48\textwidth]{d:/01/data/rollcall/ife_cg/graphs/driftWlines.pdf} &
+%%    \includegraphics[width=.48\textwidth]{d:/01/data/rollcall/ife_cg/graphs/driftUVlines.pdf} \\
+    \includegraphics[width=.48\textwidth]{../graphs/driftWlines.pdf} &
+    \includegraphics[width=.48\textwidth]{../graphs/driftUVlines.pdf} \\
+  \end{tabular}
+ \caption{\emph{Ideal point drift patterns.} Grey bands indicate, to each side of
+ white 45° line, mean absolute drift in period plus one standard deviation; black points fall
+ beyond. Green circles start drift trajectory for one councilor, red ones end it.}\label{F:drift}
+ \end{center}
+\end{figure}
+
+To answer that question, Figures \ref{F:drift}a and \ref{F:drift}b
+convey a different perspective on ideal point drift, plotting all
+members' individual ideal points in semester $t$ against semester
+$t+1$.  Any inter-temporal movement will pull the point away from
+the 45° diagonal, in one direction or the other. The width of the
+grey band around the diagonal represents in each direction the mean
+absolute change in the period covered by the chart plus one standard
+deviation.  Black scatter points falling beyond that grey band are
+statistical outliers.  Further, to illustrate movements over time by
+individual councilors, thin lines connect their series of ideal
+points over time. The green and red contours on some points indicate
+the beginning and end, respectively, of each councilor's path. %Check in code how it is that I computed the grey bands.
+
+The green starting points are useful, off the bat, for refuting a
+common pattern of early drift called the ``freshman effect''
+\citep{wood.et.al.acclimationSpCt.1998}, which scholars of the U.S.\ Supreme Court often attribute
+to newly appointed justices. This effect refers to a deferential
+pattern of voting by which rookie judges ``sacrifice'' their sincere
+beliefs in order to learn the ropes and build reputations for
+teamwork within the institution.  At IFE, the only evidence of
+freshman effect singles out Councilor Nacif who falls from a
+position near the expected median southward toward colleagues also
+sponsored by the PAN.
+
+The charts, however, do show different mixes of stability and drift
+in the Woldenberg and Ugalde councils. Under Woldenberg, most
+council members remain comfortably within the standard deviation of
+inter-temporal change in ideal points. For all practical purposes,
+this can be taken to mean that even steady but piecemeal drift in
+one direction is tantamount to stable relative positioning. Only
+four out of eleven councilors in that period show evidence of major
+drift, and their connected points are often outside the normal
+distribution of semester changes. As already noted, Barragán shifted
+steadily toward the center, with one ferocious lurch southward after
+the 2000 elections. But councilors Lujambio, Cantú and (more
+marginally) Zebadúa sustained momentous and abnormal movement in a
+northerly direction.
+
+The members of the Ugalde council were generally more stable than
+their predecessors, but within a wider boundary of normal change.
+Abnormally large movements in ideal point location are of two types.
+One characterizes the extremists in this period –-- Gómez Alcántar
+to the north and González Luna and Sánchez to the south. For the
+latter two, pronounced jumps in one direction are followed by
+equally pronounced jumps in the contrary direction, neither changing
+their relative positioning on the council nor implicating
+coalitional shifts in voting behavior. The other type of shocks
+involve four different councilors close the median at different
+moments (Ugalde, López Flores, Valdés, and Nacif). Their pronounced
+jumps across the spectrum, almost always fllowed by equally
+pronounced jumps back again, appear to be erratic, but always imply
+sharp changes in the dominant coalition in the council. Their shock
+movements make the council more unpredictable as the median member
+ping-pongs across the spectrum.
+
+\begin{figure}
+ \begin{center}
+  \begin{tabular}{cc}
+    (a) & (b) \\
+%%    \includegraphics[width=.48\textwidth]{d:/01/data/rollcall/ife_cg/graphs/minmaxmedWol.pdf} &
+%%    \includegraphics[width=.48\textwidth]{d:/01/data/rollcall/ife_cg/graphs/minmaxmedUgVal.pdf} \\
+    \includegraphics[width=.48\textwidth]{../graphs/minmaxmedWol.pdf} &
+    \includegraphics[width=.48\textwidth]{../graphs/minmaxmedUgVal.pdf} \\
+  \end{tabular}
+ \caption{\emph{Ideal point range and median.} Vertical bars connect extreme ideal points for each semester; black points indicate the semester's expected median.}\label{F:minmaxmed}
+ \end{center}
+\end{figure}
+
+Tracking the median in a small decision-making body is yet another
+way to discuss the relative impact of stability and drift in
+members' ideal points. Figures \ref{F:minmaxmed}a and
+\ref{F:minmaxmed}b display the full \emph{range} of ideal points
+estimated for the entire council in every semester.  In addition,
+they indicate the position of the \emph{expected median} in every
+semester (a statistic also reported in figure \ref{F:allwMedian}).
+The Woldenberg council shows clear drift in the median. From being a
+very divided body for the first year and a half of its existence,
+with the median firmly at the equator, the council evolved slowly
+but steadily into one dominated by its northern faction. Indeed, the
+median from mid-1999 onward is so close to the council's northern
+extreme that dissenting members to the south could be effectively
+ignored by the majority. Predictably, the two dissidents in that
+period, the centrist Barragán and the more extremist Cárdenas, were
+routinely branded as uncooperative by the rest of their colleagues.
+Thus, the Woldenberg council availed itself of ideological drift by
+a minority of its members in order to forge an iron-willed majority
+that held sway for the better part of five years, buffeted but
+undiminished by the tensions of two federal elections as well as the
+major campaign finance scandals of Pemexgate and Friends of Fox.
+
+The Ugalde and Valdés councils, in contrast, show evidence of greater volatility in the median position.  While medians located to the south have dominated in 9 of 13 semesters, northern majorities gained control in the election semester of 2006 and again in 2008, with the entrance of current Council President Valdés.  In the semesters between oscillating majorities, the median has been stationed at the equator, indicating a divided and less predictable council. In contrast to the Woldenberg period, the post-Woldenberg councils have had relatively stable individual voting patterns but greater instability in majority formation.
+
+The following two sections of the paper assess the relative contribution of party sponsorship and gains from trade to these patterns of drift and stability in IFE's Council General.
+
+\section{Who pays the piper calls the tune}\label{S:explaining}
+
+After the creation of IFE in 1990, progressive waves of later reform ensured the withdrawal of the federal executive from its operations and the reduction of formal party dominance over its council and bureaucracy.  Yet legislative parties retained and even expanded a powerful arsenal of legal instruments in order to retain informal dominance over IFE. The central or decisive instrument that assures partisan control over IFE affairs is the logrolling selection mechanism used for appointment to the Council General, which grants parties quotas on the council and mutual veto rights in councilor selection.  Delegation by legislators to non-partisan experts is a common solution to problems of scarce time and information over specialized areas of public import.  In Mexico, it was also the case that legislators sought to build public trust in an electoral system corroded by decades of authoritarian control, fraud and corruption.  Even more important, they also intended to staunch the growing series of post-electoral disputes instigated by losing parties and candidates decrying systematic election rigging.
+
+The risk involved in delegation to experts is that of potential
+agency losses when agents act against the interests of their
+principals.  The classic solution for minimizing agency costs
+combines careful screening with permanent monitoring and credible
+recourse to sanctions in case of non-compliance by agents.  In
+appointing their agents, principals often stack the deck in favor of
+compliance from the outset, choosing types with policy
+predispositions similar to their own \citep{mcnollgast.1987}. To the
+extent that agents value their jobs and their future, overt as well
+as implicit threats to use the ``big club behind the door''
+\citep{weingast.1984} should reduce any gap in preferences remaining
+between agents and their principals.  This view of delegation is
+encapsulated in Mayhew's \citeyearpar{mayhew.1974} seminal model of
+representatives as automatons concerned only with keeping their
+constituents happy. A member's revealed preferences, from this
+viewpoint, will shift only in response to changes in principals'
+interests.
+
+\begin{figure}
+ \begin{center}
+  \begin{tabular}{cc}
+    (a) & (b) \\
+%    \includegraphics[width=.48\textwidth]{d:/01/data/rollcall/ife_cg/graphs/allWdynNoNames.pdf} &
+%    \includegraphics[width=.48\textwidth]{d:/01/data/rollcall/ife_cg/graphs/allUVdynNoNames.pdf} \\
+%%    \includegraphics[width=.48\textwidth]{d:/01/data/rollcall/ife_cg/graphs/allWdyn.pdf} &
+%%    \includegraphics[width=.48\textwidth]{d:/01/data/rollcall/ife_cg/graphs/allUVdyn.pdf} \\
+    \includegraphics[width=.48\textwidth]{../graphs/allWdyn.pdf} &
+    \includegraphics[width=.48\textwidth]{../graphs/allUVdyn.pdf} \\
+  \end{tabular}
+  \caption{\emph{Three Councils General.} Lines
+  report the median of each councilor's posterior density, colors indicating
+  sponsoring party. Triangles report expected council median. Stars in
+  x-axis mark federal election semesters.}\label{F:allwMedian}
+ \end{center}
+\end{figure}
+
+Of course, selection errors are always possible if improbable.  IFE
+has presented two clear cases of unexpected mistakes in councilor
+selection –-- two out of 26 councilors appointed since 1997. The
+first was that of Barragán who for four years occupied the northern
+extreme of the Woldenberg council, routinely opposed to the other
+members of the Left contingent, yet faced no threat to his survival.
+The second example was that of Morales, promoted in 2003 to the
+council by the PAN, who was consistently opposed to his colleagues
+sponsored by the same party and well to his south.  Morales met a
+different fate from Barragán's and was ousted in the first wave of
+dismissals from the Ugalde council after the 2007 election reform.
+He was accompanied by PRI-sponsored colleagues Ugalde and Latapí,
+who as nominees of the (losing) Gordillo faction in the power
+struggles waged by the PRI hierarchy, occupied adjacent but distant
+positions to the rest of their contingent (see Figures
+\ref{F:allwMedian}a and \ref{F:allwMedian}b for the combined
+trajectories of all councilors since 1997).
+
+The demise of the Ugalde council in the wake of the 2007 reform
+brings to the fore the nuclear option that legislative parties can
+deploy against IFE's council.  Since IFE's establishment in 1990,
+four complete sets of councilors have been selected by Congress (in
+1990, 1994, 1996 and 2003).  Of these four sets, two have suffered
+abrupt and total replacement and another has had two thirds of its
+membership prematurely ousted.  Only the Woldenberg council remained
+unscathed by congressional interference in councilors' tenure,
+although impeachment threats were frequently voiced by more than one
+party's leaders and spokespersons. The not so unusual resort to the
+nuclear option is the final, ex post instrument used to cow IFE
+councilors into alignment with their party sponsors.
+
+\begin{figure}
+ \begin{center}
+  \begin{tabular}{ccc}
+    (a) & (b) & (c)\\
+%%    \includegraphics[width=.3\textwidth]{d:/01/data/rollcall/ife_cg/graphs/woStackPRI.pdf} &
+%%    \includegraphics[width=.3\textwidth]{d:/01/data/rollcall/ife_cg/graphs/woStackPAN.pdf} &
+%%    \includegraphics[width=.3\textwidth]{d:/01/data/rollcall/ife_cg/graphs/woStackPRD.pdf} \\
+    \includegraphics[width=.3\textwidth]{../graphs/woStackPRI.pdf} &
+    \includegraphics[width=.3\textwidth]{../graphs/woStackPAN.pdf} &
+    \includegraphics[width=.3\textwidth]{../graphs/woStackPRD.pdf} \\
+    (d) & (e) & (f)\\
+%%    \includegraphics[width=.3\textwidth]{d:/01/data/rollcall/ife_cg/graphs/ugvalStackPRImadPVEM.pdf} &
+%%    \includegraphics[width=.3\textwidth]{d:/01/data/rollcall/ife_cg/graphs/ugvalStackPRIelba.pdf} &
+%%    \includegraphics[width=.3\textwidth]{d:/01/data/rollcall/ife_cg/graphs/ugvalStackPAN.pdf} \\
+    \includegraphics[width=.3\textwidth]{../graphs/ugvalStackPRImadPVEM.pdf} &
+    \includegraphics[width=.3\textwidth]{../graphs/ugvalStackPRIelba.pdf} &
+    \includegraphics[width=.3\textwidth]{../graphs/ugvalStackPAN.pdf} \\
+    (g) &  & \\
+%%    \includegraphics[width=.3\textwidth]{d:/01/data/rollcall/ife_cg/graphs/ugvalStackPRD.pdf} & & \\
+    \includegraphics[width=.3\textwidth]{../graphs/ugvalStackPRD.pdf} & & \\
+  \end{tabular}
+ \caption{\emph{Overlapping ideal point ranges.} Each panel reports same-sponsor councilors' ideal point estimates (black lines) surrounded by 95\% Bayesian confidence intervals (overlapping shaded zones).}\label{F:overlap}
+ \end{center}
+\end{figure}
+
+The evidence for this alignment is presented in Figures
+\ref{F:overlap}a through \ref{F:overlap}g, which map the degree of
+overlapped ideal point ranges over time among members of each
+partisan contingent.  Dynamic estimation methods impose one more
+challenge for the party sponsor hypothesis beyond the demands of
+static models (such as those in Estévez, Magar and Rosas 2008): they
+require stacking of same-sponsor councilors over time, in tandem.
+Alignment in the Woldenberg council (Fig. \ref{F:overlap}a through
+\ref{F:overlap}c) is consistently strong for the PAN's and PRI's
+contingents, both before and after the partial turnover in both of
+their memberships in 2000, but it is inexistent for the Left's
+contingent.  In PAN's contingent, moreover, the drifts undertaken by
+Molinar and Lujambio are clearly coordinated in tandem and they
+signify the breakup of the \emph{Pentágono}, the coalition of PAN-
+and Left-sponsored councilors to the south that often dominated the
+early Woldenberg council and mirrored the anti-PRI alliance between
+its major rivals that battled together to assure free and fair
+elections in Mexico after 1988. In the Left's contingent, most of
+its councilors (and, after 2000, all of them) stayed to
+the south of other contingents, but there was no coalescence of
+voting among them at any time in the seven years this council
+lasted. The early emergence of opposing extremists from the same
+contingent surely doomed it to eventual insignificance, but the
+drift of Zebadúa and, more notably, Cantú also hurt the prospects
+for cohesion.
+
+For the Ugalde and Valdés councils, the evidence in Figures
+\ref{F:overlap}d through \ref{F:overlap}g points to the greater
+stability in contingent positioning than in the preceding council,
+but lower cohesion as well, for the same partisan segments. The
+PAN's contingent, leaving aside the screening failure of Morales, is
+a stable group of convergent councilors throughout the seven-year
+period, although it appears marginally more centrist under Valdés.
+Its steady ally, except for the election semester of 2006, was the
+\emph{elbista} duo clearly split off from the rest of the PRI's
+contingent.  This story of divergence within the PRI's contingent is
+especially potent in its support for the party sponsorship
+hypothesis.  The national PRI is divided into leadership factions
+that exert constant pressure for access to appointments and spoils.
+In 2003 (and again in 2008), the PRI negotiated factional quotas
+within its council quota of four.  Within weeks of councilor
+designation by Congress, a full-scale revolt erupted within the
+legislative PRI against party caucus leader Elba Esther Gordillo,
+forcing her and her followers into retreat from the party and
+eventually into an informal electoral alliance with the PAN in 2006.
+If events such as these, at the level of IFE's principals, permeate
+to councilor behavior, a rift within the PRI's contingent should
+have opened from the very start of the Ugalde council.  This split
+is clearly visible in Figures \ref{F:overlap}e and \ref{F:overlap}f,
+with the \emph{elbista} councilors mostly south of the equator and
+the other, winning faction's nominees, mostly north of it.
+
+The other leadership faction, then headed by party president Roberto
+Madrazo, also engineered electoral alliances with the Greens in 2003
+and 2006. The PVEM's sole council nominee has occupied the northern
+extreme throughout the entire period, and overlaps with anywhere
+from one to three PRI-sponsored councilors.  However, this
+contingent has veered markedly in its cohesion, more strongly seen
+in federal election semesters and quite weak once election season is
+over.  Nevertheless, with the normal support of Councilor Morales in
+the Ugalde years, the PRI-PVEM alliance has typically generated a
+strong minority faction on the council to date.
+
+The Valdés council, in formation since 2008, reintroduces councilors
+sponsored by the Left to IFE.  Valdés himself first opted for the
+median voter position (like Ugalde before him, ominously), but
+immediately headed south once a second councilor with the same
+sponsor appeared on the council.  Curiously, the current council
+looks more like the early Woldenberg council in terms of relative
+contingent locations, with the Left's contingent anchoring the south
+of the spectrum, the PRI's anchoring the north, and the PAN
+occupying a south-of-center space.  They don't sound as vociferous
+as the \emph{Pentágono} did in 1997--98, but their voting behavior
+is quite similar.  And it hardly seems coincidental, let alone
+surprising, that the anti-PRI alliance is back at the top of the
+partisan agenda in the electoral arena.
+
+To summarize the evidence thus far, the party sponsorship hypothesis
+is strongly supported by the cumulative record of roll calls on the
+Council General.  Same-sponsor councilors tend to overlap as clearly
+demarcated segments on the spatial maps.  Stable voting patterns for
+most councilors and for most contingents dominate as expected.  When
+ideological drift appears in some trajectories, it is likely to be
+shared by same-sponsor colleagues.  And few important changes in
+contingent cohesion or ideal point locations appear that are
+independent of changes in the stances taken by party sponsors.  One
+big exception to the party sponsorship hypothesis, and utterly
+unexplained by it, is left, however.  We refer to the alliance
+between the PRI's and PAN's nominees for five years of the
+Woldenberg council, with the inclusion of two councilors from the
+Left's contingent, in the super-majoritarian faction that dominated
+that period of council history.
+
+Beyond the broad patterns of alignment and cohesion in and among
+partisan contingents on the council, more fine-tuned hypotheses can
+be tested using panel data generated by our dynamic ideal point
+estimation. In what follows, we will look at the temporality of
+ideal point estimates in order to gauge additional effects of party
+sponsorship upon voting at IFE.
+
+\begin{figure}
+ \begin{center}
+%%    \includegraphics[width=.8\textwidth]{d:/01/data/rollcall/ife_cg/graphs/ptyComplaints.pdf}
+    \includegraphics[width=.8\textwidth]{../graphs/ptyComplaints.pdf}
+ \caption{\emph{Variation in agenda control, 1997--2007.} Party complaints filed at Council General as percentage of all issues voted. Grey bars cover electoral semesters and the immediate post-electoral ones.  [Data for issue classification from Omar Alejandre.]}\label{F:agendaControl}
+ \end{center}
+\end{figure}
+
+Unlike most modern legislatures or the U.S.\ Supreme Court, IFE enjoys only imperfect control of its agenda.  Among other political actors and even ordinary citizens in some cases, political parties have ample standing to file complaints at IFE which must be accorded due process, diluting the council's and its committees' gate-keeping power.  But there are temporal variations in party interference of the council's agenda, which follow the federal election cycle.  As shown in Figure \ref{F:agendaControl}, filed party complaints as a percentage of voted issues rise steeply in the semester when elections are held and the two semesters surrounding it.  Here we define the election cycle as the electoral and immediate post-electoral semesters, in which the proportion of party complaints is two-and-a-half times higher than in non-electoral periods.  This differential can be exploited in seeking agenda-control effects in voting patterns and, more specifically, party sponsor effects on councilors, contingents and the council as a whole.  We speculate that the interaction between principals and agents is different in electoral and non-electoral periods.  Parties not only register more complaints in election season, but this flurry of party maneuvers increases the number of controversial and politically-consequential matters considered by IFE. Their complaints should provoke greater partisan segmentation of the Council General than in non-electoral periods.  Specifically, since party sponsors are likely to bring more pressure to bear upon their councilors during electoral periods, we expect same-sponsor councilors to be more cohesive (i.e., their revealed ideal points to be closer) during electoral cycles. Because party rivalries are likely to be more intense during electoral cycles, we also expect polarization between partisan segments on the council to increase in those periods.
+
+We estimate cohesion within contingents by looking at the posterior marginal distribution of the distance between the councilors farthest apart in each partisan contingent.\footnote{For the sake of simplicity, we refer to PRI/Green-sponsored councilors as the PRI contingent. The Greens have been in electoral and legislative alliance with the PRI since 2001, and it is reasonable to view their lone IFE member as a case of co-sponsorship.}  We estimate polarization by looking at the posterior marginal distribution of the distance between the centroids of all pairs of partisan contingents, where the centroids are defined as the median ideological position among same-sponsor councilors (or mean position in the case of two-member contingents).
+
+\begin{table}
+ \begin{center}
+  \begin{tabular}{llrrrr}
+                  &  & \multicolumn{2}{c}{Electoral} &  \multicolumn{2}{c}{Non-electoral} \\
+                  &  & \multicolumn{2}{c}{semester}  &  \multicolumn{2}{c}{semester}      \\
+                  &  & Mean      & Std.\ dev.        & Mean    & Std.\ dev.              \\ \hline
+   \multicolumn{6}{c}{Within-contingent cohesion}  \\
+   PRI    &          &  0.462    & 0.422   &   0.324  &  0.287  \\
+   PAN    &          &  0.650    & 0.310   &   0.679  &  0.330  \\
+   PRD    &          &  0.979    & 0.183   &   1.120  &  0.230  \\ \hline
+   \multicolumn{6}{c}{Between-contingent polarization periods I and II}  \\
+   PRI-PAN & medians  &  0.155    & 0.130   &   0.091  &  0.125  \\
+           & means   &  0.140    & 0.128   &   0.085  &  0.129  \\
+   PRI-PRD &medians  &  0.417    & 0.139   &   0.413  &  0.152  \\
+           & means   &  0.441    & 0.141   &   0.434  &  0.161  \\
+   PAN-PRD &medians  &  0.262    & 0.163   &   0.323  &  0.170  \\
+           & means   &  0.301    & 0.173   &   0.348  &  0.168  \\ \hline
+   \multicolumn{6}{c}{Between-contingent polarization period III}  \\
+   PRI-PAN & medians &  0.639    & 0.140   &   0.369  &  0.160  \\
+           & means   &  0.420    & 0.106   &   0.290  &  0.090  \\ \hline
+  \end{tabular}
+  \caption{\emph{Election calendar effects on council voting.} Posterior marginal mean (standard deviation) of
+  within-contingent cohesion and between-contingent polarization..}\label{t:WiAndBtw}
+ \end{center}
+\end{table}
+
+Table \ref{t:WiAndBtw} displays statistics for these two hypotheses
+about temporality.  Since they are heavily influenced by our
+semi-informative priors for extremists' ideal points, the first
+semesters of the Woldenberg and Ugalde councils are dropped before
+estimating the posterior marginal distribution of these statistics.
+A glance at the table shows there is only scant evidence supporting
+the hypothesis that cohesion within contingents increases during the
+electoral cycle. For PAN- and Left-sponsored contingents, cohesion
+is barely higher (i.e., we observe smaller posterior mean distances)
+during electoral periods, an effect that is not substantively
+important. In contrast, PRI-sponsored contingents actually become
+less cohesive during electoral semesters.  We estimate the
+probability that cohesion within the PRI's contingents decreases in
+election season to approach 0.61. In short, we cannot substantiate
+the hypothesis that partisan contingents are more cohesive around
+election time.
+
+In contrast, there is better evidence for the second hypothesis of increased polarization between contingents in electoral periods. To discuss these results, we actually distinguish between the two councils, since the lack of Left-sponsored councilors in the Ugalde years means that the dynamics of polarization between the PRI and the PAN segments are likely to be different across councils.  In the event, polarization increases especially for the PRI-PAN dyad in both councils. The distance between the centroids of each segment, our indicator of polarization, increases about 70\% in both councils. In short, the chances that the PRI's contingent will vote with the PAN's during electoral periods are reduced in comparison to non-electoral semesters.  During the Woldenberg years, the mean distance between the PRI's and the Left's contingents was about three times larger than that separating the PRI from the PAN.  However, it shows no substantive change according to the election calendar.  Finally for the PAN-Left dyad, results indicate smaller mean distances between these sponsors' contingents in election periods (results which visual inspection of maps of the Valdés council would indicate are being replicated again).
+
+This last finding concerning less polarization in the PAN-Left dyad
+on the council in election season is not trivial, although it
+apparently refutes the party sponsorship hypothesis with respect to
+polarization.  A recent study by Aparicio and Márquez
+\citeyearpar{aparicio.marquez.2010} presents the average partisan
+profile of congressional districts in Mexico from 1997 to 2009,
+using vote shares of the three-party total adjusted for districting
+changes in 2006.  Disaggregating their numbers, less than 10\% of
+the 300 districts are multi-partisan in their competitive dynamics
+and about a third of the total are safe bastions for the three major
+parties (with the PRI well ahead of its two rivals).  The remainder
+are competitive districts, with victory margins within the average
+district-level volatility index (about 15\% of the total vote).  In
+this group of districts, the dominant pattern of competition is
+between the PRI and either of its rivals; there are only a dozen or
+so districts in which the PAN competes directly against the PRD for
+dominance.  This map is likely repeated in state-level competition,
+in gubernatorial contests and senatorial contests, as well.  What
+this pattern of competition between dyads suggests is that,
+notwithstanding the bitter presidential contest in 2006, the PAN and
+the Left continue to share long-term strategic interests in their
+geographically separate contests with the PRI. And their agents at
+IFE reflect these common strategic interests in the rules applied to
+electoral competition through decisions reached on the council in
+the midst of election battles.   While anti-PRI convergence at IFE
+is rarely decisive or stable, it remains a constant feature in the
+conflicts that arise within the Council General and, in that general
+sense, supports the party sponsorship hypothesis and the tripartite
+segmentation of ideal points, when all relevant parties are
+represented on the council.
+
+\section{Gains from trade}
+
+Partisan segmentation of the Council General is tied to the
+selection process controlled by party sponsors, sustained pressure
+from sponsors throughout IFE proceedings, agenda interference by
+sponsors especially in election season, possible future rewards for
+councilors after terms expire, and the willingness of legislative
+parties to exercise the nuclear option of election reform without
+respect for tenure on the council.  That pattern of segmentation
+largely describes the voting behavior exhibited by council members
+since 1997, as party contingents (with some exceptions) behave
+predictably over time. The notorious exception to our expectations
+about party control over IFE is the coalescence between PRI and PAN
+contingents in the last five years of the Woldenberg council.
+Against the grain of intense electoral rivalry between the two party
+sponsors in those same years, their contingents at IFE exerted
+continuous majority control of the Institute from 1999 to 2003. Not
+all voting patterns among individual councilors or partisan
+contingents can be accounted for by recourse to exogenous factors
+centered on the original party sponsors.
+
+Our argument here will be that the structure of power on the Council General, without majority control for any single party contingent and with a strong division of labor among councilors in the committee system used to oversee and control IFE's operational areas, generates powerful incentives for cooperation among councilors and contingents. The simplest form of cooperation observable at IFE is vote-trading or mutual back-scratching, which involves asymmetrical intensities on separable issues which can be exchanged between pairs of councilors. This is what underlay the observed cases of ideological drift in the Woldenberg council.
+
+Perhaps a single narrative can illustrate the argument. Councilor
+Lujambio, committee chair for \emph{fiscalización} or campaign and
+party finance regulation, was in charge, after the 1997 midterm
+elections, of assessing fines for misconduct during election season.
+After separate committee resolutions for each political party were
+negotiated and shepherded through council approval, all affected
+parties appealed the council decision to the electoral tribunal,
+which overruled or amended council decisions in all but one case.
+Never again did Lujambio's committee issue separate reports on the
+parties, but instead logrolled them into a single resolution
+requiring one up-or-down vote on the council.  The following year,
+the committee had to review non-electoral party revenues and
+expenditures, but Lujambio found the other members of his committee
+(two colleagues sponsored by the PRI) to be hesitant about assessing
+the fines Lujambio had proposed, arguing that the Trife's criteria
+the year before were not clearly followed in Lujambio's initiative.
+Several months passed before the reports could be issued, and only
+after Lujambio had lobbied tribunal judges exhaustively on each of
+the partisan cases.  Similarly intensive lobbying with the judges
+would be conducted until his term ended in 2003, but continued
+resistance by the other committee members would be met with a
+singular innovation which Lujambio proposed and obtained in 1999
+from the Council General.  Committee membership was to be expanded
+to include all members of the council save its president, bypassing
+the original membership and salvaging them from intense pressures
+from their party sponsor to lessen proposed fines against it.  The
+council as a whole was quite willing to acknowledge the growing
+expertise of Lujambio and his staff in this crucial field of
+election regulation and to delegate these matters to them.  In
+return, Lujambio, having started south of center on the council,
+crossed the equator in 1999 and quickly moved to join a cohesive and
+durable northern majority.  He followed the paths trailblazed by
+Molinar and Zebadúa one or two semesters before, and was himself
+later followed by Cantú, seeking similar council support for his
+initiatives as committee chair for electoral organization.  The PAN
+contingent moved practically in tandem to leave behind the alliance
+of the \emph{Pentágono} and join the PRI contingent in majority
+control of the council. Just as impressive was the northern
+migration of two members from the Left, Zebadúa and Cantú.
+
+Several points from this story bear emphasis.  First, the originally strong committee structure at IFE, with permanent chairs, benefitted from their specialization, despite divergent party sponsors, so long as committees and chairs could be shielded from excessive partisan meddling.  Once the committee structure was weakened in the 2007 election reform, through annual rotation of chairs and committee membership (and by removing council members from the area of \emph{fiscalización}), committee chairs and members can be expected to be less invested in their responsibilities for oversight. From patrol systems, IFE committees have now evolved into fire alarm systems. In addition, given greater intrusiveness by Trife into Council decisions and an increase in litigiousness by parties and other political actors, this change allows councilors to avoid shirking in controversial council votes and thus should produce slimmer majorities.  In other words, partisan bias should be more manifest than before.
+
+Second, committees based on self-selection are not very likely to be representative of the full council nor to be granted automatic support from it.  Consistent and durable vote-trading is needed for passage. If committee chairs are concerned to maximize policy gains in the areas they oversee, they should be more willing to support other committee chairs even when their policy preferences are divergent.  This remains true after the 2007 election reform.
+
+Third, vote-trading of this sort entails considerable shirking from party sponsor expectations across the board.  However, the councilors who revealed the most dramatic ideological drifts were hardly punished by their sponsors. To the contrary, they were rewarded for their efforts. Molinar and Zebadúa were appointed to diverse administrative positions by their sponsors and both have held elective office. Lujambio has also enjoyed distinct success in public administration under the PAN.  And Cantú was so forcefully defended by the PRD to become Council President in 2003, despite a strong veto by the PRI, that the Left ended up excluded from the next council altogether. The dire consequences of that exclusion materialized in the aftermath of the 2006 elections, as the Left withdrew its confidence from electoral authorities and refused to concede its defeat in the presidential race.
+
+\begin{figure}
+ \begin{center}
+%%    (a) \\ \includegraphics[width=.9\textwidth]{d:/01/data/rollcall/ife_cg/graphs/winsizeStackUnan.pdf} \\
+%%    (b) \\ \includegraphics[width=.9\textwidth]{d:/01/data/rollcall/ife_cg/graphs/winsizeStackCont.pdf} \\
+    (a) \\ \includegraphics[width=.9\textwidth]{../graphs/winsizeStackUnan.pdf} \\
+    (b) \\ \includegraphics[width=.9\textwidth]{../graphs/winsizeStackCont.pdf} \\
+ \caption{\emph{Winsize distributions.} Stacked bars indicate the proportion of semester votes won by a coalition of a given size. Total votes, indicated on top of each bar stack, includes unanimous votes in panel a, but excludes them in panel b.}\label{F:winsize}
+ \end{center}
+\end{figure}
+
+Is there more systematic evidence from the roll calls at IFE for the gains-from-trade argument?  Figures \ref{F:winsize}a and \ref{F:winsize}b summarize some evidence to that effect.
+
+The first graph displays the size distribution of majority
+coalitions in all council roll calls.  The incidence of unanimous
+voting is quite high, but higher for the Ugalde and Valdés councils
+than for their predecessor.  After its inaugural year, the
+Woldenberg council only sustained unanimous decisions in about 50\%
+of its decisions.  The Ugalde and Valdés councils average unanimity
+rates close to 80\% of the total.  With the exception of 1997,
+election semesters and election years exhibit lower levels of
+unanimity than preceding semesters.  Unanimity is by definition
+Pareto-optimal, but offers no clue as to the prevalence of
+vote-trading.  Contested votes, in the second graph in the series,
+are a more reliable indicator of this behavior.  Bare majorities on
+the council, with only four or five votes on the winning side, are
+extremely rare in the Woldenberg years, averaging just over 10\% of
+all contested votes.  Post-Woldenberg, they average 30\% of
+contested votes.  If majorities of six councilors are added to the
+minimum winning coalitions, the Woldenberg council rate of strong
+division is still under 30\%, while the Ugalde and Valdés councils
+reach above 50\% of their contested votes.  What the later councils
+gain from unanimity, they lose in the tally of slimmer majorities in
+contested roll calls.  Given the strong rise, in absolute terms, in
+disputed decisions in the later councils, a more divided council is
+vulnerable to more intense lobbying and pressures from political
+parties and, in principle, councilor shirking is more visible and
+thus less likely.  The upshot is that gains from trade are mostly
+realized in unanimous decisions after 2003, while supermajorities in
+the Woldenberg council assured them even in contested votes.
+
+Other than the different partisan composition of the Woldenberg and
+Ugalde councils, their varied behavior cannot be ascribed to changes
+in the legal framework governing IFE nor to changes in the strategic
+needs of party principals.  The super-majoritarian nature of council
+decisions under Woldenberg remains in sharp contrast to the greater
+divisiveness of the Ugalde council. Woldenberg
+\citeyearpar{woldenberg.2008} himself attributes the difference to
+the growing partisan deference of councilors in the Ugalde years,
+assuming roles as agents and not arbiters of the party and electoral
+systems.  The allegedly supra-partisan stance of the Woldenberg
+council is, as we have shown, quite questionable. The achievement of
+that council consists, rather, in assuring strong cohesion in two
+contingents while protecting their decisions from undue party
+sponsor interference and offering few fissures to exploit.  But
+stable super-majorities cannot be cut from whole cloth.
+
+Another narrative is in order.  The key to the development of the
+super-majority in 1999 was the decision taken by Woldenberg himself
+and supported by the rest of his contingent to back the ouster of
+Felipe Solís as Secretary-General of IFE's bureaucracy.  Woldenberg
+had been supported by the PRI for the Council President post as part
+of a ticket including the appointment of Solís as the council's
+first major decision.   Woldenberg and the council duly complied
+with the prearranged appointment.  After matters pending from the
+1997 midterms had been wrapped up, members of the \emph{Pentágono}
+began to pressure Woldenberg and his contingent for a break with
+IFE's administrative past.  Solís had been a lieutenant to IFE's
+first Secretary-General in 1990, Emilio Chauyffet, then and now a
+top politician within the national PRI (and after leaving IFE, Solís
+would go on to elective federal posts in Congress and to positions
+in the PRI's national directorate).  Autonomy of the electoral
+authority, argued the \emph{Pentágono}, could only be assured if the
+council took direct control over the administrative officers of its
+bureaucracy and permitted the Council's committee system to exercise
+strong oversight over IFE's operational areas.  Woldenberg and his
+contingent resisted these appeals, until the Comptroller, another
+PRI stalwart, unexpectedly filed administrative complaints against
+four of the five members of the \emph{Pentágono} (these briefs are a
+legal prelude to possible impeachment by Congress).  Within
+twenty-four hours, the comptroller was dismissed by the council, at
+Woldenberg's request, and the complaints rescinded.  It took only a
+few more months for Solís to tender his resignation.  This
+forthright commitment by Woldenberg to council autonomy from
+egregious ruling party interference in IFE matters made all the
+difference.
+
+Had this not occurred, the Woldenberg council might well have
+continued to exhibit the fractiousness and instability of its first
+semesters, despite very high levels of unanimous decision-making,
+conditions which have also characterized the Ugalde and Valdés
+councils. Unfortunately, without the presence of the former ruling
+party deep in the entrails of IFE's apparatus which fostered
+fiercely defensive unity on the council, the tripartite organization
+of the Council General itself may impose a more consistently
+partisan skew upon its proceedings, which now passes for ``normal
+politics'' at IFE.
+
+\section{Conclusion}
+
+Forthcoming.
+
+\section*{Appendix 1: Code for four semesters}
+
+\begin{scriptsize}
+\begin{verbatim}
+ for (j in 1:J){                                                 ## loop over councilors
+   for (i in 1:I){                                               ## loop over items
+     v.hat[j,i] ~ dbern(p[j,i]);                                 ## stochastic vote
+     p[j,i] <- phi(v.star[j,i]);                                 ## 0<p<1 deterministic part
+     v.star[j,i] ~ dnorm(mu[j,i],1)I(lower.v[j,i],upper.v[j,i]); ## truncated normal sampling
+                                                                 ## cf. Jackman 2001
+     mu[j,i] <- delta[i]*(x1[j]*d1[i] + x2[j]*d2[i]
+                        + x3[j]*d3[i] + x4[j]*d4[i]) - n[i];
+               ## utility differential: xt's recover t ideal points for member j        ##
+               ## dt's are dummies=1 if item voted in semester t (exogenous definition) ##
+                 }
+     x1[j] ~ dnorm (x0[j],50);              ## Slack S = 1/50 = .02 for all members ##
+     x2[j] ~ dnorm (x1[j],50);
+     x3[j] ~ dnorm (x2[j],50);
+     x4[j] ~ dnorm (x3[j],50);
+               }
+ for (i in 1:I){
+    m[i] <- n[i] / delta[i];                               ## item i's mid-point      ##
+               }
+ ## priors: give scale and direction to recovered space, see Estévez et al. 2008 ##
+     x0[1] ~ dnorm(2, 4);    #Barragán
+     x0[2] ~ dnorm(-2, 4);   #Cárdenas
+     for(j in 3:9){
+       x0[j] ~ dnorm(0, 1);  #all others
+                  }
+   for(i in 1:I){
+       delta[i] ~ dnorm( 0, 0.1);
+                }
+   for(i in 1:I){
+       n[i] ~ dnorm( 0, 0.25);
+                }
+\end{verbatim}
+\end{scriptsize}
+
+\nocite{jackman.2001}
+
+%\begin{footnotesize}
+
+\bibliographystyle{apsr}
+\bibliography{d:/01/Dropbox/mydocs/magar}
+
+%\end{footnotesize}
+
+\end{document}
+
+
+
+
+It is also possible that ideal points drift after genuine change in
+personal belief, especially over the long haul. But we have argued
+that in representative bodies most movements will be driven by
+changes in factors causing actors to act strategically. This section
+derives some testable propositions from the discussion subjecting
+them to empirical scrutiny. The patterns we uncover should shed
+light on fertile directions that our research could undertake in the
+near future.
+
+We begin with one source of movement associated with the notion of
+representation: a possible freshman effect. By law, the pool of
+candidates from which congressional parties can pick appointees
+excludes party members, who would make the most trustworthy agents.
+This restriction complicates the screening process. In the worse
+scenario, a party can pick a flagrantly bad type --- this is
+probably the case with the blue member in period III who
+systematically voted with the reds and not with the rest of his
+contingent. In a friendlier scenario, a screening problem may be
+corrected with ex-post pressure from principals, forcing councilors
+to correct the route. Movements between the first and second
+semesters in the council could for this reason be more pronounced
+than others. Figure \ref{F:drift} offers evidence to reject this: no
+green-contoured circle (the first movement in a member's tenure)
+falls off normal bounds, and most are in fact quite close to the 45°
+line, indicating small starting movement. Two members appointed as
+replacements in period II in fact aligned themselves pretty closely
+in figure \ref{F:allwMedian} with other members sponsored by the
+same party as them since the very start.
+
+We can also isolate two movement sources associated with constituent
+pressure. If congressional parties are the principal, then a newly
+elected Congress in fact removes the original enacting coalition
+from the stage. IFE terms last seven years, more than doubling
+Deputies' three years in office with a single-term limit, making
+councilors outlive the coalition that enacted them. While new
+deputies will not have named councilors, they retain the power to
+impeach them. Therefore councilors are forced to adapt to the
+changing circumstances, something likely to transpire in their
+voting record. A comparison of inter-semester movement in ideal
+points following congressional renewals and the rest appears in
+Table \ref{T:tests}. To compute these statistics, we performed
+absolute first-differences (AFDs, losing the first semester of each
+Council, 1997s1 and 2004s1) in members' posterior ideal point sample
+and divided twenty semesters of the pooled series into those
+following a Congress renewal (1998s1, 2001s1, and 2007s1) and those
+not (the rest). Rows a and b of the table show the mean and standard
+deviation of the marginal posterior distribution of this statistic,
+and it can be seen that AFDs after a new Congress tended to be
+larger that the rest, although standard deviations were larger. Even
+so, a Wilcoxon difference-of-medians test that posterior AFDs are
+larger for a than b semesters rejects the null with very high
+probability, as reported in row c of the table. There is evidence of
+bigger movement in semesters with a new Congress than the rest.
+
+\begin{table}
+ \begin{center}
+   \begin{tabular}{clcc}
+     &                        &  Mean & Std.\ dev. \\ \hline
+    \multicolumn{4}{c}{Posterior $|x_{j,t+1}-x_{j,t}|$}   \\
+    a& New Congress semesters & .140  &   .115    \\
+    b& Rest                   & .108  &   .084    \\
+    c& Test a>b (Wilcoxon)    & \multicolumn{2}{c}{$p<.0001$} \\ \hline
+%   c& Prob.\ a>b             & \multicolumn{2}{c}{.560} \\ \hline
+    \multicolumn{4}{c}{Posterior $|\delta_i|$}   \\
+    d& Electoral semesters    & 2.802 & 1.652  \\
+    e& Rest                   & 2.484 & 1.628  \\
+    f& Electoral semesters (incl.\ inaugural) & 2.736 & 1.655  \\
+    g& Rest (incl.\ inaugural)                & 2.520 & 1.632  \\
+    h& Test d>e (Wilcoxon)    & \multicolumn{2}{c}{$p<.0001$} \\ \hline
+%   h& Prob.\ d>e             & \multicolumn{2}{c}{.565} \\ \hline
+    \multicolumn{4}{c}{Posterior  $\delta_i$s with .95 credible ranges off zero} \\
+    i& Percentage electoral semesters & \multicolumn{2}{c}{64\%} \\
+    j& Percentage rest                & \multicolumn{2}{c}{46\%} \\ \hline
+    \multicolumn{4}{c}{Abstention rates}   \\
+    k& PAN electoral semester & 0.039 & 0.054  \\
+    l& PAN rest               & 0.046 & 0.067  \\
+    m& PRI electoral semester & 0.016 & 0.021  \\
+    n& PRI rest               & 0.024 & 0.012  \\
+    o& PRD electoral semester & 0.072 & 0.031  \\
+    p& PRD rest               & 0.153 & 0.050  \\ \hline
+   \end{tabular}
+  \caption{\emph{Statistics and tests.} See text.}\label{T:tests}
+ \end{center}
+\end{table}
+
+Constituent pressure may explain another movement pattern in period
+III. The new council that inaugurated period III was appointed by a
+congressional coalition including the PRI, the PAN, and the Green
+party. The PRI's congressional contingent, however, was split in two
+rival factions, each of which proposed two of the four members the
+party sponsored in October 2003. And only a few weeks after the new
+Council was inaugurated, in-fighting between the congressional
+factions openly erupted: a rebelion succeeded in removing the party
+leader, expelling her from the party for ``treason'' along with key
+members of the rival faction. If such changes in congressional
+alliances permeate to IFE behavior --- likely if appointees follow
+cues from their sponsor --- then a rift should have opened since the
+very start in the PRI contingent. Such a split is in fact clearly
+visible among red councilors in Figure \ref{F:allwMedian}, the
+former leader's appointees remaining towards the South most of the
+time, the others veering North.
+
+%%--------------------------
+%%   delec1 | mean(dparties)
+%%----------+---------------
+%%        0 |       .1596467
+%%        1 |       .3880597
+%%--------------------------
+%%. sum dparties
+%%
+%%    Variable |       Obs        Mean    Std. Dev.       Min        Max
+%%-------------+--------------------------------------------------------
+%%    dparties |      2410    .2485477    .4322607          0          1
+
+%% # en R
+%% oldpar <- par(no.readonly=TRUE)
+%% setwd("c:/data/graphs")
+%% pdf(file="ptyComplaints.pdf",width=7, height=4)
+%% par(mar=c(5,4,0,2)+0.1)  ## USA EL ESPACIO DEL TITULO INEXISTENTE
+%% ppart <- c(.1014493, .1935484, .1, .0694444, .1454545, .1034483,
+%% .2533333, .4175824, .2666667, .2531646, .2463768, .1147541,
+%% .1733333, .4644809, .2352941, .1410256, .1111111, .0827586,
+%% .2484472, .5436893, .3707865, .1413043)
+%% ppart <- ppart*100
+%% yrlab <- c("1997","'98","'99","2000","'01","'02","'03","'04","'05","'06","2007")
+%% plot(1:22,c(rep(0,times=21),55),type="n",xlab="semester",
+%%     ylab="% party complaints",
+%%     axes="FALSE",main=NULL)
+%% axis(1, at=c(1:22), labels = FALSE)
+%% axis(1, tick= FALSE, cex.axis=.55, at=c(1:22), labels = rep(1:2,11), line=-0.8)
+%% axis(1, tick= FALSE, cex.axis=.8, at=c(1.5,3.5,5.5,7.5,9.5,11.5,13.5,15.5,17.5,19.5,21.5), labels = yrlab )
+%% axis(2, at=c(0,5,10,15,20,25,30,35,40,45,50,55), labels = FALSE)
+%% axis(2, tick= FALSE, cex.axis=.8, at=c(0,10,20,30,40,50), labels = TRUE )
+%% polygon(c(2,2,3,3),c(0,55,55,0),lty=0,col="grey85")
+%% polygon(c(8,8,9,9),c(0,55,55,0),lty=0,col="grey85")
+%% polygon(c(14,14,15,15),c(0,55,55,0),lty=0,col="grey85")
+%% polygon(c(20,20,21,21),c(0,55,55,0),lty=0,col="grey85")
+%% lines(ppart,lwd=2, col="red")
+%% text(c(2,8,14,20),rep(-1,4),c("*"))
+%% par(oldpar)
+%% dev.off()
+
+\begin{figure}
+ \begin{center}
+  \includegraphics[width=11cm]{d:/01/data/rollcall/ife_cg/graphs/ptyComplaints.pdf}
+ \caption{\emph{Variation in agenda control.} Party complaints filed at Council General as percentage of
+ all issues voted. Grey bars cover electoral semesters and immediate next.}\label{F:ptyComplaints}
+ \end{center}
+\end{figure}
+
+Movements may also be associated with agenda control. Unlike modern
+legislatures or the Supreme Court, IFE has poor control of its
+agenda. In particular, parties have standing to file complaints at
+IFE which cannot be ignored, diluting members' gatekeeping power.
+But there are temporal variations in how well members control their
+agenda because the percentage of party complaints filed for the
+Council General follows the electoral cycle, as shown in Figure
+\ref{F:ptyComplaints}. Defining electoral semesters as those when a
+federal election took place and the next (because many complaints
+are filed in the immediate aftermath and take some time to be
+decided), party complaints as a percentage of all matters voted at
+IFE are nearly two-and-a-half times higher in election semesters
+than in non-election semesters.\footnote{We relied on Omar
+Alejandre's data to produce this differential. We plan to add this
+information to our dataset in the immediate future in order to carry
+finer-grained analysis.} The percentage fluctuates between 20 and
+50\% in the former, between 10 and 20\% in the latter, a
+differential we exploit in search of agenda-control effects in
+voting patterns. Consistent with our previous discussion, we
+speculate that the interaction between principals and agents is
+different in electoral than in non-electoral periods. Principals
+(ie., parties) not only register more complaints in IFE during
+electoral periods, but we also expect that these complaints will
+more likely reveal operational preferences and cleavages segmenting
+IFE's Council-general. The intuition behind this conjecture is
+easier to explain by considering non-electoral semesters.  If better
+gatekeeping reduces conflict, as discussed above, then most
+decisions that the council-general makes during non-electoral
+periods concern routine administrative matters that do not
+necessarily map into the north-south dimension that divides party
+sponsors and, consequently, IFE councilors.  In contrast, we believe
+that electoral times should bring a flurry of activity that increase
+the number of politically-consequential matters considered by the
+council-general. To test this, we show the distribution of the
+absolute value of discrimination parameters across electoral and
+non-electoral semesters.  If our conjecture about the importance of
+increased agent restraint during non-electoral periods holds any
+water, we should see larger average values of discrimination
+parameters during electoral semesters. Rows d and e of Table
+\ref{T:tests} show the mean and standard deviation of the marginal
+posterior distribution of absolute discrimination parameters. We
+proceeded as before by dividing the pooled series into electoral
+semesters (those where elections are scheduled plus the next one,
+$n=7$) and not ($n=13$). We dropped the first semester of each
+Council, since these are heavily influenced by our informative
+priors on ideal points (but report differentials for the full sample
+in rows f and g). As can be seen from the table, discrimination
+parameters corresponding to cases in electoral semesters tend to be
+larger that those cases that are discussed and decided during
+non-electoral semesters.  In fact, a comparison of how often the .95
+credible interval for discriminator parameters $\delta$ does not
+include the zero value if the case was heard in an electoral or
+non-electoral semester (rows i and j of Table \ref{T:tests},
+respectively), provides more evidence that cases heard when it is
+more difficult to control the agenda are more politically
+consequential.
+
+A second implication of agenda control concerns the distribution of
+revealed ideal points across electoral and non-electoral semesters.
+Because parties should bring more pressure to bear on their
+sponsored councilors during electoral periods, we expect
+same-sponsor contingents to be more cohesive (ie., their revealed
+ideal points to be closer) during electoral than non-electoral
+semesters.  Because party divides should be more notable during
+electoral periods, we also expect between-party polarization to
+increase during electoral semesters.  Finally, we believe that party
+pressure over councilors during electoral semesters should lead to a
+drop in abstentions during electoral periods, as principals expect
+from  their sponsored councilors a fuller commitment to the defense
+of their interests.  We estimate within-contingent cohesion by
+looking at the posterior marginal distribution of the distance
+between the most leftist and most rightist councilors in each
+partisan contingent.\footnote{For the sake of simplicity, we refer
+to PRI/Green-sponsored councilors as the PRI contingent. The Greens
+have been in electoral and legislative alliance with the PRI since
+2001, and it is reasonable to view their lone IFE member as a case
+of co-sponsorship.} We estimate between-party polarization by
+looking at the posterior marginal distribution of the distance
+between the centroids of all pairs of partisan contingents, where
+the centroids are alternatively defined as the median or average
+ideological position of the contingents. Abstention rates are the
+share of within-contingent abstentions in a given semester.
+
+\begin{table}
+ \begin{center}
+  \begin{tabular}{llrrrr}
+                  &  & \multicolumn{2}{c}{Electoral} &  \multicolumn{2}{c}{Non-electoral} \\
+                  &  & \multicolumn{2}{c}{semester}  &  \multicolumn{2}{c}{semester}      \\
+                  &  & Mean      & Std.\ dev.        & Mean    & Std.\ dev.              \\ \hline
+   \multicolumn{6}{c}{Within-contingent cohesion}  \\
+   PRI    &          &  0.462    & 0.422   &   0.324  &  0.287  \\
+   PAN    &          &  0.650    & 0.310   &   0.679  &  0.330  \\
+   PRD    &          &  0.979    & 0.183   &   1.120  &  0.230  \\ \hline
+   \multicolumn{6}{c}{Between-contingent polarization periods I and II}  \\
+   PRI-PAN & medians  &  0.155    & 0.130   &   0.091  &  0.125  \\
+           & means   &  0.140    & 0.128   &   0.085  &  0.129  \\
+   PRI-PRD &medians  &  0.417    & 0.139   &   0.413  &  0.152  \\
+           & means   &  0.441    & 0.141   &   0.434  &  0.161  \\
+   PAN-PRD &medians  &  0.262    & 0.163   &   0.323  &  0.170  \\
+           & means   &  0.301    & 0.173   &   0.348  &  0.168  \\ \hline
+   \multicolumn{6}{c}{Between-contingent polarization period III}  \\
+   PRI-PAN & medians &  0.639    & 0.140   &   0.369  &  0.160  \\
+           & means   &  0.420    & 0.106   &   0.290  &  0.090  \\ \hline
+  \end{tabular}
+  \caption{\emph{Partisan contingents within and between.} Posterior marginal mean (standard deviation) of
+  within-contingent cohesion and between-contingent polarization. See text.}\label{t:WiAndBtw}
+ \end{center}
+\end{table}
+
+Table \ref{t:WiAndBtw} displays within-contingent cohesion and
+between-contingent polarization statistics.  As we did before, we
+drop the first semesters of each council before estimating the
+posterior marginal distribution of these statistics.  A glance at
+the table shows that evidence supporting the hypothesis that
+within-party cohesion increases during electoral semesters is scant.
+For PAN- and PRD-sponsored  contingents, within-party cohesion is
+barely higher (ie., we observe smaller posterior means) during
+electoral semesters, an effect that is not substantively important.
+In contrast, PRI-sponsored contingents actually become less cohesive
+during electoral semesters.  In fact, we estimate the probability
+that cohesion within PRI-sponsored contingents decreases during
+electoral semesters to approach 0.61.  In short, we cannot
+substantiate the hypothesis that partisan contingents are more
+cohesive during electoral semesters.
+
+In contrast, we find some evidence of increased between-contingent
+polarization during electoral semesters.  To discuss these results,
+we actually distinguish between the two Councils-General, since lack
+of a PRD contingent during the second council means that the PRI-PAN
+dynamics of polarization are likely to be different across councils.
+Be this as it may, we do find that between-party polarization
+increases especially for the PRI-PAN dyad in both councils.  When we
+consider the distance between the median within the PAN contingent
+and the median within the PRI contingent as the relevant indicator
+of polarization, we find that this distance increases about 70\% in
+both councils. In short, the chances that the PRI-contingent will
+vote with the PAN-contingent during electoral semesters are much
+reduced in comparison with non-electoral semesters.
+
+Finally, rows k to p of Table \ref{T:tests} present the breakdown of
+within-contingent abstention rates across electoral and
+non-electoral semesters. Consistent with our hypothesis that
+political parties will increase pressure on their contingents to
+actively defend their interests, we find that all contingents
+decrease their abstention rates during electoral semesters.  This
+effect is relatively small for the PAN contingent, a difference of
+about 15\% less abstentions during electoral semesters. In contrast,
+the contingents of PRI and PRD reduce quite drastically their
+abstention rates by about one-third and one-half, respectively,
+during electoral semesters. Admittedly, the job of IFE councilors is
+to organize elections, and therefore it is no surprise that their
+attendance records increase during electoral periods. However, if
+these statistics exclusively reflected a problem of job attendance,
+we would not expect to see significant cross-party differences.  To
+further substantiate our interpretation, we notice that the overall
+abstention records of the different partisan contingents are
+consistent with our prior notions that the PRI is best at keeping
+its contingent in line, followed by the PAN, and the PRD.  Thus, the
+abstention records of IFE councilors take on added significance when
+we consider the partisan contingents to which they belong.
+
+%% We will need to join Omar's data and our own to analyze delta
+%% (discrimination) parameter for party complaints vs rest; or even to
+%% estimate ideal point on party complaints exclusively.
+
+%% Preliminary comitee: financiamiento tema==3. Semster by semestre
+%% share of divided votes with tema==3.
+
+To summarize, not all our testable implications receive empirical
+validation.  With the exception of freshman effects and
+within-contingent cohesion scores, however, we find that evidence is
+largely consistent with hypotheses of strategic agent behavior.
+
+%% Added to extant evidence on heavy partisan influences in the
+%% allegedly non-partisan IFE \citep{estevez.magar.rosas.2008}, the
+%% overall picture that emerges is one of relatively capable partisan
+%% vetting of potential councilors along with heavy involvement of
+%% political parties in signaling their preferences to their sponsored
+%% contingents.
+
+\section{Conclusion}
+
+We have used a model designed to estimate ideal point shifts to
+investigate voting patterns in a committee whose members represent
+the interests of others. Our study found that members' ideal points
+shifted significantly over the course of their tenure. If we assume
+that voting is sincere, as is standard in this strand of voting
+literature, the finding is appears to contradict received wisdom
+about principal-agent relations.
+
+We questioned the sincerity of voting assumption. Strategy is likely
+to kick in in many different forms, and all invalidate sincere
+voting. Committee members need to adapt to any changes in the wishes
+of their constituents in order to avoid sanctions. They can also
+anticipate what others will do later and decide to cast
+sophisticated votes in the early votes of complex agendas. And to
+the extent that they retain some control of their agenda, they
+should avoid entering political mine fields by removing thorny
+issues from the table. They can also trade votes to secure passage
+of pieces they deem valuable. All this strategy will push them away
+from simply picking the alternative most proximal to their personal
+beliefs. So the voting patterns that can be detected will reveal the
+working forces of strategic behavior.
+
+We tested some implication of our discussion on the observed
+behavior of committee members. Evidence appears to indicate that
+drift in our representative council is associated with strategic
+considerations, perhaps not at all with changing personal beliefs of
+members. Our findings clearly indicate the need to think harder
+about the role of strategy in ideal point estimation, especially on
+ways to model and estimate its effects in voting.

@@ -1,0 +1,182 @@
+#Sys.setlocale("LC_ALL", "es_ES")
+setwd("c:/mydocs/1new/work concluded/IFE Electoral Studies/ReplicaNexos")
+rm(list = ls())
+
+all <- read.csv ("idealpoints.csv")
+ife1 <- all[2:10,2:5]
+ife2 <- all[12:20,2:5]
+ife3 <- all[22:30,2:5]
+
+names1 <- all[2:10,1]
+names2 <- all[12:20,1]
+names3 <- all[22:30,1]
+
+row.names(ife1) <- names1
+row.names(ife2) <- names2
+row.names(ife3) <- names3
+
+color1 <- c("gold","brown","gold","blue","blue","green3","green3","green3","gold")
+color2 <- c("gold","gold","brown","blue","green3","blue","green3","green3","green3")
+color3 <- c("blue","blue","blue","green3","green3","green3","green3","blue","brown")
+
+consejo <- c("Ugalde 2003-2006","Wold. II 2000-2003","Wold. I 1996-2000")
+
+# Agrega intervalos (mas/menos 1 sd)
+
+ife1$lob <- ife1$mean - ife1$sd
+ife2$lob <- ife2$mean - ife2$sd
+ife3$lob <- ife3$mean - ife3$sd
+ife1$hib <- ife1$mean + ife1$sd
+ife2$hib <- ife2$mean + ife2$sd
+ife3$hib <- ife3$mean + ife3$sd
+
+#estandarizacion
+min1 <- min(ife1[,5:6])
+max1 <- max(ife1[,5:6])
+min2 <- min(ife2[,5:6])
+max2 <- max(ife2[,5:6])
+min3 <- min(ife3[,5:6])
+max3 <- max(ife3[,5:6])
+ife1[,2] <- (ife1[,2]-min1)/(max1-min1)
+ife1[,5] <- (ife1[,5]-min1)/(max1-min1)
+ife1[,6] <- (ife1[,6]-min1)/(max1-min1)
+ife2[,2] <- (ife2[,2]-min2)/(max2-min2)
+ife2[,5] <- (ife2[,5]-min2)/(max2-min2)
+ife2[,6] <- (ife2[,6]-min2)/(max2-min2)
+ife3[,2] <- (ife3[,2]-min3)/(max3-min3)
+ife3[,5] <- (ife3[,5]-min3)/(max3-min3)
+ife3[,6] <- (ife3[,6]-min3)/(max3-min3)
+
+#estandarizacion alternativa
+ife1$lob.s  <-  (ife1$lob - mean(ife1$mean))/ sd(ife1$mean)
+ife1$hib.s  <-  (ife1$hib - mean(ife1$mean))/ sd(ife1$mean)
+ife1$mean.s <-  (ife1$mean - mean(ife1$mean))/ sd(ife1$mean)
+ife2$lob.s  <-  (ife2$lob - mean(ife2$mean))/ sd(ife2$mean)
+ife2$hib.s  <-  (ife2$hib - mean(ife2$mean))/ sd(ife2$mean)
+ife2$mean.s <-  (ife2$mean - mean(ife2$mean))/ sd(ife2$mean)
+ife3$lob.s  <-  (ife3$lob - mean(ife3$mean))/ sd(ife3$mean)
+ife3$hib.s  <-  (ife3$hib - mean(ife3$mean))/ sd(ife3$mean)
+ife3$mean.s <-  (ife3$mean - mean(ife3$mean))/ sd(ife3$mean)
+
+
+
+
+#DOTCHART
+source("function_dotchart.R")
+
+windows(w=14)
+#quartz(w=14)
+#pdf("all_councilors.pdf", w=14)
+par (mfcol=c(1,3), cex.axis=1.2)
+object <- ife1 ## LO QUE SE VA A GRAFICAR
+tt  <- c("Woldenberg I") ## TÍTULO
+st <- c("1996-2000")
+ys  <- 1:nrow(object)
+tmp <- c(rep(0,nrow(object)-1),1)
+my.dotchart(object[,9],row.names(object), xlim = c(-2.4,2.4), pch="", main=tt, lcolor="white", cex=1.2)
+segments(object[,7],ys,object[,8],ys, col=color1, lwd=5)
+points(object[,9], ys, pch="|", col="black", cex=1.4)
+mtext (st, side=3, line=0, cex=1.2)
+
+#DOTCHART
+object <- ife2
+tt <- c("Woldenberg II") ## TÍTULO
+st <- c("2000-2003")
+ys <- 1:nrow(object)
+tmp <- c(rep(0,nrow(object)-1),1)
+my.dotchart(object[,9], row.names(object), xlim = c(-2.4,2.4), pch="", main=tt, lcolor="white", cex=1.2)
+segments(object[,7],ys,object[,8],ys, col=color2, lwd=5)
+points(object[,9], ys, pch="|", col="black", cex=1.4)
+mtext (st, side=3, line=0, cex=1.2)
+
+#DOTCHART
+object <- ife3
+tt <- c("Ugalde") ## TÍTULO
+st <- c("2003-2006") ## TÍTULO
+ys <- 1:nrow(object)
+tmp <- c(rep(0,nrow(object)-1),1)
+my.dotchart(object[,9],row.names(object), xlim = c(-2.4,2.4), pch="", main=tt, lcolor="white", cex=1.2)
+segments(object[,7],ys,object[,8],ys, col=color3, lwd=5)
+points(object[,9], ys, pch="|", col="black", cex=1.4)
+mtext (st, side=3, line=0, cex=1.2)
+
+dev.off()
+
+
+
+#### Codigo de Eric
+
+
+#estandariza medias sin sd
+#ife1[,2] <- (ife1[,2]-min(ife1[,2]))/(max(ife1[,2])-min(ife1[,2]))
+#ife2[,2] <- (ife2[,2]-min(ife2[,2]))/(max(ife2[,2])-min(ife2[,2]))
+#ife3[,2] <- (ife3[,2]-min(ife3[,2]))/(max(ife3[,2])-min(ife3[,2]))
+
+
+oldpar <- par(no.readonly=TRUE)
+
+par(mfrow=c(3,1)) #### Falta que recortar eje Y y la distancia entre las gráficas.
+
+#IFE 1
+object <- ife1[,2]
+color <- color1
+names <- names1
+y <- rep (-0.022,9)
+plot(c(0,1),c(0,1),type="n",xlab=NA,ylab=NA,axes=F)
+axis(1,at=c(0,1))
+#abline(0,0,lty=2,col="gray")
+points(object,y,pch=25,bg=color)
+txt.obj <- object
+txt.obj[4] <- .535; txt.obj[8] <- .815
+text(txt.obj,0.03,names,adj=c(0,0.35),srt=90)
+
+#IFE 2
+object <- ife2[,2]
+color <- color2
+names <- names2
+y   <- rep(-0.022,times=9)
+plot(c(0,1),c(0,1),type="n",xlab=NA,ylab=NA,axes=F)
+axis(1,at=c(0,1))
+points(object,y,pch=25,bg=color)
+txt.obj <- object
+txt.obj[8] <- .965; txt.obj[7] <- .93; txt.obj[6] <- .895; txt.obj[5] <- .86;
+text(txt.obj,0.03,names,adj=c(0,0.35),srt=90)
+lines(c(txt.obj[5],object[5]),c(0.02,-0.01))
+lines(c(txt.obj[6],object[6]),c(0.02,-0.01))
+lines(c(txt.obj[7],object[7]),c(0.02,-0.01))
+lines(c(txt.obj[8],object[8]),c(0.02,-0.01))
+lines(c(txt.obj[9],object[9]),c(0.02,-0.01))
+
+#IFE 3
+object <- ife3[,2]
+color  <- color3
+names  <- names3
+y <- rep(-0.022, 9)
+plot(c(0,1),c(0,1),type="n",xlab=NA,ylab=NA,axes=F)
+axis(1,at=c(0,1))
+points(object,y,pch=25,bg=color)
+text(object,0.03,names,adj=c(0,0.35),srt=90)
+
+par(oldpar)
+
+
+
+####3 en 1
+y1 <- rep(3.04,times=9)
+y2 <- rep(2.04,times=9)
+y3 <- rep(1.04,times=9)
+plot(c(0,1),c(1,3.65),type="n",xlab="Perfil de votación")
+abline(1,0,lty=2,col="gray")
+abline(2,0,lty=2,col="gray")
+abline(3,0,lty=2,col="gray")
+points(ife1[,2],y1,pch=20,col=color1)
+points(ife2[,2],y2,pch=20,col=color2)
+points(ife3[,2],y3,pch=20,col=color3)
+points(ife1[,2],y1,pch=6)
+points(ife2[,2],y2,pch=6)
+points(ife3[,2],y3,pch=6)
+text(ife1[,2],3.07,names1,adj=c(0,0.35),srt=90)
+text(ife2[,2],2.07,names2,adj=c(0,0.35),srt=90)
+text(ife3[,2],1.07,names3,adj=c(0,0.35),srt=90)
+
+

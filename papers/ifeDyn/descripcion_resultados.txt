@@ -1,0 +1,80 @@
+We test several implications of the ``electoral agency restraint'' theory we outlined before.  Consistent with this theory, we speculate that the interaction between principals and agents is different in electoral than in non-electoral periods.  We expect principals (i.e., parties) not only to register more complaints in IFE during electoral periods, but we also expect that these complaints will more likely be related to the main ideological dimension that underlies IFE's council-general.  The intuition behind this conjecture is easier to explain by considering non-electoral semesters.  Many of the decisions that the council-general makes during non-electoral periods concern routine administrative matters that do not necessarily map into the north-south dimension that divides party sponsors and, consequently, IFE councilors.  In contrast, we believe that electoral times should bring a flurry of activity that increase the number of politically-consequential matters considered by the council-general.  To test these implications, we estimate the share of complaints entered by political parties across electoral and non-electoral semesters.  We also show the distribution of the absolute value of discrimination parameters across electoral and non-electoral semesters.  If our conjecture about the importance of increased agent restraint during electoral periods holds any water, we should see a larger share of complaints and larger average values of discrimination parameters during electoral semesters.
+
+########################################################################
+Table 1.  Posterior marginal mean (standard deviation) of discrimination parameters (absolute values)
+						A			B
+Electoral semesters		2.802		2.736
+						(1.652)		(1.655)
+Non electoral semesters	2.484		2.520
+						(1.628)		(1.632)
+A: Excluding the first semester of each council-general
+B: Including the first Woldenberg semester as non-electoral and the first Ugalde semester as electoral.
+
+[Eric, quizas aqui mismo puedas agregar lo que encontraste de las quejas partidistas]
+########################################################################
+
+	
+Results are displayed in Table 1, where we show the mean (and standard deviation) of the marginal posterior distribution of discrimination parameters (absolute value).  To calculate these statistics, we divide twenty semesters of the pooled Woldenberg and Ugalde councils into non-electoral and electoral semesters (we drop the first semester of each Council, since these are heavily influenced by our informative priors on ideal points).  We define ``electoral semesters'' as those during which federal legislative elections are scheduled, as well as the semesters immediately following these elections (n=7).  The remainder are ``non-electoral semesters'' (n=13).  As can be seen from Table 1, discrimination parameters corresponding to cases in electoral semesters tend to be larger that those cases that are discussed and decided during non-electoral semesters.  In fact, the probability that a case will have a discrimination parameter of 1 or higher is about 0.85 if the case is heard during an electoral semester and 0.78 if it is heard during a non-electoral semester.  Though the difference in probabilities is not conspicuous, it provides some evidence that cases heard during electoral semesters are more politically consequential.
+	FOOTNOTE: For the sake of simplicity, we refer to PRI/PVEM-sponsored councilors as the PRI contingent and to PRD/PT-sponsored councilors as the PRD contingent.
+
+A second implication of the agency restraint argument concerns the distribution of revealed ideal points across electoral and non-electoral semesters.  Because political parties should bring more pressure to bear on their sponsored councilors during electoral periods, we expect same-sponsor contingents to be more cohesive (i.e., their revealed ideal points to be closer) during electoral than non-electoral semesters.  Because party divides should be more notable during electoral periods, we also expect between-party polarization to increase during electoral semesters.  Finally, we believe that party pressure over councilors during electoral semesters should lead to a drop in abstentions during electoral periods, as principals expect from  their sponsored councilors a fuller commitment to the defense of their interests.  We estimate within-contingent cohesion by looking at the posterior marginal distribution of the distance between the most leftist and most rightist councilors in each partisan contingent.  We estimate between-party polarization by looking at the posterior marginal distribution of the distance between the centroids of all pairs of partisan contingents, where the centroids are alternatively defined as the median or average ideological position of the contingents.  Abstention rates are the share of within-contingent abstentions in a given semester.
+
+########################################################################
+Table 2.  Posterior marginal mean (standard deviation) of within-contingent cohesion and between-contingent polarization
+			Electoral	Non-electoral
+Within-contingent cohesion
+PRI		 	 0.462		 0.324
+			(0.422)		(0.287)
+PAN		 	 0.650		 0.679
+			(0.310)		(0.330)
+PRD		 	 0.979		 1.120
+			(0.183)		(0.230)
+
+Between-contingent polarization (medians --- Woldenberg)		
+PRI-PAN		 0.155		 0.091
+			(0.130)		(0.125)
+PRI-PRD		 0.417		 0.413
+			(0.139)		(0.152)
+PAN-PRD		 0.262		 0.323
+			(0.163)		(0.170)
+
+Between-contingent polarization (means --- Woldenberg)
+PRI-PAN		 0.140		 0.085
+			(0.128)		(0.129)
+PRI-PRD		 0.441		 0.434
+			(0.141)		(0.161)
+PAN-PRD		 0.301		 0.348
+			(0.173)		(0.168)
+			
+Between-contingent polarization (medians --- Ugalde)		
+PRI-PAN		 0.639		 0.369
+			(0.140)		(0.160)
+
+Between-contingent polarization (means --- Ugalde)
+PRI-PAN		 0.420		 0.290
+			(0.106)		(0.090)
+
+Within-contingent cohesion: Entries are mean (SD) of the posterior distribution of the distance between the two most extreme members of a party contingent
+Between-contingent polarization: Entries are mean (SD) of the posterior distribution of the distance between party contingent medians
+########################################################################
+
+Table 2 displays within-contingent cohesion and between-contingent polarization statistics.  As we did before, we drop the first semesters of each council before estimating the posterior marginal distribution of these statistics.  A glance at Table 2 shows that evidence supporting the hypothesis that within-party cohesion increases during electoral semesters is scant.  For PAN- and PRD-sponsored  contingents, within-party cohesion is barely higher (i.e., we observe smaller posterior means) during electoral semesters, an effect that is not substantively important.  In contrast, PRI-sponsored contingents actually become less cohesive during electoral semesters.  In fact, we estimate the probability that cohesion within PRI-sponsored contingents decreases during electoral semesters to approach 0.61.  In short, we cannot substantiate the hypothesis that partisan contingents are more cohesive during electoral semesters.
+
+In contrast, we find some evidence of increased between-contingent polarization during electoral semesters.  To discuss these results, we actually distinguish between the two Councils-General, since lack of a PRD contingent during the second council means that the PRI-PAN dynamics of polarization are likely to be different across councils.  Be this as it may, we do find that between-party polarization increases especially for the PRI-PAN dyad in both councils.  When we consider the distance between the median within the PAN contingent and the median within the PRI contingent as the relevant indicator of polarization, we find that this distance increases about 70% in both councils. In short, the chances that the PRI-contingent will vote with the PAN-contingent during electoral semesters are much reduced in comparison with non-electoral semesters.
+
+Finally, Table 3 presents the breakdown of within-contingent abstention rates across electoral and non-electoral semesters.  Consistent with our hypothesis that political parties will increase pressure on their contingents to actively defend their interests, we find that all contingents decrease their abstention rates during electoral semesters.  This effect is relatively small for the PAN contingent, a difference of about 15% less abstentions during electoral semesters.  In contrast, the contingents of PRI and PRD reduce their abstention rates about 1/3 and 1/2, respectively, during electoral semesters.  We consider these to be rather drastic drops.  Admittedly, the job of IFE councilors is to organize elections, and therefore it is no surprise that their attendance records increase during electoral periods.  However, if these statistics exclusively reflected a problem of job attendance, we would not expect to see significant cross-party differences.  To further substantiate our interpretation, we notice that the overall abstention records of the different partisan contingents are consistent with our prior notions that the PRI is best at keeping its contingent in line, followed by the PAN, and the PRD.  Thus, the abstention records of IFE councilors take on added significance when we consider the partisan contingents to which they belong.
+
+
+#############################################################################
+Table 3. Abstention incidence broken down by contingent and type of semester		
+			Electoral	Non-electoral
+PRI			 0.016		 0.024
+			(0.021)		(0.012)
+PAN			 0.039		 0.046
+			(0.054)		(0.067)
+PRD			 0.072		 0.153
+			(0.031)		(0.050)
+#############################################################################
+		
+
+To summarize, not all our testable implications receive empirical validation.  With the exception of within-contingent cohesion scores, however, we find that evidence is largely consistent with the hypothesis of increased agent restraint during electoral periods.  Added to extant evidence on heavy partisan influences in the allegedly non-partisan IFE (EMR 2008), the overall picture that emerges is one of relatively capable partisan vetting of potential councilors along with heavy involvement of political parties in signaling their preferences to their sponsored contingents.

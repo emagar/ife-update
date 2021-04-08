@@ -1,0 +1,116 @@
+Ms. Ref. No.:  JELS-D-07-00004 Title: Partisanship in Non-Partisan
+Electoral Agencies and Democratic Compliance: Evidence from Mexico's
+Federal Electoral Institute Electoral Studies
+
+Dear Guillermo Rosas,
+
+I now have the reviews of your paper "Partisanship in Non-Partisan
+Electoral Agencies and Democratic Compliance: Evidence from Mexico's
+Federal Electoral Institute". The reviewers offer several
+suggestions for revisions that I would like for you to address.
+Accordingly, I wish to offer you a "revise and resubmit" with no
+guarantee of ultimate publication.  The revised version of the
+revised paper will be reviewed by both original reviewers. The
+revised paper should accompany a detailed memo indicating how you
+have specifically reacted to the reviewers' comments and
+suggestions.  Please pay particular attention to the comments made
+by reviewer three.
+
+To submit a revision, please go to http://ees.elsevier.com/jels/ and
+login as an Author. Your username is: grosasb Your password is:
+rosas66875 On your Main Menu page is a folder entitled "Submissions
+Needing Revision". You will find your submission record there.
+
+Thank you for your interest in Electoral Studies.
+
+Sincerely,
+
+Harold D. Clarke Editor Electoral Studies
+
+Reviewers' comments:
+
+Reviewer #2: This is a very nice paper that deserves publication in
+Electoral Studies.  The paper argues that the Mexican electoral
+oversight commission (IFE) is closer to a ``pluralist'' model where
+off setting interests result in checks and balances than an
+insulated ``technocratic'' model where members are non-partisan
+experts.  The authors provide considerable theoretical justification
+for why the partisan ``watchdog'' model is more appropriate in the
+case of IFE (given the founding and stucture of the institution).
+The manuscript involves a sophisticated methodological approach to
+estimating the ideal points of IFE commissioners and provides
+empirical evidence to show that IFE members, why generally
+consensual, exhibit behavior consistent with their party sponsors.
+
+The only minor concern that I have is with the conclusion that this
+``lends credence to the claim that election arbiters that embrace
+partisan strife, rather than those that expunge party politics...are
+better able to organize free and fair elections...''.  There really
+isn't any evidence of this.  This has been relatively successful in
+Mexico, but there is no way to evaluate how it may have been if it
+were non-partisan without some sort of cross-system comparison.
+Beyond this, there is very little I would change in the paper.  The
+authors may consider reducing the number and length of footnotes,
+and incorporating some of the literature from the US courts research
+that suggest similar types of themes (distinguishing between
+motivations from norms of impartiality and ideology).  The courts
+literature came to mind at the discussion of TRIFE since there is
+substantial work on the Supreme Court's anticipation of
+congressional legislation in response to a SC decision, motivating
+the court to cast decisions in terms of constitutionality versus
+statute.
+
+
+
+Reviewer #3: This paper analyzes votes in Mexico's Federal Electoral
+Institute using Bayesian MCMC methods that Jackman, Hibbs, Clinton,
+and others developed to study legislative coalitions.  The theory
+regarding partisan delegation of authority to ostensibly
+non-partisan institutions is well articulated and, I believe, would
+be of interest to a number of ES readers.  The authors also present
+a considerable amount of empirical analysis and have included a
+helpful methodological appendix.  This is a potentially publishable
+manuscript, though I have several significant revisions to
+recommend:
+
+-   One of the central claims of this piece is that "political
+parties, not non-partisan technocrats, have always been the ones
+that run the show at IFE" (p. 4; this point is repeated in several
+other places).  This is an overstatement.  According to the authors'
+count (pp. 18-19), the majority of IFE votes were unanimous.  These
+votes were excluded when estimating ideal points. And when
+connections between these ideal points and the three major Mexican
+parties are explored via ANOVA analyses (Table 7), only one out of
+three initial models is statistically significant (Woldenberg II).
+A more accurate conclusion would be that partisan disagreements
+appeared to guide many of the councilors' decisions, even if IFE
+operated largely as a consensual body.
+
+-   What are the larger cross-national implications of this
+analysis?  The paper opens with references to several major works in
+comparative politics - works that cover a wide range of cases.  In
+the conclusion, however, the authors remain focused on Mexico.  Can
+this piece shed any light on our understanding of political parties,
+partisan delegations of authority, and the conduct of elections in
+any other democratic contexts?
+
+-   In several places, the paper stresses that electoral regulatory
+bodies should "embrace partisan strife" (see, e.g., the closing line
+of the abstract and the conclusion).  Yet as noted on pp. 10-11,
+competition among the parties ultimately resulted in the PRD being
+shut out of the EMB. The authors' main point, it seems, is that
+party maneuverings can be constructive if they lead to active
+checking and balancing within the EMB, but could be corrosive if
+they end up excluding officials from one of the principal parties.
+Unfortunately, the theoretical framework (Section 2) is not designed
+to specify the conditions under which parties will collaborate to
+exclude a rival party, as the PRI and PAN did in 2003.
+
+-   Regarding the empirical analysis, abstentions are not handled in
+a consistent manner. For the findings in Table 3, they are coded as
+equivalent to dissenting votes (p. 15); in later models they are
+treated as missing values, and presumably dropped.  According to
+Table 6, the councilors varied widely in the number of votes under
+consideration.  What can be assumed about missing votes?  Would they
+be missing at random? If not, the estimation of ideal points could
+be biased.

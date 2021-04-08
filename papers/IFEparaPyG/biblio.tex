@@ -1,0 +1,236 @@
+\documentclass[letter,11pt]{article}
+\usepackage[letterpaper,right=1.75in,left=1.75in,top=1.25in,bottom=1.25in]{geometry}
+\usepackage[longnamesfirst, sort]{natbib}\bibpunct{(}{)}{,}{a}{}{,}
+\usepackage{ae} % or {zefonts}
+\usepackage[T1]{fontenc}
+\usepackage[ansinew]{inputenc}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{url}
+\usepackage{lscape} %landcape pages support
+\usepackage{setspace} %allows to change linespacing
+%\setstretch{1.25} %linespacing
+%\onehalfspacing
+%\doublespacing
+\usepackage{pifont} %para tener la ballot cross \ding{55}
+\usepackage{verbatim}
+
+% avoid clubs and widows
+\clubpenalty=9000 \widowpenalty=9000
+% \displaywidowpenalty=9999
+
+\usepackage[pdftex]{graphicx}
+%\usepackage{graphicx}
+%\graphicspath{"c:\\data\\tmpgraphs"}
+\usepackage{color}
+%\usepackage[colorlinks]{hyperref}
+\usepackage{tikz} % Easier syntax to draw pgf files (invokes pgf automatically)
+\usetikzlibrary{arrows,shapes.geometric}
+\usepackage{pgfmath}
+
+\usepackage{multirow} %allows multiple rows in tables
+
+%for submission: sends figs and tables to last pages, other turns footnotes to endnotes
+%if endnotes used, place \listofendnotes where you want the endnotes to appear (it must be after the last endnote).
+%\RequirePackage[nomarkers,nolists]{endfloat}
+%\RequirePackage{endnotes}
+%\let\footnote=\endnote
+%\newcommand{\listofendnotes}{
+%   \begingroup
+%   \parindent 0pt
+%   \parskip 2ex
+%   \def\enotesize{\normalsize}
+%   \theendnotes
+%   \endgroup
+%}
+
+% titlepage without author and date
+%\renewcommand{\maketitle}{
+%   \begin{spacing}{1.5}
+%   \centering
+%   \LARGE{\textbf{\@title}}
+%   \end{spacing}
+%}
+
+% to change margins in a section -- type \begin{changemargin}{deltaLEFT}{deltaRIGHT}
+\def\changemargin#1#2{\list{}{\rightmargin#2\leftmargin#1}\item[]}
+\let\endchangemargin=\endlist
+
+%permiten añadir espacio arriba o abajo del texto de un renglón en una tabla
+\newcommand\T{\rule{0pt}{2.6ex}}         % Top strut at least 2.6ex
+\newcommand\B{\rule[­1.2ex]{0pt}{0pt}}   % Bottom strut at least 2.6ex
+%usage
+%\begin{tabular}[t]{|c|c|}
+% \hline
+% \multicolumn{2}{|c|}{Laplace transforms\T\B}  \\\hline
+% $f(t)$ \T        & $(p)$ \B                     \\\hline
+% $\delta(t)$      & $1$ \T                       \\[.5ex]
+% $\cos\omega_0t$  & $\frac{p}{p^2+\omega_0^2\B}$ \\\hline
+%\end{tabular}
+
+%\usepackage{rotating}% allows sideways tables or other stuff
+
+%\bibdata{c://mydocs//1new//}
+
+\usepackage{cancel} % permits to strike terms in equations
+
+%defines argmax function
+\DeclareMathOperator*{\argmax}{argmax}
+
+%adds comma-separator to thousands
+%\usepackage[np]{numprint}
+
+\begin{document}
+
+Gurria 2006
+
+Dalsgaard 2000
+
+done \citep{magaloni.2006}
+
+Alesina and Drazen 1991
+
+Estadísticas Oportunas de Finanzas Públicas y Deuda Pública,
+produced and distributed by Hacienda  Web-available at
+www.shcp.gob.mx. As of November 2008, when we downloaded the version
+we analyzed, the file
+
+Cadena and Trillo 2006
+
+Martinez-Vazquez (2001)
+
+Gavin 1996
+
+OECD 2007
+
+OECD 2008b
+
+SHCP (2007a)
+
+SHCP 2008a
+
+Sarabia 2005
+
+Carey and Rabesona (2002)
+
+Diaz-Cayeros *xxx
+
+SHCP (various years)
+
+SCHP (2009)
+
+www.inegi.gob.mx
+
+Moreno 2003
+
+done \citep{elizondo.1994}
+
+Pedro Aspe, in Excelsior, July 6, 1990
+
+García-Alba 2006
+
+Aportela and Werner, 2002
+
+Estimates from the Treasury Ministry
+
+Weldon, 2004
+
+done \citep{molinar.weldon.1994}
+
+done \citep{diaz.cayeros.etal.2007}
+
+Diaz-Cayeros, 2005
+
+done \citep{tena.1949}
+
+done \citep{magar.weldon.2001}
+
+done \citep{shugart.carey.1992}
+
+done \citep{mainwaring.shugart.1997}
+
+done \citep{romer.rosenthal.1978}
+
+done \citep{magar.2001}
+
+done \citep{kiewiet.mccubbins.1988}
+
+done \citep{weingast.marshall.1988}
+
+done \citep{gutierrez.etal.2001}
+
+done \citep{ugalde.2002}
+
+done \citep{varela.2004}
+
+done \citep{weldon.2005}
+
+www.gaceta.diputados.gob.mx
+
+done \citep{mayhew.1974}
+
+done \citep{schlesinger.1994}
+
+done \citep{weldon.1997}
+
+done \citep{carey.shugart.1998}
+
+done \citep{baldez.carey.1999}
+
+done \citep{londregan.2000}
+
+done \citep{mccubbins.lax.2006}
+
+done \citep{mcnollgast.1989}
+
+done \citep{magar.romero.2008}
+
+Weyland (2002)
+
+
+%done \citep{downs.1957},
+%
+%done \citep{estevez.magar.rosas.2008},
+%
+%done \citep{poole.rosenthal.1997}
+%
+%done \citep{poole.rosenthal.1985}
+%
+%done \citep{magaloni.magar.sanchez.2009}
+%
+%done \citep{jackman.2001},
+%
+%done \citep{londregan.2000b}
+%
+%done \citep{martin.quinn.2002}
+%
+%done \citep{mayhew.1974}
+%
+%done \citep{epstein.etal.1998}
+%
+%done \citep{mcnollgast.1987}
+%
+%done \citep{weingast.marshall.1988}
+%
+%done \citep{aldrich.mckelvey.1977}
+%
+%done \citep{carroll.etal.2008},
+%
+%done \citep{clinton.jackman.rivers.2004},
+%
+%done \citep{heckman.snyder.1997},
+%
+%done \citep{londregan.2000b}
+%
+%done \citep{campbell.etal.1960}
+
+
+
+
+
+
+\bibliographystyle{apsr}
+\bibliography{harvard}
+
+
+\end{document}

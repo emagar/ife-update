@@ -1,0 +1,447 @@
+%%% IGNORE ALL THIS FRONT MATTER
+\documentclass[12 pt]{amsart}
+\usepackage{amssymb,latexsym,amsfonts,amsmath,ctable}
+\usepackage{graphicx}
+\renewcommand{\bibitem}{\vskip2pt\par\hangindent\parindent\hskip-\parindent}
+\newcommand{\norm}[1]{\lVert#1\rVert}
+\begin{document}
+\title[Party sponsorship in IFE]{Party sponsorship and voting behavior in small committees: Mexico's \emph{Instituto Federal Electoral}}
+\author[Rosas]{Guillermo Rosas}
+%\address{Dept. of Political Science\\
+%Washington University}
+\author[Est\'evez]{Federico Est\'evez}
+%\address{Dept. of Political Science\\ITAM}
+\author[Magar]{Eric Magar}
+%\address{Dept. of Political Science\\ITAM}
+%\address{Department of Political Science\\Washington University in St. Louis\\St. Louis, MO 63130}
+\email{grosas@wustl.edu, festevez@itam.mx, emagar@itam.mx}
+%\urladdr{http://poli.wustl.edu/grosas/}
+\thanks{We are deeply grateful to Alonso Lujambio and Jeffrey Weldon for comments and suggestions, and to Mariana Medina, Sergio Holgu\'in, and Gustavo Robles for superb research assistance.  Thanks also to the Weidenbaum Center at Washington University in St. Louis for its generous support.}
+%\date{\today}
+%%% THE DOCUMENT STARTS HERE, WITH THE ABSTRACT
+\begin{abstract}
+We infer the ideological positions of Councilors in Mexico's \emph{Instituto Federal Electoral} (IFE) using Bayesian methods appropriate to the analysis of small committees.  We determine whether inferred ideological stances are consistent with a partisan sponsorship interpretation of IFE's institutional setup or, conversely, if voting behavior is largely supra-partisan. The analysis is based on votes cast by 11 members of IFE's Council General from 1996 to 2003.
+\end{abstract}
+\maketitle
+
+\section{Introduction}\label{S:introduction}
+During elections in 1997 and 2000, the Mexican citizenry ousted the party that held power uninterrupted for nearly seven decades.  They did so peacefully, through the ballot box.  In the aftermath of these critical elections, much of the credit for the success of the Mexican transition to democracy has gone to the authority in charge of planning and executing electoral policy, namely, the Federal Electoral Institute (IFE).  A new Council General ---IFE's board of directors--- was appointed in 1996 and oversaw the midterm elections of 1997, when the ruling Institutional Revolutionary Party (PRI) lost control of the lower chamber of Congress, and the presidential elections of 2000, when the National Action Party (PAN) defeated the old ruling party.
+
+Mexico is not alone in having set up an \emph{electoral management body} (EMB) to regulate electoral politics.\footnote{For useful information on current debates, from the point of view of practitioners, see the Administration and Cost of Elections (ACE) Electronic Project at \texttt{www.aceproject.org}.} Unfortunately, the scientific literature on EMBs is sparse.  We do not know what factors determine their establishment or their degree of autonomy, nor we know much about the consequences that follow from alternative EMB arrangements.  To our knowledge, only Molina \& Hern\'andez (1999) have explored whether citizen trust in the electoral process is in any way affected by the institutional character of an EMB.  According to these authors, EMBs vary first and foremost on the political principle that they seek to embody.  Some EMBs are organized according to a \emph{principle of impartiality}.  These
+ organizations tend to be run by non-partisan technocrats selected on meritocratic grounds and thus converted into ``citizen watchdogs'' that protect the public interest.  Other EMBs are designed according to the \emph{principle of checks and balances}, granting political actors the ability to designate representatives in the hope that ``party watchdogs'' will keep tabs on each other's behavior.\footnote{Molina \& Hern\'andez (1999) marshal some evidence suggesting that EMBs organized according to the principle of impartiality tend to elicit more trust among citizens.}  In the politics of gerrymandering, a similar and still unresolved debate has long been waged between proponents of non-partisan boards for redistricting and those favoring co-partisan arrangements for reducing the incidence of partisan bias (Butler and Cain, 1992, for the U.S. and Australian cases; Rossiter et al., 1998, for Northern Ireland).
+
+
+Prima facie, IFE's Electoral Councilors personify non-partisan technocratic efficiency.  They are thoroughly vetted and recruited from a set of professionals without party affiliations and admitted to IFE's council only after winning the endorsement of a qualified majority in the Mexican Chamber of Deputies.  Furthermore, IFE's operational budget is subject to few political whims, given that generous public financing for political parties and their election campaigns is incorporated.  At the same time, however, congressional parties are the only agents that can nominate candidates to the council.  Moreover, as we show below, the later careers of some Councilors suggest continuing links with party sponsors after their terms at IFE.  These features lead us to believe that Councilors might be more attuned to the goals of their party sponsors than one would surmise from their lack of party affiliation.
+
+
+In this paper, we study the voting patterns of IFE's Electoral Councilors in the crucial period between November 1996 and October 2003. In Section~\ref{S:description}, we identify several aspects of IFE's institutional setup that lead to conflicting hypotheses about Councilors' voting behavior.  We purport to decide empirically whether this behavior is consistent with the ``technocratic'' or ``party-sponsorship'' interpretations of EMBs.  We do so in Section \ref{S:estimation}, where we use Bayesian MCMC estimation methods to infer the ideal points of IFE Councilors in both one- and two-dimensional ideological spaces.  We discuss our results in Section \ref{S:discussion} with suggestions for further research.
+
+\section{IFE's Institutional Setup:  Hypotheses}\label{S:description}
+
+
+IFE was established in 1990 as a semi-autonomous bureaucratic agency in charge of overseeing federal elections.  Though IFE's charter originally called for a preponderant presence of the Executive power on its board, successive reforms led to the creation of a vigorous agency independent from Mexico's once omnipotent Presidents.  Concurrent with its increasing autonomy, IFE took over the years an ever more important role in organizing all electoral aspects of Mexico's protracted transition to democracy. IFE's Council General decides on all organizational matters relating to elections, including the elaboration and updating of electoral lists, installation of electoral booths, vote counts, monitoring of party expenditures, and overall regulation of political campaigns.
+
+
+In its earliest incarnation (1990-1994), the Council General included party representatives allocated on a semi-proportional formula linked to their shares of the national vote.  Four additional members were Legislative Councilors ---two Senators and two Deputies, representing the two largest parties in each chamber.  Mitigating the clearly partisan nature of the council, six ``Councilor-Magistrates'', required to be lawyers by profession, nominated by the President and ratified by a two-thirds majority of the lower chamber of Congress, completed the membership of the council.  This last innovation was the first to introduce a non-partisan group of experts as a counterweight to the scheme of partisan checks and balances that lay at the heart of the new institutional design for electoral authorities in Mexico.  However, preponderant power was really exercised by the Executive's ex oficio representative at IFE, the Minister of the Interior, who acted as chair of the Council Ge
+neral, concentrated its agenda-setting power, enjoyed exclusive power to nominate administrative officers for the IFE apparatus, and could cast a tie-breaking vote.
+
+In 1994, IFE was reformed from the top down.  Party representatives were disenfranchised on the council, the four Legislative Councilors were retained but now outweighed by six ``Citizen Councilors'' chosen by consensus among congressional parties.  This composition, it was hoped, would reduce partisan bickering, grant at least symbolic voice and representation to the citizenry, and bring to IFE extensive legal and technical expertise (Zertuche, 1995). 
+
+The six Citizen Councilors voted in all deliberations and were able to introduce new agenda items so long as these were recognized by the Chair.  Because the Council General under this reform (1994-1996) was still presided by the Minister of the Interior, questions were raised from the beginning concerning its ``autonomy''.\footnote{To our knowledge, Malo and Pastor's (1996) account remains the most authoritative analysis of the voting behavior of these Citizen Councilors. They code information contained in the minutes of all sessions of the Council General between June 1994 and November 1995 and analyze the voting record of the ten members of the council in search of the determinants of their individual vote choices.  Their major finding is that the six Citizen Councilors tended to vote as a bloc, largely isolating the Legislative Councilors who directly represented the major political parties.  Rosas (2004) inspects the complete voting record of this Council General and fi
+nds strong support for Malo and Pastor's analysis.}
+
+One more major reform, in 1996, completed IFE's transformation.  Council size was reduced to nine members, but all were to be non-partisan ``Electoral Councilors'' selected and ratified by consensus among congressional parties.  The Minister of the Interior was removed from the council altogether, replaced by a Council President chosen through the same procedures.  In effect, the Executive relinquished day-to-day control over electoral matters and IFE became an autonomous regulatory agency freed from direct interference from the government.  %(Brinegar, Morgenstern, \& Nielsen 1999)
+
+However, the influence of congressional parties over the council's makeup leaves ample room to speculate about potential party-sponsor effects on the voting behavior of Councilors.  In order to help us investigate the behavior of this council (1996-2003), we turn to a detailed discussion of the reformed institutional setup, underscoring first those rules that provide incentives for pro-sponsor behavior, then those that induce supra-partisan consensus.
+
+\subsection{Incentives for partisan or pro-sponsor voting behavior}
+IFE's appointment rules lend themselves well to analysis within a standard principal-agent framework.  From this perspective, IFE Councilors are the agents of their enacting coalition in the lower chamber of Congress.  Parties in the enacting coalition delegate to their appointees authority to interpret the law and run all aspects of federal elections.  The first problem, from the perspective of those in the enacting coalition, becomes how to reduce agency losses that result from the Council General behaving in ways that do not serve the principals' interests.  The second problem arises from the fact that the enacting coalition is a collective principal, whose members (political parties) have conflicting interests.\footnote{For a general discussion of the logic of delegation, see Kiewiet and McCubbins (1991: 22-38).}  We emphasize three aspects of this principal-agent situation that are particularly important in generating pro-sponsor behavior: rules of nomination, signallin
+g devices used by sponsors, and party capture.
+
+\noindent \emph{Rules of nomination}. Councilors are appointed by a two-thirds vote in the Chamber of Deputies to serve seven-year terms. Tenure in office is only somewhat secure, since Congress can impeach any Councilor ---something we discuss at length below. Legislative parties have informally agreed, in all bargaining sessions over Councilor selection since 1994, that each party in the enacting coalition is entitled to appoint a share of Councilors roughly proportional to its lower chamber seat share, and that proposed nominees can be vetoed by any other party in the coalition.  After the election of a single nominee for Council President, a final logroll in the lower chamber on a closed list of eight Councilors plus potential replacements culminates the process.  In 1996, PRI, PAN, PRD, and PT were in the enacting coalition, excluding no party with congressional representation.\footnote{PRD stands for \emph{Partido de la Revoluci\'on Democr\'atica}, and is the main left
+-of-center alternative in Mexican politics; PT is the \emph{Partido del Trabajo}. In 2003, PRD and PT were excluded from the enacting coalition, while the \emph{Partido Verde Ecologista Mexicano} (PVEM) was incorporated.} Table \ref{T:proposals} displays information about the enacting coalitions formed in 1996 and 2003, along with the number of candidates that each party in the coalition successfully sponsored to the council. 
+
+\begin{table}
+\caption{Legislative party shares and Councilor sponsorship (enacting coalition in bold)}\label{T:proposals}
+\begin{tabular}{lccccc}
+\hline\\ [-1.5ex]
+  &  $57^{\text{th}}$ House &  \multicolumn{2}{c}{$2^{\text{nd}}$ Council } &  $59^{\text{th}}$ House & $3^{\text{rd}}$ Council \\
+ \cline{3-4}
+ Party &  1994-1997 &  1996-2000 &  2000-2003 &  2003-2006 & 2003-2010 \\
+\hline\\ [-1ex]
+ PAN &  \textbf{24\%} &  2 &  2 &  \textbf{30\%} & 4 \\
+ PRI &  \textbf{60\%} &  3 &  4 &  \textbf{45\%} & 4 \\
+ PRD &  \textbf{14\%} &  3 &  2 &  19\% &  \\
+ PT &  \textbf{2\%} &  1 &  1 &  1\% &  \\
+ PVEM &   &   &   &  \textbf{3\%} & 1 \\
+ CD &   &   &   &  1\% &  \\
+ Total &  500 &  9 &  9 &  500 & 9 \\
+\hline
+\end{tabular}
+\end{table}
+
+While an informal right to veto may kill off highly partisan (and otherwise unqualified) candidates proposed by other sponsors, it is unlikely that any party would nominate individuals clearly opposed to its own interests and views about electoral regulation.\footnote{In this regard, the dynamic is similar to the one used to fill vacancies in the U.S. Supreme Court.} Parties reduce the chances for selecting ``bad types'' ---i.e., individuals that take courses of action hurting the principal's interests--- by carefully screening potential agents.  Parties have actively engaged in screening (Alcocer, 1995), proposing names of people who, though politically unaffiliated, have preferences in line with those of the nominating principal. Screening thus helps mitigate agency costs.
+
+Agency costs can also be contained through institutional checks.  Here the collective nature of the principal and the inherent conflict of interests among parties are served well by the collective nature of the agent and the formal and informal rules of appointment.  A stylized view of the nomination process has each party in the enacting coalition choosing types that share its broad policy objectives and proposing them to the other coalition members.  Candidates that are ideologically extreme ---i.e., too partisan for other coalition members--- are vetoed, and only moderate nominees survive.  As in Cox and McCubbins's (1993) congressional committees, the resulting Council General can be seen as a microcosm of the enacting coalition in the lower chamber, with Councilors checking one another as legislative parties would.\\
+
+\noindent \emph{Signaling devices used by sponsors}. Even if Councilors shirk and deviate from their principals' expectations about appropriate voting behavior, parties retain a wide gamut of mechanisms to make their preferences known to agents ---and ultimately to call them to order.  The range includes positioning in commission\footnote{The 1996 reform also introduced commissions for each of IFE's operational areas, manned through voluntary participation of individual Councilors and with chairs assigned through general consensus in the council.} and council session debates, private communications of all sorts, and (in the extreme) threats of impeachment against their own nominees. These mechanisms help make sponsor preferences on a new issue completely transparent to Councilors.  In an extension to this paper, we plan to seek evidence of whether or not such signals are effective, affecting a Councilor's vote record.\footnote{Malo \& Pastor (1996) find very mixed eviden
+ce in contested votes for the effectiveness of signaling on the basis of voting cues by Legislative Councilors and authorship of IFE bills.}\\
+
+\noindent \emph{Party capture}. Assuming Councilors are ambitious and have reasonably low discount rates for the future, their expectations of post-IFE careers may be molded by offers of continued sponsorship in the future (or, indeed, by rival offers from non-sponsors). The possibility of ``party capture'' of Councilors was present from the beginning, but the original legislation and its major reforms ignored the problem.  Not until 2001 did a minor reform impose temporal restrictions on retired Councilors for assuming government positions and seeking electoral office.  Table \ref{T:postife} confirms the need for those legal constraints.  Ironically, the parties that demanded electoral impartiality and citizen control have tended to advance (reward?) the post-IFE careers of their nominees, while the former ruling party has largely abandoned its own.  In any case, along with screening and signaling devices, parties can offer future-oriented incentives to its council nominees
+ in the hope of eliciting pro-sponsor voting behavior.\\
+
+\begin{table}
+\caption{Post-IFE Careers of Citizen Councilors}\label{T:postife}
+\begin{tabular}{llp{3in}}
+\hline
+Councilor & Sponsor & Post-IFE career \\ \hline \\ [-1.5ex]
+\underline{1994-1996} &   & \\  [0.5ex]
+
+Creel       & PAN   & PAN Deputy (1997-2000), PAN candidate for Mexico City Government (2000), Minister of the Interior (2000-   ). \\ [0.5ex]
+Woldenberg  & PAN   & PRI nominee for Council President (1996). \\ [0.5ex]
+Granados    & PRD   & PRD candidate for Governor in Hidalgo (1998). \\ [0.5ex]
+Zertuche    & PRD   & IFE's Secretary-General (1999-2003). \\ [0.5ex]
+Ortiz       & PRD   & PRD Deputy(1997-2000), PRD cabinet member in Mexico City Government (2001-   ). \\ [0.5ex]
+Pozas       & PRI   & Return to academic life. \\ [1ex]
+\underline{1996-2003} & & \\ [0.5ex]
+C\'ardenas  & PRD & PRD blue-ribbon committee member for Federal District (2004-2005). \\ [0.5ex]
+Barrag\'an  & PRD & Return to academic life.\\ [0.5ex]
+Cant\'u     & PT & PRD nominee for Council President (2003). \\ [0.5ex]
+Zebad\'ua   & PRD & PRD Secretary of the Interior in Chiapas (2000-2003), PRD Deputy (2003-   ). \\ [0.5ex]
+Lujambio    & PAN & PAN nominee to IFAI Commissioner (2005). \\ [0.5ex]
+Molinar     & PAN & PAN Under-Secretary of the Interior (2000-2002), PAN Deputy (2003-   ). \\ [0.5ex]
+Merino      & PRI & Return to academic life. \\ [0.5ex]
+Peschard    & PRI & Return to academic life. \\ [0.5ex]
+
+Woldenberg  & PRI & Return to academic life. \\ [0.5ex]
+Luken       & PAN & Return to business life. \\ [0.5ex]
+Rivera      & PRI & Return to academic life. \\ \hline
+\end{tabular}
+\end{table}
+
+\noindent \emph{Expected partisan behavior}. To the extent that the mechanisms outlined in this Section work, any Councilor should be ideologically close, and even sympathetic, to his or her sponsor.  In these circumstances, we entertain two expectations about voting patterns in IFE's Council General. First, we expect IFE voting patterns to dovetail those observed in the lower chamber. More precisely, since no single party has managed to sponsor an outright majority of Councilors, we should observe coalitions similar to those that form in the lower chamber, especially since the onset of divided government in 1997. The paucity of published aggregate data on congressional roll calls, available since 1998, is dramatic. Lujambio's (2000) analysis of lower chamber voting behavior for a relatively short period, the legislative year 1998-1999, indicates that 58\% of all recorded votes reflected multi-partisan consensus; of the remainder, the PRD was rolled in 35\% of the total roll
+ call votes, the PRI in 5\% and the PAN in 2\%.  Jeffrey Weldon reports\footnote{Private communication, March 2005.} that for the entire 57th Legislature (1997-2000), multi-partisan consensus characterized about seven of every ten roll-call votes; for the 58th Legislature (2000-2003), the rate rose to eight in ten. 
+
+The comparison with IFE voting patterns can be ascertained from Figures \ref{F:unan} and \ref{F:rolls}.  The top line in Figure \ref{F:unan} represents all roll-call votes observed each semester. The middle line represents the number of \textbf{contested votes}: those where at least one Councilor voted differently from the others, or abstained.  And the bottom line represents all contested votes where one party was \textbf{rolled} by the others: those where a majority of Councilors sponsored by one party voted differently from the majority of Councilors sponsored by the other parties, and therefore lost.  Figure \ref{F:rolls} then breaks down the bottom line in Figure \ref{F:unan} into how many times each party was rolled by the others in the semester.
+
+\begin{figure}[t]
+  % Requires \usepackage{graphicx}
+  \includegraphics[width=100mm]{"C:/Documents and Settings/Guillermo Rosas/My Documents/MY RESEARCH/PROYECTO IFE/paper ERIC/graficas ERIC/graph7"}
+  \caption{Unanimous, contested, and rolling Council General votes, 1994-2003}\label{F:unan}
+\end{figure}
+
+\begin{figure}[t]
+  % Requires \usepackage{graphicx}
+  \includegraphics[width=100mm]{"C:/Documents and Settings/Guillermo Rosas/My Documents/MY RESEARCH/PROYECTO IFE/paper ERIC/graficas ERIC/graph8"}
+  \caption{The breakdown of majority rolls, 1994-2003}\label{F:rolls}
+\end{figure}
+
+
+If anything, the Council General exhibited an even higher rate of unanimity or multi-partisan consensus (93\%) than the lower chamber from 1997 to 2000, while the rolled rates for the three major parties were weaker but in the same order of incidence (4\% for the PRD, 1\% for the PRI, and 2\% for the PAN).  Clearly, the degree of cross-sponsor bloc voting is much higher than the incentives for sponsor-friendly behavior would predict.  At the same time, contested votes appear to peak in most federal election years since 1994 (except for 1997), precisely when party sponsors would be most concerned to obtain favorable treatment from IFE.  This is reflected in IFE's consensus rates for the period 2000-2003, which drop to 74\%, and the corresponding rolled rates (16\% for the PRD, 7\% for the PRI and 3\% for the PAN).  On balance, in terms of the aggregate data, the Council General appears to mirror the voting patterns of its enacting coalition in Congress.
+
+Second, a stronger expectation is that same-party appointees should exhibit very similar voting behavior in the council.  Even allowing for slack due to vote-trading and idiosyncratic intensities, we would still expect to find that same-sponsor Councilors are closer in behavior to each other ---for example, on an ideological scale--- than to members sponsored by other parties.  From the perspective of nominating rules, contested votes that do not conform to this pattern can be considered agency costs.  This hypothesis will be examined in Section~\ref{S:estimation} when we look at roll-call behavior.
+
+\subsection{Incentives for supra-partisan behavior}
+IFE was trumpeted in its origins as an autonomous agency that placed major decision-making powers in the hands of non-partisan members of the Council General (Woldenberg, 1995). The long tenure of its members and the stability of its operational budget are traditionally seen as at least mild guarantees of independence.  By themselves, these features probably are too weak to induce what is patent in Figure \ref{F:unan} and we call ``supra-partisan'' behavior. In effect, further inspection of IFE's institutional makeup reveals built-in incentives for Councilors after the 1996 reform to vote together, as a bloc.  Behavior of this kind is characteristic of the voting patterns of the $1^{\text{st}}$ reformed Council General (1994-1996), reflecting a partisan divide but also a stronger one between Citizen and Legislative Councilors (Rosas 2004).  Here, we refer to two major incentives for Councilors to form super-majorities: the threat of impeachment and the existence of a last-in
+stance electoral tribunal. \\
+
+\noindent \emph{Rules of impeachment} Though the stated objective of the 1996 IFE reform was to grant Electoral Councilors autonomy from parties, the contract retains one important element to constrain their behavior: the threat of impeachment.  An impeachment trial of any Councilor can be ordered by a simple majority in the lower chamber, although a two-thirds vote in the Senate is required for actual impeachment.  In principle, an alliance of any two of the three large parties could have sustained a majority vote against any Councilor in the Chamber of Deputies at any moment since 1997; between 1994 and 1997, the PRI alone sufficed.  No Councilor has yet been impeached, although the Councilor-Magistrates elected to eight-year terms in 1990 were summarily dismissed from IFE upon the approval of the electoral reform in 1994.
+
+Under these circumstances, even ideologically-motivated Councilors would shirk in order to protect their flanks against accusations of flagrant partisanship in their behavior.\footnote{Indeed, threats of impeachment have all been characterized by charges of overt partisanship by offending Councilors.  Recent examples illustrate the maneuver.  The PRI and PVEM (with a total of 48\% of the lower chamber) accused PAN-sponsored Councilor Arturo S\'anchez of receiving voting instructions directly from his \emph{compadre}, former Councilor and now PAN Deputy Juan Molinar.  The current Council President, Luis Carlos Ugalde, was called ``\emph{Foxista}'' by the PRI's caucus who nominated him, after he voiced concerns about the feasibility of new legislation allowing Mexicans abroad to vote; see \emph{Reforma}, 16 March, 2005.  But the most notorious examples come from the 1997-1999 period, when the PRI threatened to move impeachment trials against several Councilors for their presum
+ed anti-PRI voting (Schedler, 2000, and Eisenstadt, 2004).} In order to protect their tenure, Councilors should therefore make sure not to act in ways that systematically hurt the interests of parties with combined majority support in the lower chamber.  Considering an abstention as a nay vote, in the 1996-2000 period PAN-sponsored Councilors Molinar and Lujambio voted different from one another in 38\% of all contested votes; PRD-sponsored Councilors Zebad\'ua and Cant\'u did so 54\% of them; while PRI-sponsors Peschard and Merino voted differently only 9\% of contested roll-calls.  If our logic is correct, impeachment threats seemed much more effective to divide PAN and PRD Councilors than PRI's.  This makes sense: the PRI has been in control of more than a third of the Senate seats, shielding its Councilors from impeachment attempts by a PAN-PRD coalition of senators despite the higher cohesion of their Council General contingent. \\ 
+
+\noindent \emph{Potential vetoes by a court of last resort}. Most discussions of IFE's institutional incentives tend to omit a second actor, namely, the \emph{Tribunal Federal Electoral} ({\sc Trife}).  Any Council General decision can be appealed to this electoral court in the last instance.  All political parties, whether in or out of the enacting coalition, national political associations, and even ordinary citizens in some cases, have standing before {\sc Trife} to challenge IFE decisions.  Indeed, the tribunal has over the course of its history shown a growing interest in revising IFE accords, sometimes rewriting the law and the tribunal's own jurisprudence in order to force its criteria on IFE and other times denying IFE's self-attribution of decision-making power.  In many areas of electoral law, the rulings of the judges have become unpredictable, and IFE decisions before the court face rising odds of being overturned or amended.  Moreover, this behavior by the court
+ has spawned litigiousness by those with standing to appeal (Eisenstadt, 1994 and 2004).
+
+More importantly for our purposes, a Councilor who cared intensely for some resolution has to anticipate all major complaints and make a priori concessions to preempt appeals by affected parties to {\sc Trife}.  This can be achieved in two ways.  First, by amending the proposal, in order to internalize the Court's preferences based on precedent and thereby hope to avoid a negative ruling.  Second, by reducing the probability that any party sponsor will object a decision in court.  This alternative calls for larger, multi-partisan and even universal voting coalitions in the Council General.  The natural recourse for the Councilors, given active engagement by the tribunal and even spurious legal appeals from their party sponsors, is to circle their wagons ---that is, to seek safety in broad co-partisan consensus.
+
+Following this logic, a preliminary summary of the evidence suggests that the tribunal's ex-post veto has indeed exerted ex-ante influence on the voting patterns in IFE.  As shown in Figure~\ref{F:unan}, universal and quasi-universal coalitions of Councilors voting in the same direction are most common among the observations that make up our dataset.  More dramatically, Figure~\ref{F:unan} shows that this very high degree of consensus has been the norm since 1994.  The mass of unanimous votes (i.e., those where all Councilors voted identically, without abstentions) is always greater than that of contested votes and tends to grow in absolute terms in inevitably contentious election years.  A slimmer slice of multi-partisan consensus voting, in which majorities of each sponsor's quota of nominees vote together, adds to this dominant feature in council votes.  Given that unlike the legislature in which its enacting coalition operates, the Council General cannot fully control it
+s agenda ---i.e., it cannot exclude nor freeze divisive complaints or controversial petitions presented by the parties it regulates---, the scores on multi-partisan consensus probably understate its force. \\
+
+%(eric en acuerdos propuestos por consejeros esperaríamos un nivel nulo de división entre los partidos; ésta debiera ocurrir exclusivamente con acuerdos iniciados por otros actores...) 
+
+\noindent To sum up, incentives for partisan Councilor behavior can be detected in nomination procedures, open signaling, and future rewards.  Partisan behavior, however, ought to be mitigated by the threat of impeachment ---a Councilor cannot always align with his or her sponsor's interests unless the sponsor can provide a shield in Congress.  We also detected incentives to make oversized coalitions, in order to avoid {\sc Trife}'s veto. 
+Very high levels of consensus render the task of detecting partisan tendencies difficult, since unanimity could be explained with many contradictory theories. To our advantage, the Council General's imperfect control of the agenda forces Councilors to discuss and vote on divisive issues ---precisely those that might otherwise be left out of the table.  Only an individual-level analysis of the Councilors' voting record can resolve which incentive is in fact dominant.  We now turn to the estimation of ideal points of IFE's Electoral Councilors during the period 1996-2003.  To the extent that pro-sponsor incentives might be dominant, we expect Councilors to line up along an ideological dimension similar to that of their sponsoring legislative parties and we further expect same-sponsor nominees to vote in virtually identical ways.  To the extent that supra-partisan incentives are paramount, we expect ideal points that are not clearly distinguishable from each other as they clust
+er into a super-majoritarian coalition. \\
+
+%(eric, esto lo quité: More to the point, the logic of anticipation detailed above should mean that Councilors rarely propose bills that will not command near-universal support in the Council General, unless they can confidently discount the Court as a threat to the winning coalition and discount as well the possibility of inspiring the antagonism of a congressional majority.        For that reason, the actual incidence of consensual decision-making does not allow to distinguish between partisan and supra-partisan incentives leading to that voting behavior.)
+
+\section{Bayesian Estimation of Ideal Points}\label{S:estimation}
+At the time of Malo \& Pastor's (1996) analysis of IFE's Council General, political scientists had not yet developed methodological tools to infer the location of bliss points from the voting records of members of small committees.  Since the mid-1990s, however, political methodologists have developed various techniques to circumvent what Londregan (2000) calls ``the micro-committee problem''.  In essence, the micro-committee problem arises from the relative paucity of divided votes that would allow us to infer the ideological positions of committee members.  Among the new techniques, Bayesian estimation methods have recently challenged the dominance of more traditional tools of ideal point estimation (for example, Poole \& Rosenthal's NOMINATE) as the most appropriate ways to study the voting behavior of individuals in small committees (Martin \& Quinn 2002; Clinton, Jackman \& Rivers 2004; Jackman 2004).  Since IFE's Council General is in practice a very sm
+all decision body, and since most of the votes in the council are on procedural ---therefore mostly consensual--- matters, Bayesian Monte Carlo Markov Chain (MCMC) methods are ideal tools to infer the political preferences of its members.
+
+We present an analysis of IFE's Council General. We start by noting that halfway through the council, one PAN-sponsored Councilor (Molinar) and one PRD-sponsored Councilor (Zebad\'ua) accepted cabinet positions in the federal and Chiapas governments, and were replaced by Councilors Rivera and Luken, respectively. We estimate ideal points for each of these eleven individuals, but we break down the estimation in two steps, considering nine Councilors each time.  Note also that the large proportion of unanimous votes in the Council General means that they convey absolutely no information about the ideological preferences of Councilors.  Only 44\% of votes in the council can be usefully analyzed.  Usable votes were recoded so that, in each case, a Councilor's vote with the majority of the council is coded as ``1'', whereas a minority vote is coded ``0''.  Abstentions are coded as missing values.  The data are thus combined in two arrays of 248 and 281 rows (corresponding to the 
+same number of non-unanimous votes in both halves of the council) by 9 columns.
+
+We have included a technical description of the model in Appendix~\ref{S:model}.  By and large, we follow closely the discussion in Martin \& Quinn (2002) and Clinton, Jackman \& Rivers (2004).  Both sets of authors derive their models from first principles about the voting behavior of individuals in large (the US Lower House) and small (the US Supreme Court) committees.  These models are similar in spirit to those used in item-response theory (IRT), in which individuals' answers to test items of varying difficulty are inspected to infer individual abilities.  The only additional complication in our work is that we estimate ideological positions in a two-dimensional space.  Where appropriate, we explicate our modeling decisions fully, but in general we stay close to Jackman's discussion (Jackman 2001).
+
+\subsection{One-dimensional models}
+We start, then, by estimating ideal points along a single dimension.  As suggested in Appendix~\ref{S:model}, the identification of IRT models requires imposing restrictions either on item parameters or on Councilors' positions.  Traditionally, scholars use a known ``extremist'' in the committee to anchor the ideological space.  We use the alternative method of restricting the prior distributions of ideal points to be standard normal.  Given the relatively large amount of votes (248 and 281), even these mildly informative priors will not impact our substantive results, but allow us to anchor ideal points on a space of known dimensions.
+
+Table~\ref{T:idealpoints} summarizes results from a one-dimensional fit to the data.  The last column in Table~\ref{T:idealpoints} displays the number of votes on which the estimation of ideal points is based for each Councilor.  These are actual YEA/NAY votes; abstentions are not included in this count.  Note that within each council, point estimates of the ideal positions of Councilors (the mean of the posterior distribution of the $9 \times 2$ location parameters) determine their rank in the list.  Thus, for example, the nine Electoral Councilors that served from 1996 to 2003 are arranged as follows from Left to Right: C\'ardenas, Cant\'u, Zebad\'ua, Lujambio, Molinar, Merino, Woldenberg, Peschard, and Barrag\'an. It is clear from this account that these ideological positions are largely supportive of the pro-sponsor hypothesis.  The glaring anomaly is Barrag\'an's extreme position to the right of this dimension, while Councilors with the same sponsor (PRD) otherwise occu
+py the left end of the scale.
+
+\begin{table}
+\caption{Posterior distribution of ideal points}\label{T:idealpoints}
+\begin{tabular}{llrrr}
+\hline
+Councilor   &  Sponsor  &   Mean    &  SD & Votes  \\  \hline  \\ [-1ex]
+
+
+
+\multicolumn{2}{l}{\underline{1996-2000}}&          &        & \\ [1ex]
+C\'ardenas& PRD & --1.623   & 0.1796 & 231\\
+Cant\'u   & PT  & --0.114   & 0.0937 & 235\\
+Zebad\'ua & PRD & --0.036   & 0.0911 & 238\\
+Lujambio  & PAN &   0.364   & 0.0999 & 247\\
+Molinar   & PAN &   0.449   & 0.1046 & 234\\
+Merino    & PRI &   0.606   & 0.1153 & 247\\
+Woldenberg& PRI &   0.619   & 0.1175 & 245\\
+Peschard  & PRI &   0.649   & 0.1178 & 247\\
+Barrag\'an& PRD &   1.568   & 0.1836 & 206\\ [1ex]
+\multicolumn{2}{l}{\underline{2000-2003}}&          &        & \\ [1ex]
+C\'ardenas& PRD & --1.323   & 0.1715 & 234\\
+Barrag\'an& PRD &   0.141   & 0.0991 & 203\\
+Luken     & PAN &   0.888   & 0.1205 & 246\\
+Cant\'u   & PT  &   1.081   & 0.1312 & 267\\
+Rivera    & PRI &   1.286   & 0.1484 & 271\\
+Lujambio  & PAN &   1.381   & 0.1524 & 270\\
+Peschard  & PRI &   1.390   & 0.1543 & 270\\
+Merino    & PRI &   1.394   & 0.1588 & 276\\
+Woldenberg& PRI &   1.479   & 0.1622 & 278\\
+\hline
+\end{tabular}
+\end{table}
+
+
+
+It is also noteworthy that the posterior distributions of ideal points in the council are wide enough that they overlap in many instances, despite the fact that posterior standard deviations are always much narrower than the prior standard deviation of ``1''.  Thus, for example, the positions of Councilors Merino, Woldenberg, and Peschard are virtually indistinguishable both in 1996-2000 and 2000-2003.  Even then, the voting behavior of the Electoral Councilors is consistent enough that we can venture educated guesses regarding the probable identity of the median voter.\footnote{Since we are reporting probability distributions regarding the location of ideal points, we cannot make deterministic claims about the identity of the median voter.} Sampling from the posterior distribution of ideal points allows us to rank the positions of Councilors. These simulations are summarized in Table~\ref{T:median}.  During the first four years of the council, we are very certain that Molin
+ar (sponsored by the PAN) was the median voter.\footnote{Indeed, the probability that he was not the median voter is a paltry 0.026.}  We are less certain about the identity of the median voter during the latter years of the council, but even here there is a rather large probability (0.612) that Rivera, who was sponsored by the PRI, claimed this status.
+
+\begin{table}
+\caption{Probability of being the median voter}\label{T:median}
+\begin{tabular}{llcc}
+\hline
+Councilor & Sponsor &1996-2000&2000-2003\\ \hline
+Barrag\'an& PRD     &0.000    & 0.000\\
+C\'ardenas& PRD     &0.000    & 0.000\\
+Cant\'u   & PT      &0.000    & 0.012\\
+Zebad\'ua & PRD     &0.000    & ---\\
+Molinar   & PAN     &0.974    & ---\\
+Lujambio  & PAN     &0.022    & 0.132\\
+Luken     & PAN     &---      & 0.000\\
+Rivera    & PRI     &---      & 0.612\\
+Merino    & PRI     &0.000    & 0.116\\
+Peschard  & PRI     &0.000    & 0.109\\
+Woldenberg& PRI     &0.002    & 0.019\\ \hline
+\end{tabular}
+\end{table}
+
+In any case, it is obvious that neither C\'ardenas nor Barrag\'an, two of the most excentric Councilors, ever had a chance of becoming the median voter in the council.  Their ideological positions were simply too extreme to make them dependable as perennial coalition partners.
+
+
+
+Below we will argue that the seven centrist Councilors consistently banded together to form qualified majority rolls in the council.  While the left-wing majority (C\'ardenas through Molinar), known colloquially as \emph{El Pent\'agono}, often polarized debates and negotiations on important issues (especially about the appointment of top bureaucrats for IFE), the four centrists among them routinely joined their PRI-sponsored colleagues in setting IFE policy.  Indeed, on the basis of their spatial distances, we can assert that the true minimum winning coalition on the council comprised the members sponsored by the PAN and the PRI.
+
+
+
+\subsection{Two-dimensional models}
+We mentioned before that we prefer to estimate a two-dimensional ideological space to the voting data in the council.  There are three reasons why we think this is advisable.  First and foremost, our inferences regarding Barrag\'an's ideal point on one dimension suggest an extreme degree of repositioning (i.e., his move from being rightmost to almost leftmost in the council), even to a larger extent than belatedly partisan motives could lead one to expect.  Thus, rather than remaining excentric vis-\`a-vis other PRD-sponsored Councilors, Barrag\'an's underlying preferences seem more attuned to those of C\'ardenas and Cant\'u during 2000-2003. However, the extreme \emph{volte-de-face} implied by his turn leftwards strikes us as implausible.  By restricting the ideological space to one dimension, we might be imposing too much structure and thus forcing estimation of peculiar ideal points.
+%quitar oración especulativa
+
+
+Second, an advantage of IRT models is that item parameters (i.e., those attached to each bill, case, or vote) can be estimated alongside position parameters.  We have so far reported only on position parameters (Table~\ref{T:idealpoints}), but our inspection of item parameters reveals that only a handful of votes allow discrimination on one dimension.  For the period 1996-2000, for example, we estimate that 87 votes (out of 247) do not convey information that would allow us to discriminate Councilors' ideal points along the inferred dimension.\footnote{To arrive at this conclusion, we estimated the 90\% highest posterior density (HPD) of each parameter.  Where a vote's HPD straddled ``0'', we concluded that it was not informative on that dimension.}  It seems then that our data contain extra information that could allow us to estimate a less parsimonious but more precise model of voting behavior.
+
+Finally, we believe that left-right ideological differences do not extenuate the level of disagreement in the council.  On the contrary, our interviews suggest that Councilors were divided on their interpretation of the Council General's legislative functions.  We further believe that these interpretative differences were anchored in the Councilors' different professional backgrounds.  In particular, Councilors with a background in Law (especially C\'ardenas and Barrag\'an)\footnote{Later Councilor Rivera is also a lawyer, while Councilor Zebad\'ua studied Law as well as Economics and Political Science.  Unlike C\'ardenas and Barrag\'an, neither tended to make legalistic appeals in council debates, however.} tended to be punctilious in their legal interpretations of the council's faculties, even when they were at opposite extremes of the spectrum on judicial activism, whereas Councilors with a Social or Political Science education tended to be less preoccupied with the finer
+ points of legal argument.\footnote{We thank Jeffrey Weldon for offering this insight.}  Consequently, for each period (1996-2000 and 2000-2003) we sought two votes along party lines that would fix the Left-Right dimension that we previously uncovered, and one vote that divided lawyers from political scientists to anchor a second dimension. By stipulating very narrow prior distributions on the item parameters of these six votes we solve specification problems typical of IRT models (see methodological Appendix).  Table~\ref{T:priors} provides details about these six votes.
+
+\begin{table}
+\caption{Votes used to anchor two-dimensional models}\label{T:priors}
+\begin{tabular}{llp{2.5in}}
+\hline
+Date   & Minority vote & Substance \\ \hline   \\ [-1ex]
+\multicolumn{2}{l}{\underline{1996-2000}}& \\ [1ex]
+12/23/1996  & PRD         & Should party finance reform include campaign expenditures?\\[0.5ex]
+01/15/1997  & Barrag\'an  & Should \emph{Alianza C\'ivica} be recognized as a National Political Group?\\[0.5ex]
+10/14/1999  & PRI         & Should IFE's rules of procedure be amended? \\[1ex]
+\multicolumn{2}{l}{\underline{1996-2000}}& \\ [1ex]
+04/06/2001  & Barrag\'an  & Should Council pass a resolution against PRI, PAN, and PVEM?\\[0.5ex]
+10/21/2001  & PRD         & Should IFE's rules of procedure be amended?\\[0.5ex]
+12/21/2001  & PRD, Luken & Should instructions regarding how to obtain National Political Group status be amended?\\ \hline
+\end{tabular}
+\end{table}
+
+Our results are summarized in Figures~\ref{F:second_session_A} and \ref{F:second_session_B}, which correspond to the first and second halves of IFE's Council General.  The ellipses in each graph summarize the posterior distributions of the position parameters along two dimensions.  The ellipses are centered at the mean of the distribution, and the lengths along each dimension capture one standard deviation in each direction about the mean.\footnote{Given that the posterior distributions of these parameters are normal, the mean and median should theoretically coincide.  Since we describe the shapes of these distributions with simulated draws, therefore including Montecarlo error in our statistics, the actual means and medians do not exactly coincide. Yet, they are very close to each other and the posterior distributions of these parameters are indeed bell-shaped.}  Smaller ellipses correspond to more certain inferences about the ideological positions of Electoral Councilors.
+
+%This works if translating directly to pdf, but not to dvips-ps
+\begin{figure}[t]
+  % Requires \usepackage{graphicx}
+  \includegraphics[width=130mm]{"C:/Documents and Settings/Guillermo Rosas/My Documents/MY RESEARCH/PROYECTO IFE/paper ERIC/second_session_A"}
+  \caption{Ideological dimensions underlying IFE's Council General, 1996-2000}\label{F:second_session_A}
+\end{figure}
+
+\begin{figure}[t]
+  % Requires \usepackage{graphicx}
+  \includegraphics[width=130mm]{"C:/Documents and Settings/Guillermo Rosas/My Documents/MY RESEARCH/PROYECTO IFE/paper ERIC/second_session_B"}
+  \caption{Ideological dimensions underlying IFE's Council General, 2000-2003}\label{F:second_session_B}
+\end{figure}
+
+Consider first the results in Figure~\ref{F:second_session_A}. The ``ideal regions'' of Councilors Cant\'u and Zebad\'ua are estimated with great precision, whereas the voting patterns of Barrag\'an and C\'ardenas only allow a more ambiguous inference.  We do see, however, that the Councilors' positions on dimension 1 remain very similar to those we had uncovered in our one-dimensional model. Here again, we see that the Left-Right positions of the council are: C\'ardenas, Cant\'u, Zebad\'ua, Lujambio, Molinar, Merino, Woldenberg, Peschard, and Barrag\'an.  The extent of party-sponsor voting is conspicuous in the cases of the PAN ---where the positions of Molinar and Lujambio are practically indistinguishable from each other--- and the PRI ---where Merino, Peschard, and Woldenberg also appear to be stacked on the same ideological space.  We also note that a second dimension, which we here label ``degree of legalism'', does not really allow much differentiation among most memb
+ers of the council.  The distribution of position parameters for C\'ardenas along the second dimension is wide enough to cover the inferred positions of all other Councilors except Barrag\'an.  Indeed, this second dimension may only reveal Barrag\'an's early fixation with keeping to the strict letter of IFE's charter to avoid trespassing its limits.
+
+Turning now to Figure~\ref{F:second_session_B}, we see that the ideological space became clearly two-dimensional after the exit of Molinar and Zebad\'ua.  While the PRI's nominees, including the new entrant Rivera, continue to exhibit nearly identical voting profiles, the PAN's two nominees diverge\footnote{New entrant Luken was proposed by the PAN while still an electoral Councilor serving in the PAN-governed state of Baja California.  Before 2000, however, he took a position in the PRD-led government in the Federal District, which may help to explain his leftward stance on the council.} and the surviving PRD/PT nominees create greater distances among themselves than were true for the earlier period.  We also see a very conspicuous tendency by the remnants of the earlier super-majority ---Merino, Woldenberg, Peschard, Lujambio, and Cant\'u--- to vote together, whereas C\'ardenas and Barrag\'an continue to exhibit excentric ideological positions.  On the second ideological d
+imension, C\'ardenas now very clearly overtakes Barrag\'an as the most vocal and legalistic Councilor, in this period, in favor of the expansion of IFE's decision-making faculties.  His reaffirmed outlier status but now on both dimensions, in addition to that of Barrag\'an, would imply for this council a lower level of multi-partisan consensus and a higher rolled rate for the PRD.  That both things actually occurred is evident in Figures~\ref{F:unan} and~\ref{F:rolls}.  Note also that Figure~\ref{F:second_session_B} suggests why the one-dimensional fit to the council's votes in the period 2000-2003 showed such an extreme turnaround for Barrag\'an.  Imposing one dimension to these ideological profiles means setting Councilors' ideal points along an axis that goes from C\'ardenas on the Left to Peschard/Woldenberg on the Right.  The perpendicular projection of Barrag\'an's position onto this axis sets him to the left of Luken, rather than to the right of Peschard/Woldenberg.  W
+e conclude then that Barrag\'an's Left-Right position did not change after the exit of Molinar and Zebad\'ua from the council.  To the extent that the PRD chose Councilors expecting them to be faithful to the party line, they really missed the boat when screening Barrag\'an.
+
+Finally, we report our findings regarding the likely identity of the median voter in each direction, for each of the periods under study, which are summarized in Table~\ref{T:median2d}.  First, during the period 1996-2000 we continue to find that Molinar was the likely median voter along the Left-Right ideological dimension, though the probability that this was indeed the case ($p=0.8$) is now slightly lower than the earlier estimation from the one-dimensional model ($p=0.974$).  Along the second dimension, our inability to clearly distinguish positions means that we need to consider several candidates as potential median voters.  Among the nine Councilors, Molinar, Lujambio, Merino, Peschard, and Woldenberg, in that order, all have non-negligible probabilities of being the median voter.
+
+\begin{table}
+\caption{Probability of being the median voter}\label{T:median2d}
+\begin{tabular}{llcccc}
+\hline
+Councilor & Sponsor &\multicolumn{2}{c}{1996-2000}&\multicolumn{2}{c}{2000-2003}\\ \hline
+Barrag\'an& PRD     &0.039&0.009& 0.001&0.000\\
+C\'ardenas& PRD     &0.000&0.011& 0.001&0.000\\
+Cant\'u   & PRD     &0.002&0.046& 0.137&0.004\\
+Zebad\'ua & PRD     &0.011&0.070& ---  &---  \\
+Molinar   & PAN     &0.801&0.243& ---  &---  \\
+Lujambio  & PAN     &0.073&0.208& 0.185&0.077\\
+Luken     & PAN     &---  &---  & 0.001&0.041\\
+Rivera    & PRI     &---  &---  & 0.222&0.750\\
+Merino    & PRI     &0.051&0.159& 0.183&0.049\\
+Peschard  & PRI     &0.007&0.141& 0.136&0.057\\
+Woldenberg& PRI     &0.018&0.114& 0.135&0.031\\ \hline
+\end{tabular}
+\end{table}
+
+This situation is reversed for the second half of the council, where we have a likely median voter on the vertical dimension (Rivera, with $p=0.75$ of enjoying median voter status), but not on the ideological Left-Right dimension (Rivera, Lujambio, Merino, Cant\'u, Peschard, and Woldenberg, in that order, could have been the median voter).  In any case, it seems obvious that PAN-sponsored Councilors lost the median position to PRI-sponsored Councilors halfway through the second council.  This only reflects change in the partisan composition of the sitting council.  PRI nominees increased from three to four, while PRD nominees suffered the loss of one member.  Given Barrag\'an's known position on the extreme right of the council, the median voter inevitably switched to another party sponsor. Even so, the ideal points in the council from 2000 to 2003 display less partisan cohesion than before (except for the PRI's nominees). At the same time, they show a stronger level of mult
+i-partisan consensus including six Councilors with three different party sponsors. This supermajority could not, however, extend itself to include majorities of two of those parties. 
+
+Ideal point estimates prove our suspicions that consensus masks partisanship right.  With the exception of the PRD ---whose sponsors occupy patently different ideological positions---, the sponsors of the PAN, the PRI, and the PT appear clustered, with little variance relative to extremists.  Although consensus includes partisan homogeneity, it could be the product of many alternative explanations.  We therefore plan, in future extensions of this research, to look for finer-grained evidence of partisanship. In particular, we believe that a separate analysis of issues originating inside and outside the Council General could be informative. By the logic of anticipation we outlined above, Councilors should only propose issues not commanding the unanimous support of all parties when they believe that \sc{Trife} will rule in favor of their policy. Otherwise (and we think this was mostly the case) unanimity was obliged to insure policy from unexpected turns. With issues originatin
+g outside the council, on the contrary, ideological affinities, to the extent present, pressed to cleave Councilors in ways allowing an estimation of partisan effects. We also believe that an analysis of party signals to Councilors could offer another opportunity to detect partisan effects in behavior. We plan to analyze Councilors who shift positions regarding an issue between a closed-door committee session and the Council General vote: did a party send a cue between the two events? If so, this would be evidence of the influence of signaling mechanisms by the principal to its agents.  
+
+\section{Conclusion}\label{S:discussion}
+The purpose of this research note was to describe the spatial location of Electoral Councilors in IFE's Council General from 1996 to 2003.   We did so within a Bayesian framework, using MCMC techniques to describe and analyze the posterior distribution of ideal points.  We find that Electoral Councilors' ideological positions are clearly describable in terms of Left-Right preferences, and that their positions on the Left-Right ideological space tend to accord rather well with those of their sponsors.  We also find, however, that a second dimension of disagreement on the proper roles that IFE should fulfill cleaves Electoral Councilors.  Hence, despite seemingly powerful incentives towards supra-partisan voting, we do find that Councilors are closer to their party sponsors' hearts than should be the case in a putatively citizen EMB.
+
+We conclude by noting that the analysis could very profitably be extended to the voting behavior of electoral authorities in other countries (or even in subnational units within Mexico).  Of particular relevance is the issue of the relative autonomy and objectivity of members of these bodies.  Returning to Molina \& Hern\'andez's typology, would we expect to find more proficient yet accountable electoral authorities in ``party watchdog'' systems or in ``citizen watchdog'' institutional setups?  What trade-offs are posed by alternative ways of organizing the electoral authority?  Do processes of \emph{ciudadanizaci\'on} of EMBs bring ideological conformity as the price of technical proficiency, or do they remain hopelessly attuned to their sponsors' wishes despite putative intentions to avoid partisanship?  In short, what is the best EMB that taxpayers' money can buy?
+
+%The following code sets up PoliSci-looking bibliographic items%
+\section*{References}
+\mbox{} \baselineskip=6pt \parskip=1.1\baselineskip plus 4pt minus 4pt \vspace{-\parskip}
+
+\bibitem Alcocer V., Jorge. 1995. ``1994: di\'alogo y reforma, un testimonio''. In Jorge Alcocer V. (ed.), \emph{Elecciones, di\'alogo y reforma: M\'exico 1994}, Vol. I. Mexico City: Nuevo Horizonte. 
+
+\bibitem Butler, David, and Bruce Cain. 1992. \emph{Congressional Redistricting}. New York: MacMillan. 
+
+\bibitem Clinton, Joshua, Simon Jackman, and Douglas Rivers. 2004. ``The Statistical Analysis of Roll Call Data''. \emph{American Political Science Review}, 98 (2), May, 355-370.
+
+\bibitem Cox, Gary W., and Mathew D. McCubbins. 1993. \emph{Legislative Leviathan}.  Berkeley: University of California Press.
+
+\bibitem Eisenstadt, Todd A. 1994. ``Urned Justice: Institutional Emergence and the Development of Mexico's Federal Electoral Tribunal''. La Jolla: Center for Iberian and Latin American Studies. Working paper no. 7. 
+
+\bibitem Eisenstadt, Todd A. 2004. \emph{Courting Democracy in Mexico}. New York: Cambridge University Press.  
+
+\bibitem Hinich, Marvin, and Michael C. Munger. 1994. \emph{Ideology and the theory of public choice}. Ann Arbor: University of Michigan Press.
+
+\bibitem Kiewiet, Roderick, and Mathew D. McCubbins. 1991. \emph{The Logic of Delegation }. Chicago: University of Chicago Press.
+
+\bibitem Londregan, John. 2000. \emph{Legislative Institutions and Ideology in Chile's Democratic Transition}.  New York: Cambridge University Press.
+
+\bibitem Lujambio, Alonso. 2001. ``Adi\'os a la excepcionalidad: r\'egimen presidencial y gobierno dividido en M\'exico''. In Jorge Lanzaro (ed.), \emph{Tipos de presidencialismo y coaliciones pol\'iticas en Am\'erica Latina}. Buenos Aires: CLACSO. 
+
+\bibitem Malo, Ver\'onica, and Julio Pastor. 1996. \emph{Autonom\'ia e imparcialidad en el Consejo General del IFE, 1994-1995}. M\'exico: Instituto Tecnol\'ogico Aut\'onomo de M\'exico.  Unpublished senior's thesis.
+
+\bibitem Martin, Andrew D., and Kevin M. Quinn. 2002. ``Dynamic Ideal Point Estimation via Markov Chain Monte Carlo for the U.S. Supreme Court, 1953-1999''. \emph{Political Analysis}, 10 (2), Spring, 134-153.
+
+\bibitem Molina, Jos\'e, and Janeth Hern\'andez. 1999. ``La credibilidad de las elecciones latinoamericanas y sus factores.  el efecto de los organismos electorales, el sistema de partidos y las actitudes pol\'iticas''. \emph{Cuadernos del Cendes}, 41, mayo-agosto, 1-26.
+
+\bibitem Ordeshook, Peter C. 1976. ``The spatial theory of elections: A review and a critique''. In I. Budge, I. Crewe, \& D. Farlie (eds.), \emph{Party identification and beyond}.  London: John Wiley \& Sons.
+
+\bibitem Poole, Keith T., and Howard Rosenthal. 1997. \emph{Congress: A Political-Economic History of Roll Call Voting}. New York: Oxford University Press.
+
+\bibitem Poole, Keith T., and Howard Rosenthal. 2001. ``D-NOMINATE after 10 years: A comparative update to \emph{Congress: A political-economic history of roll-call voting}''. \emph{Legislative Studies Quarterly}, 26 (1), 5-29.
+
+\bibitem Rosas, Guillermo. 2004. ``Estimation of Ideal Points in Mexico's Instituto Federal Electoral''. St. Louis, Missouri: Washington University. Unpublished manuscript. 
+
+\bibitem Rossiter, D.J., R.J. Johnston, and C.J. Pattie. 1998. ``The Partisan Impacts of Non-Partisan Redistricting: Northern Ireland, 1993-95''. \emph{Transactions of the Institute of British Geographers}, New Series 23(4), 455-480. 
+
+\bibitem Woldenberg, Jos\'e. 1995. ``Los consejeros ciudadanos del Consejo General del IFE: un primer acercamiento''. In Jorge Alcocer V. (ed.), \emph{Elecciones, di\'alogo y reforma: M\'exico 1994}, Vol. I. Mexico City: Nuevo Horizonte. 
+
+\bibitem Zertuche, Fernando. 1995. ``La ciudadanizaci\'on de los \'organos electorales''. In Jorge Alcocer V. (ed.), \emph{Elecciones, di\'alogo y reforma: M\'exico 1994}, Vol. I. Mexico City: Nuevo Horizonte. 
+
+
+\appendix
+\section{Model}\label{S:model}
+The voting behavior of individuals in small committees conveys information about their policy preferences.  Whether these preferences are sincerely revealed during the voting process or whether they reflect some contrived strategic calculus is subject of debate, but not a point that requires further discussion in the context of this paper.
+
+
+Sincere or strategic motivations apart, it is incumbent upon the researcher to specify the mechanism that presumably links political preferences to vote choices.  Though not the only modeling option, most political scientists rely on the Euclidean spatial model to build up their analysis from solid first principles (Ordeshook 1976, Hinich \& Munger 1994).  Put succinctly, spatial models assume that, when facing a binary YEA or NAY vote choice, rational committee members will vote for the alternative that will enact the policy closest to their own ideal position. Martin \& Quinn (2002) and Clinton, Jackman \& Rivers (2004) formalize this utility calculation as follows:
+Let $U_{i}(\boldsymbol{\zeta}_{j})= - \norm{\mathbf{x}_{i}-\boldsymbol{\zeta}_{j}}^{2}+\eta_{i,j}$ represent the utility to committee member $i \in I_{n}$ of voting in favor of proposal $j \in J_{m}$ and $U_{i}(\boldsymbol{\psi}_{j})= -\norm{\mathbf{x}_{i}-\boldsymbol{\psi}_{j}}^{2} + \nu_{i,j}$ the utility of voting against it.
+In this formalization, the $D$-dimensional vectors $\mathbf{x}_{i}$, $\boldsymbol{\zeta}_{j}$, and $\boldsymbol{\psi}_{j}$ correspond, respectively, to the ideal position of the committee member in the $D$-dimensional policy space, the position that will result from a YEA vote, and the position that will result from a NAY vote.  Disturbances $\eta_{i,j}$ and $\nu_{i,j}$ are assumed to be distributed joint-normally with zero means and known variance.
+
+To turn this formal utility notation into a statistical model susceptible of estimation, note that a positive vote by member $i$ on proposal $j$ ($y_{i,j}=1$) reveals that $U_{i}(\zeta_{j})$ $ \geq  U_{i}(\psi_{j})$ (though, because of the stochastic components $\eta_{i,j}$  and $\nu_{i,j}$, it is not necessarily true that $\norm{\mathbf{x}_{i}-\boldsymbol{\zeta}_{j}} \leq \norm{\mathbf{x}_{i}-\boldsymbol{\psi}_{j}}$).  Conversely, a negative vote by member $i$ on proposal $j$ ($y_{i,j}=0$) suggests that $U_{i}(\zeta_{j})$ $ \leq  U_{i}(\psi_{j})$.  From these relations, it follows that a committee member will decide to vote YEA on any given proposal if $U_{i}(\zeta_{j}) - U_{i}(\psi_{j}) > 0$:
+
+\begin{align}\label{E:equation1}
+y_{i,j}
+   &= U_{i}(\zeta_{j} ) - U_{i}(\psi_{j}) \\
+   &=  -\norm{x_{i}-\zeta_{j}}^{2}+\eta_{i,j} +\norm{x_{i}-\psi_{j}}^{2}+\nu_{i,j} \nonumber \\
+   &=  2(\eta_{j}-\psi_{j})x_{i} + \psi_{j}^{2}-\zeta_{j}^{2}+ \eta_{i,j} +\nu_{i,j} \nonumber \\
+   &= \alpha_{j} + \beta_{j} x_{i} + \varepsilon_{i,j}, \nonumber
+\end{align}
+
+\noindent where $\alpha_{j}=\psi_{j}^{2}-\zeta_{j}^{2}$,  $\beta_{j}= 2(\eta_{j}-\psi_{j})$, and $\varepsilon_{i,j}=\eta_{i,j} +\nu_{i,j}$.  The last line in Equation~(\ref{E:equation1}) can be rearranged to represent each vote $y_{i,j}$ as an independent draw from a normal probability distribution; thus $p(y_{i,j}=1) = \int_{0}^{\infty} \Phi(\alpha_{j}+\beta_{j} x_{i})$, where $\Phi(\cdot)$ is the normal cumulative distribution function.   If, for notational convenience, the parameters $\alpha_{j}$, $\beta_{j}$, and $x_{i}$ are stacked in vectors $\boldsymbol{\alpha}$, $\boldsymbol{\beta}$, and $\mathbf{x}$ (of lengths $m$, $m$, and $n$ respectively), the likelihood function can be constructed from the observed $\mathbf{Y}$:
+
+\begin{equation}\label{E:equation2}
+\mathcal{L}(\boldsymbol{\alpha},\boldsymbol{\beta},\mathbf{x}|\mathbf{y}) = \prod_{j=1}^{m} \prod_{i=1}^{n}  \Phi(\alpha_{j}+\beta_{j} x_{i})^{y_{i,j}} (1-\Phi(\alpha_{j}+\beta_{j} x_{i}))^{1-y_{i,j}}
+\end{equation}
+
+The likelihood function in Equation~(\ref{E:equation2}) can be estimated statistically.  Note however that we require estimates of $\boldsymbol{\alpha}$ and $\boldsymbol{\beta}$ (the item, case, or bill parameters), and $\mathbf{x}$ (the ideal points of Councilors), and that we only have information collected in the matrix $\mathbf{Y}$ of observed votes (0's and 1's) for all committee members on all proposals discussed by IFE's Council General.  As it stands, thus, the model is not identified, because an infinite number of values of $\boldsymbol{\alpha}$, $\boldsymbol{\beta}$, and $\mathbf{x}$ are solutions to the system of $j$ equations in (\ref{E:equation1}).\footnote{There are two sources of under-identification in item response models: scale invariance and rotational invariance (Jackman 2001 offers an excellent discussion of identification problems in two-dimensional models).  Note also that, in the context of Bayesian estimation, proper priors on the $\boldsymbol{\alpha
+}$, $\boldsymbol{\beta}$, and $\mathbf{x}$ parameters help solve the identification problem.}
+Thus, in order to allow identification of the model parameters, it is necessary to add restrictions on their possible values.  In the methods deviced by Martin \& Quinn (2002) and Clinton, Jackman \& Rivers (2004), one can alternatively fix $\mathbf{x}_{i}$ for ``known'' holders of extreme views in the committee, or fix $\boldsymbol{\alpha}$ and $\boldsymbol{\beta}$ parameters for some bills or decisions.  As explained in the text, we prefer the latter approach.  By fixing $\boldsymbol{\alpha}$ and $\boldsymbol{\beta}$ for three votes, we can in practice solve the problem of rotational invariance.  By stipulating prior distributions for Councilors' positions with known variance, we solve the problem of scale invariance.  In the Bayesian approach, these prior distributions can be combined with the likelihood function (specified in (\ref{E:equation2})) to obtain posterior distributions of the parameters of interest.  To summarize, our prior distributions on $\boldsymbo
+l{\alpha}$, $\boldsymbol{\beta}$, and $\mathbf{x}$ are:
+
+\begin{align}\label{E:equation3}
+p(\boldsymbol{\alpha}) &\sim \mathcal{N}_{J}(\mathbf{0},\mathbf{1})\\
+p(\boldsymbol{\beta}) &\sim \mathcal{N}_{J}(\mathbf{0},\mathbf{1})\nonumber \\
+p(\mathbf{x})  &\sim \mathcal{N}_{I}(\mathbf{0},\mathbf{1}) \nonumber
+\end{align}
+
+Again, we imposed further identification restrictions on three item parameters in each half-council.  For example, for the second half (2000-2003) we imposed restrictions on the discrimination parameters of votes 1, 54, and 124 (see Table~\ref{T:priors}) to construct a common two-dimensional space within which we could locate the ideological positions of Electoral Councilors.  These restrictions are as follows:
+\begin{align}\label{E:specialpriors}
+\boldsymbol{\beta}_{1} &\sim (\boldsymbol{\mu}_1, \boldsymbol{\sigma}^2_1) \\ \nonumber
+\boldsymbol{\beta}_{54} &\sim (\boldsymbol{\mu}_{54}, \boldsymbol{\sigma}^2_{54}) \\ \nonumber
+
+\boldsymbol{\beta}_{124} &\sim (\boldsymbol{\mu}_{124}, \boldsymbol{\sigma}^2_{124}) \\  \nonumber
+\end{align}
+\noindent where $\boldsymbol{\mu}_{1}=(0,4)$, $\boldsymbol{\mu}_{54}=(4,0)$, and $\boldsymbol{\mu}_{124}=(-4,0)$, and
+\begin{align*}\label{E:sigma}
+\boldsymbol{\sigma}^2_{1} &= \left(%
+\begin{array}{rr}
+100 &0  \\
+0 &4    \\\end{array}%
+\right) \\
+\boldsymbol{\sigma}^2_{54} &= \left(%
+\begin{array}{rr}
+4 &0  \\
+0 &100    \\\end{array}%
+\right) \\
+\boldsymbol{\sigma}^2_{124} &= \left(%
+\begin{array}{rr}
+4 &0  \\
+0 &100    \\\end{array}%
+\right) \\
+\end{align*}
+Consequently, votes 54 and 124 define the first dimension, whereas vote 1 alone defines the second dimension.\footnote{Note that to solve rotational invariance along the second dimension, we would need a fourth vote to anchor the lower end of said dimension.  In order to avoid a further constraint, we carry on with our estimations but make sure that the chain has converged on only one mode of the joint posterior distribution.}
+
+
+The joint posterior distribution of $\boldsymbol{\alpha}$, $\boldsymbol{\beta}$, and $\mathbf{x}$ results from the product of the likelihood function in (\ref{E:equation2}) and the set of prior distributions in (\ref{E:equation3}) and (\ref{E:specialpriors}), as expressed in (\ref{E:equation4}):
+
+\begin{equation}\label{E:equation4}
+\pi(\boldsymbol{\alpha}, \boldsymbol{\beta}, \mathbf{x}|\mathbf{y}) \propto \mathcal{L}(\boldsymbol{\alpha},\boldsymbol{\beta},\mathbf{x}|\mathbf{y}) p(\boldsymbol{\alpha})p(\boldsymbol{\beta})p(\mathbf{x})
+\end{equation}
+
+We estimate the posterior distribution in Equation~(\ref{E:equation4}) through Gibbs sampling using WinBugs.  For each of our two datasets, we ran 750,000 iterations of the Gibbs sampler, discarding 375,000 as burn-in and thinning the resulting chain so as to keep 1,500 draws from the posterior distribution for inference purposes. We monitored convergence through Geweke's statistics.
+
+
+
+\end{document}
