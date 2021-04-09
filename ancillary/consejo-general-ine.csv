@@ -27,23 +27,23 @@ ord,name,column,sponsor,in,out,in2,out2,per,x,x,x,x,x,x,x,x,x,x,x,x,x,x,x
 26,Leonardo Valdes,valdes,prd,20080208,20131030,,,6789a,,,,,,6,7,8,9,a,,,,,
 27,Marco Baños,banos,pri,20080208,20200403,,,6789abcde,,,,,,6,7,8,9,a,b,c,d,e,
 28,Benito Nacif,nacif,pan,20080208,20200403,,,6789abcde,,,,,,6,7,8,9,a,b,c,d,e,
-29,Maria Elizondo,elizondo,,20080815,20131030,,,789a,,,,,,,7,8,9,a,,,,,
-30,Alfredo Figueroa,figueroa,,20080815,20131030,,,789a,,,,,,,7,8,9,a,,,,,
-31,Francisco Javier Guerrero,guerrero,,20080815,20131030,,,789a,,,,,,,7,8,9,a,,,,,
-32,Lorenzo Cordova,cordova,prd,20111215,20230403,,,9abcdef,,,,,,,,,9,a,b,c,d,e,f
+29,Maria Elizondo,elizondo,pan,20080815,20131030,,,789a,,,,,,,7,8,9,a,,,,,
+30,Alfredo Figueroa,figueroa,prd,20080815,20131030,,,789a,,,,,,,7,8,9,a,,,,,
+31,Francisco Javier Guerrero,guerrero,pri,20080815,20131030,,,789a,,,,,,,7,8,9,a,,,,,
+32,Lorenzo Cordova,cordova,prd-pan,20111215,20230403,,,9abcdef,,,,,,,,,9,a,b,c,d,e,f
 33,Sergio Garcia Ramirez,garcia,pri,20111215,20130202,,,9,,,,,,,,,9,,,,,,
-34,Maria Marvan,marvan,pan,20111215,20140403,,,9ab,,,,,,,,,9,a,b,,,,
-35,Enrique Andrade,andrade2,,20140404,20200403,,,cde,,,,,,,,,,,,c,d,e,
-36,Adriana Favela,favela,,20140404,20230403,,,cdef,,,,,,,,,,,,c,d,e,f
-37,Beatriz Galindo,galindo,,20140404,20170403,,,c,,,,,,,,,,,,c,,,
-38,Ciro Murayama,murayama,,20140404,20230403,,,cdef,,,,,,,,,,,,c,d,e,f
-39,Jose Ruiz Saldaña,ruiz,,20140404,20230403,,,cdef,,,,,,,,,,,,c,d,e,f
-40,Alejandra San Martin,snmartin,,20140404,20200403,,,cde,,,,,,,,,,,,c,d,e,
-41,Javier Santiago,santiago,,20140404,20170403,,,c,,,,,,,,,,,,c,,,
-42,Dania Ravel,ravel,,20170404,20260426,,,def,,,,,,,,,,,,,d,e,f
-43,Jaime Rivera V.,rivera2,,20170404,20260426,,,def,,,,,,,,,,,,,d,e,f
-44,Beatriz Zavala,zavala,,20170404,20260426,,,def,,,,,,,,,,,,,d,e,f
-45,Norma de la Cruz Magaña,magana,,20200727,20290726,,,f,,,,,,,,,,,,,,,f
-46,Martin Faz,faz,,20200727,20290726,,,f,,,,,,,,,,,,,,,f
-47,Carla Humphrey,humphrey,,20200727,20290726,,,f,,,,,,,,,,,,,,,f
-48,Uuc Kib Espadas,kib,,20200727,20290726,,,f,,,,,,,,,,,,,,,f
+34,Maria Marvan,marvan,pan-pri,20111215,20140403,,,9ab,,,,,,,,,9,a,b,,,,
+35,Enrique Andrade,andrade2,0,20140404,20200403,,,cde,,,,,,,,,,,,c,d,e,
+36,Adriana Favela,favela,0,20140404,20230403,,,cdef,,,,,,,,,,,,c,d,e,f
+37,Beatriz Galindo,galindo,0,20140404,20170403,,,c,,,,,,,,,,,,c,,,
+38,Ciro Murayama,murayama,0,20140404,20230403,,,cdef,,,,,,,,,,,,c,d,e,f
+39,Jose Ruiz Saldaña,ruiz,0,20140404,20230403,,,cdef,,,,,,,,,,,,c,d,e,f
+40,Pamela San Martin,snmartin,prd,20140404,20200403,,,cde,,,,,,,,,,,,c,d,e,
+41,Javier Santiago,santiago,0,20140404,20170403,,,c,,,,,,,,,,,,c,,,
+42,Dania Ravel,ravel,0,20170404,20260426,,,def,,,,,,,,,,,,,d,e,f
+43,Jaime Rivera V.,rivera2,0,20170404,20260426,,,def,,,,,,,,,,,,,d,e,f
+44,Beatriz Zavala,zavala,0,20170404,20260426,,,def,,,,,,,,,,,,,d,e,f
+45,Norma de la Cruz Magaña,magana,0,20200727,20290726,,,f,,,,,,,,,,,,,,,f
+46,Martin Faz,faz,0,20200727,20290726,,,f,,,,,,,,,,,,,,,f
+47,Carla Humphrey,humphrey,0,20200727,20290726,,,f,,,,,,,,,,,,,,,f
+48,Uuc Kib Espadas,kib,0,20200727,20290726,,,f,,,,,,,,,,,,,,,f
