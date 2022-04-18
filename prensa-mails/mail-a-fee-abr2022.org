@@ -1,0 +1,27 @@
+#+OPTIONS: toc:nil
+
+Hola Federico, más info. La mando en pdf para que se vean los gráficos. 
+
+También encontré algunos plots. Este modelo hace updates voto-por-voto (en vez de periodos discretos). El consejo Woldenberg se reconoce fácilmente:
+
+#+ATTR_LATEX: :width 7.5cm
+[[../../ifeSharedGE/graphs/woldBonicaSmoothLines.pdf]]
+
+El siguiente plot es Ugalde-Valdés con periodos discretos (el modelo dinámico de siempre). La salida del verde dejó a Baños en el extremo, aparentemente jalando un bloque de todos contra Figueroa:
+
+#+ATTR_LATEX: :width 7.5cm
+[[/home/eric/Downloads/Desktop/data/rollcall/ife_cg/ifeSharedGE/graphs/allUAVdynQuarter.pdf]]
+
+Pero al extender observaciones hacia la derecha (con modelo voto-por-voto), lo que parecía una realineación se ve más bien como juego en un tablero diferente. Lorenzo (el amarillo de entrada tardía) arranca al sur, luego pasa con Figueroa al norte y todo se descompone:
+
+#+ATTR_LATEX: :width 7.5cm
+[[/home/eric/Downloads/Desktop/data/rollcall/ife_cg/ifeSharedGE/graphs/UgaldeEtAlSmoothMarch21.pdf]]
+
+A diferencia del ruido post-2006, cuando todo volvió a la normalidad, en 2011 algo se rompió. ¿El modelo o fue la política mexicana? 
+
+No recuerdo los detalles, pero probamos de todo para identificar el espacio. Sin éxito. Más tarde intentaré estimaciones estáticas año-por-año, a ver cómo se comportan consejeros. 
+
+-e
+
+
+
