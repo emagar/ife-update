@@ -1,0 +1,10 @@
+Eric, Apuntes IFE
+
+Presentación Shirkfestschrifft: Modelos dinámicos a la Martin-Quinn
+Supuesto de alianza partidista verificado porque los consejeros electos por el mismo partido acaban en la misma posición ideológica.  Sin embargo nunca hemos atacado el problema de colocar a los partidos mismos en el mismo espacio ideológico.  Se podrá hacer esto?
+
+SERA POSIBLE SI REGISTRASEMOS LAS POSICIONES DE LOS PARTIDOS ANTE LAS PROPUESTAS DE ACUERDO O RESOLUCION EN EL CG. NO LO TENEMOS CODIFICADO EN LA BASE DE DATOS PORQUE REQUIERE DE UNA LECTURA MINUCUIOSA DEL ACTA DE LA SESION. SERIA FACTIBLE, EN EL FUTURO, PARA MUESTRAS DE VOTOS, SUPONGO. 
+
+Bonica no nos ayuda mucho.  Su método OC dinámico se basa en kernel smoothers que atan las posiciones de los legisladores en períodos traslapados de 200 votos.  Como todo método no paramétrico, existe demasiada incertidumbre en las colas del vector de votos (es decir, para los primeros y para los últimos votos).  Sin embargo, la idea de las ventanas móviles no es mala.  Quizás podamos adaptarla de alguna manera, por ejemplo estimando IRT en pequeñas bases de 10 votos traslapados.  Pero qué hacemos con los priors en este caso?  Los eliminamos?  Usamos sólo los priors de locación y no los de precisión?
+
+SUENA INTERESANTE. LA PREGUNTA ES SI LO VES FACTIBLE PARA TRABAJAR EL MIERCOLES--VIERNES, O SI MEJOR NOS DEDICAMOS A DARLE FORMA A UN ARGUMENTO Y A LA MONOGRAFIA DEL IFE.
