@@ -9,7 +9,7 @@ setwd("~/Dropbox/data/rollcall/ife_cg/ife-update/")
 library(lubridate) # easier dates
 
 # read data
-d <- read.csv(file = "data/base_ife_eric_feb2021.csv", stringsAsFactors = FALSE)
+d <- read.csv(file = "data/base_ife_eric_may1994-jun2017.csv", stringsAsFactors = FALSE)
 str(d)
 
 # fix logroll w vote at end not start
