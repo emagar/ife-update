@@ -9,8 +9,15 @@ setwd("~/Dropbox/data/rollcall/ife_cg/ife-update/")
 library(lubridate) # easier dates
 
 # read data
-d <- read.csv(file = "data/base_ife_eric_may1994-jun2017.csv", stringsAsFactors = FALSE)
+d <- read.csv(file = "data/base_ife_eric_oct1990-jun2017.csv", stringsAsFactors = FALSE)
 str(d)
+
+# drop pre-1994
+sel <- which(d$term==0)
+d <- d[-sel,]
+sel <- which(colnames(d) %in% c("cm.alcantara.magos", "cm.barquin", "cm.espinosa", "cm.hdz.e", "cm.german.perez", "cm.tirado.ledesma", "rp.pan.fdez.cevallos", "rp.pan.alcantara.soria", "rp.pri.c.a.santiago", "rp.pri.netz.delavega", "rp.pri.perez.jacome", "rp.pri.luis.medina", "rp.pps.lujan.gtz", "rp.prd.mtz.verdugo", "rp.pfcrn.pineiro.l", "rp.parm.kunz"))
+d <- d[,-sel]
+rm(sel)
 
 # fix logroll w vote at end not start
 d$folio [d$folio==2299] <- 99999
