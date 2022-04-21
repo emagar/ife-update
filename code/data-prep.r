@@ -15,6 +15,11 @@ library(lubridate) # easier dates
 d <- read.csv(file = "data/base_ife_eric_oct1990-jun2017.csv", stringsAsFactors = FALSE)
 str(d)
 
+# drop endline if any
+sel <- which(d$proposer=="endline-drop")
+if (length(sel)>0) d <- d[-sel,]
+rm(sel)
+
 # drop pre-1994
 sel <- which(d$term==0)
 d <- d[-sel,]
@@ -29,6 +34,7 @@ sel <- which(colnames(d) %in% c("segob", "senpri", "senprd", "dippri", "dippan",
 d <- d[,-sel]
 rm(sel)
 
+str(d)
 colnames(d)
 
 # fix logroll w vote at end not start
