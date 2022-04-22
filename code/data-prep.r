@@ -20,23 +20,6 @@ sel <- which(d$proposer=="endline-drop")
 if (length(sel)>0) d <- d[-sel,]
 rm(sel)
 
-# drop pre-1994
-sel <- which(d$term==0)
-d <- d[-sel,]
-sel <- which(colnames(d) %in% c("cm.alcantara.magos", "cm.barquin", "cm.espinosa", "cm.hdz.e", "cm.german.perez", "cm.tirado.ledesma", "rp.pan.fdez.cevallos", "rp.pan.alcantara.soria", "rp.pri.c.a.santiago", "rp.pri.netz.delavega", "rp.pri.perez.jacome", "rp.pri.luis.medina", "rp.pps.lujan.gtz", "rp.prd.mtz.verdugo", "rp.pfcrn.pineiro.l", "rp.parm.kunz"))
-d <- d[,-sel]
-rm(sel)
-
-# drop carpizo
-sel <- which(d$term==0)
-d <- d[-sel,]
-sel <- which(colnames(d) %in% c("segob", "senpri", "senprd", "dippri", "dippan", "creel", "granados", "pinchetti", "pozas", "zertuche"))
-d <- d[,-sel]
-rm(sel)
-
-str(d)
-colnames(d)
-
 # fix logroll w vote at end not start
 d$folio [d$folio==2299] <- 99999
 d$folio [d$folio==2315] <- 2299
@@ -47,65 +30,95 @@ d <- d[order(d$folio),]
 d$dlogroll[d$folio==2623] <- 0
 d$nconjunto[d$folio>=2503 & d$folio<=2514] <- 1
 
-# drop recent consejeros without coded votes (feb 2021)
-sel <- which(colnames(d) %in%  c("favela", "murayama", "ruiz", "sanmatin", "castillo", "galindo"))
-d <- d[,-sel]
-
 # turn NAs to vote=0
-sel <- which(colnames(d) %in%  c("segob", "senpri", "senprd", "dippri", "dippan", "creel", "granados", "pinchetti", "pozas", "zertuche", "woldenberg", "barragan", "cantu", "cardenas", "lujambio", "merino", "molinar", "peschard", "zebadua", "luken", "rivera", "albo", "alcantar", "andrade", "glezluna", "latapi", "lopezflores", "morales", "sanchez", "ugalde", "banos", "nacif", "valdes", "elizondo", "figueroa", "guerrero", "cordova", "garcia", "marvan"))
+sel <- which(colnames(d) %in%  c("segob", "senpri", "senprd", "dippri", "dippan", "creel", "granados", "pinchetti", "pozas", "zertuche", "woldenberg", "barragan", "cantu", "cardenas", "lujambio", "merino", "molinar", "peschard", "zebadua", "luken", "rivera", "albo", "alcantar", "andrade", "glezluna", "latapi", "lopezflores", "morales", "sanchez", "ugalde", "banos", "nacif", "valdes", "elizondo", "figueroa", "guerrero", "cordova", "garcia", "marvan", "andrade2", "favela", "galindo", "murayama", "ruiz", "snmartin", "santiago", "ravel", "rivera2", "zavala", "magana", "faz", "humphrey", "kib"))
 tmp <- d[,sel]
 tmp[is.na(tmp)] <- 0
 d[,sel] <- tmp
 
 # compute total ayes
-d$tmp00 <- d$tmp01 <- d$tmp02 <- d$tmp03 <- d$tmp04 <- d$tmp05 <- d$tmp06 <- d$tmp07 <- d$tmp08 <- d$tmp09 <- d$tmp10 <- d$tmp11 <- d$tmp12 <- d$tmp13 <- d$tmp14 <- d$tmp15 <- d$tmp16 <- d$tmp17 <- d$tmp18 <- d$tmp19 <- d$tmp20 <- d$tmp21 <- d$tmp22 <- d$tmp23 <- d$tmp24 <- d$tmp25 <- d$tmp26 <- d$tmp27 <- d$tmp28 <- d$tmp29 <- d$tmp30 <- d$tmp31 <- d$tmp32 <- d$tmp33 <- d$tmp34 <- d$tmp35 <- d$tmp36 <- d$tmp37 <- d$tmp38 <- 0
+d$tmp00 <- d$tmp01 <- d$tmp02 <- d$tmp03 <- d$tmp04 <- d$tmp05 <- d$tmp06 <- d$tmp07 <- d$tmp08 <- d$tmp09 <- d$tmp10 <- d$tmp11 <- d$tmp12 <- d$tmp13 <- d$tmp14 <- d$tmp15 <- d$tmp16 <- d$tmp17 <- d$tmp18 <- d$tmp19 <- d$tmp20 <- d$tmp21 <- d$tmp22 <- d$tmp23 <- d$tmp24 <- d$tmp25 <- d$tmp26 <- d$tmp27 <- d$tmp28 <- d$tmp29 <- d$tmp30 <- d$tmp31 <- d$tmp32 <- d$tmp33 <- d$tmp34 <- d$tmp35 <- d$tmp36 <- d$tmp37 <- d$tmp38 <- d$tmp39 <- d$tmp40 <- d$tmp41 <- d$tmp42 <- d$tmp43 <- d$tmp44 <- d$tmp45 <- d$tmp46 <- d$tmp47 <- d$tmp48 <- d$tmp49 <- d$tmp50 <- d$tmp51 <- d$tmp52 <- d$tmp53 <- d$tmp54 <- d$tmp55 <- d$tmp56 <- d$tmp57 <- d$tmp58 <- d$tmp59 <- d$tmp60 <- d$tmp61 <- d$tmp62 <- d$tmp63 <- d$tmp64 <- d$tmp65 <- d$tmp66 <- d$tmp67 <- d$tmp68 <- 0
 #
-d$tmp00[d$segob==1]     <- 1
-d$tmp01[d$senpri==1]    <- 1
-d$tmp02[d$senprd==1]    <- 1
-d$tmp03[d$dippri==1]    <- 1
-d$tmp04[d$dippan==1]    <- 1
-d$tmp05[d$creel==1]     <- 1
-d$tmp06[d$granados==1]  <- 1
-d$tmp07[d$pinchetti==1] <- 1
-d$tmp08[d$pozas==1]     <- 1
-d$tmp09[d$zertuche==1]  <- 1
+d$tmp00[d$segob==1]                  <- 1           
+d$tmp01[d$senpri==1]                 <- 1
+d$tmp02[d$senprd==1]                 <- 1           
+d$tmp03[d$dippri==1]                 <- 1
+d$tmp04[d$dippan==1]                 <- 1
+d$tmp05[d$cm.alcantara.magos==1]     <- 1
+d$tmp06[d$cm.barquin==1]             <- 1
+d$tmp07[d$cm.espinosa==1]            <- 1
+d$tmp08[d$cm.hdz.e==1]               <- 1
+d$tmp09[d$cm.german.perez==1]        <- 1
+d$tmp10[d$cm.tirado.ledesma==1]      <- 1
+d$tmp11[d$rp.pan.fdez.cevallos==1]   <- 1
+d$tmp12[d$rp.pan.alcantara.soria==1] <- 1
+d$tmp13[d$rp.pri.c.a.santiago==1]    <- 1
+d$tmp14[d$rp.pri.netz.delavega==1]   <- 1
+d$tmp15[d$rp.pri.perez.jacome==1]    <- 1
+d$tmp16[d$rp.pri.luis.medina==1]     <- 1
+d$tmp17[d$rp.pps.lujan.gtz==1]       <- 1
+d$tmp18[d$rp.prd.mtz.verdugo==1]     <- 1
+d$tmp19[d$rp.pfcrn.pineiro.l==1]     <- 1
+d$tmp20[d$rp.parm.kunz==1]           <- 1
 #
-d$tmp10[d$woldenberg==1] <- 1
-d$tmp11[d$barragan==1]   <- 1
-d$tmp12[d$cantu==1]      <- 1
-d$tmp13[d$cardenas==1]   <- 1
-d$tmp14[d$lujambio==1]   <- 1
-d$tmp15[d$merino==1]     <- 1
-d$tmp16[d$molinar==1]    <- 1
-d$tmp17[d$peschard==1]   <- 1
-d$tmp18[d$zebadua==1]    <- 1
+d$tmp21[d$creel==1]                  <- 1
+d$tmp22[d$granados==1]               <- 1
+d$tmp23[d$pinchetti==1]              <- 1
+d$tmp24[d$pozas==1]                  <- 1
+d$tmp25[d$zertuche==1]               <- 1
+d$tmp26[d$woldenberg==1]             <- 1
 #
-d$tmp19[d$luken==1]  <- 1
-d$tmp20[d$rivera==1] <- 1
+d$tmp27[d$barragan==1]               <- 1
+d$tmp28[d$cantu==1]                  <- 1
+d$tmp29[d$cardenas==1]               <- 1
+d$tmp30[d$lujambio==1]               <- 1
+d$tmp31[d$merino==1]                 <- 1
+d$tmp32[d$molinar==1]                <- 1
+d$tmp33[d$peschard==1]               <- 1
+d$tmp34[d$zebadua==1]                <- 1
 #
-d$tmp21[d$albo==1]        <- 1
-d$tmp22[d$alcantar==1]    <- 1
-d$tmp23[d$andrade==1]     <- 1
-d$tmp24[d$glezluna==1]    <- 1
-d$tmp25[d$latapi==1]      <- 1
-d$tmp26[d$lopezflores==1] <- 1
-d$tmp27[d$morales==1]     <- 1
-d$tmp28[d$sanchez==1]     <- 1
-d$tmp29[d$ugalde==1]      <- 1
+d$tmp35[d$luken==1]                  <- 1
+d$tmp36[d$rivera==1]                 <- 1
 #
-d$tmp30[d$banos==1]    <- 1
-d$tmp31[d$nacif==1]    <- 1
-d$tmp32[d$valdes==1]   <- 1
-d$tmp33[d$elizondo==1] <- 1
-d$tmp34[d$figueroa==1] <- 1
-d$tmp35[d$guerrero==1] <- 1
+d$tmp37[d$albo==1]                   <- 1
+d$tmp38[d$alcantar==1]               <- 1
+d$tmp39[d$andrade==1]                <- 1
+d$tmp40[d$glezluna==1]               <- 1
+d$tmp41[d$latapi==1]                 <- 1
+d$tmp42[d$lopezflores==1]            <- 1
+d$tmp43[d$morales==1]                <- 1
+d$tmp44[d$sanchez==1]                <- 1
+d$tmp45[d$ugalde==1]                 <- 1
 #
-d$tmp36[d$cordova==1] <- 1
-d$tmp37[d$garcia==1]  <- 1
-d$tmp38[d$marvan==1]  <- 1
+d$tmp46[d$banos==1]                  <- 1
+d$tmp47[d$nacif==1]                  <- 1
+d$tmp48[d$valdes==1]                 <- 1
 #
-d <- within(d, ayes <- tmp00 + tmp01 + tmp02 + tmp03 + tmp04 + tmp05 + tmp06 + tmp07 + tmp08 + tmp09 + tmp10 + tmp11 + tmp12 + tmp13 + tmp14 + tmp15 + tmp16 + tmp17 + tmp18 + tmp19 + tmp20 + tmp21 + tmp22 + tmp23 + tmp24 + tmp25 + tmp26 + tmp27 + tmp28 + tmp29 + tmp30 + tmp31 + tmp32 + tmp33 + tmp34 + tmp35 + tmp36 + tmp37 + tmp38)
+d$tmp49[d$elizondo==1]               <- 1
+d$tmp50[d$figueroa==1]               <- 1
+d$tmp51[d$guerrero==1]               <- 1
+#
+d$tmp52[d$cordova==1]                <- 1
+d$tmp53[d$garcia==1]                 <- 1
+d$tmp54[d$marvan==1]                 <- 1
+#
+d$tmp55[d$andrade2==1]                  <- 1
+d$tmp56[d$favela==1]                    <- 1
+d$tmp57[d$galindo==1]                   <- 1
+d$tmp58[d$murayama==1]                  <- 1
+d$tmp59[d$ruiz==1]                      <- 1
+d$tmp60[d$snmartin==1]                  <- 1
+d$tmp61[d$santiago==1]                  <- 1
+d$tmp62[d$ravel==1]                     <- 1
+d$tmp63[d$rivera2==1]                   <- 1
+d$tmp64[d$zavala==1]                    <- 1
+#
+d$tmp65[d$magana==1]                    <- 1
+d$tmp66[d$faz==1]                       <- 1
+d$tmp67[d$humphrey==1]                  <- 1
+d$tmp68[d$kib==1]                       <- 1
+#
+d <- within(d, ayes <- tmp00 + tmp01 + tmp02 + tmp03 + tmp04 + tmp05 + tmp06 + tmp07 + tmp08 + tmp09 + tmp10 + tmp11 + tmp12 + tmp13 + tmp14 + tmp15 + tmp16 + tmp17 + tmp18 + tmp19 + tmp20 + tmp21 + tmp22 + tmp23 + tmp24 + tmp25 + tmp26 + tmp27 + tmp28 + tmp29 + tmp30 + tmp31 + tmp32 + tmp33 + tmp34 + tmp35 + tmp36 + tmp37 + tmp38 + tmp39 + tmp40 + tmp41 + tmp42 + tmp43 + tmp44 + tmp45 + tmp46 + tmp47 + tmp48 + tmp49 + tmp50 + tmp51 + tmp52 + tmp53 + tmp54 + tmp55 + tmp56 + tmp57 + tmp58 + tmp59 + tmp60 + tmp61 + tmp62 + tmp63 + tmp64 + tmp65 + tmp66 + tmp67 + tmp68)
 #
 # uncount logroll elements
 tmp <- c(NA, d$nconjunto) # lag one obs (assumes numconj consecutive)
@@ -117,25 +130,49 @@ d <- d[-sel,]
 # clean
 sel <- grep("^tmp.*", colnames(d))
 d <- d[,-sel] # clean
-
+#
 # drops 4 votes (with logrolls) where all 9 abstained
 sel <- which(d$folio %in% c(5013, 5024, 5031, 5037, 2503))
 d <- d[,-sel] # clean
 rm(tmp,sel)
 
+#######################
+## drop unused votes ##
+#######################
+# drop pre-1994
+sel <- which(d$term==0)
+d <- d[-sel,]
+sel <- which(colnames(d) %in% c("cm.alcantara.magos", "cm.barquin", "cm.espinosa", "cm.hdz.e", "cm.german.perez", "cm.tirado.ledesma", "rp.pan.fdez.cevallos", "rp.pan.alcantara.soria", "rp.pri.c.a.santiago", "rp.pri.netz.delavega", "rp.pri.perez.jacome", "rp.pri.luis.medina", "rp.pps.lujan.gtz", "rp.prd.mtz.verdugo", "rp.pfcrn.pineiro.l", "rp.parm.kunz"))
+d <- d[,-sel]
+rm(sel)
+#
+# drop carpizo
+sel <- which(d$term==1)
+d <- d[-sel,]
+sel <- which(colnames(d) %in% c("segob", "senpri", "senprd", "dippri", "dippan", "creel", "granados", "pinchetti", "pozas", "zertuche"))
+d <- d[,-sel]
+rm(sel)
+#
+# drop recent consejeros without coded votes (last vote may 2017, before they were appointed)
+sel <- which(colnames(d) %in%  c("magana", "faz", "humphrey", "kib"))
+d <- d[,-sel]
+
+str(d)
+colnames(d)
+
 # total votes cast
 d <- within(d, {
-    segob1       <- as.numeric(      segob==1 | segob==2);
-    senpri1      <- as.numeric(     senpri==1 | senpri==2);
-    senprd1      <- as.numeric(     senprd==1 | senprd==2);
-    dippri1      <- as.numeric(     dippri==1 | dippri==2);
-    dippan1      <- as.numeric(     dippan==1 | dippan==2);
-    creel1       <- as.numeric(      creel==1 | creel==2);
-    granados1    <- as.numeric(   granados==1 | granados==2);
-    pinchetti1   <- as.numeric(  pinchetti==1 | pinchetti==2);
-    pozas1       <- as.numeric(      pozas==1 | pozas==2);
+    ## segob1       <- as.numeric(      segob==1 | segob==2);
+    ## senpri1      <- as.numeric(     senpri==1 | senpri==2);
+    ## senprd1      <- as.numeric(     senprd==1 | senprd==2);
+    ## dippri1      <- as.numeric(     dippri==1 | dippri==2);
+    ## dippan1      <- as.numeric(     dippan==1 | dippan==2);
+    ## creel1       <- as.numeric(      creel==1 | creel==2);
+    ## granados1    <- as.numeric(   granados==1 | granados==2);
+    ## pinchetti1   <- as.numeric(  pinchetti==1 | pinchetti==2);
+    ## pozas1       <- as.numeric(      pozas==1 | pozas==2);
+    ## zertuche1    <- as.numeric(   zertuche==1 | zertuche==2);
     woldenberg1  <- as.numeric( woldenberg==1 | woldenberg==2);
-    zertuche1    <- as.numeric(   zertuche==1 | zertuche==2);
     barragan1    <- as.numeric(   barragan==1 | barragan==2);
     cardenas1    <- as.numeric(   cardenas==1 | cardenas==2);
     cantu1       <- as.numeric(      cantu==1 | cantu==2);
@@ -164,13 +201,23 @@ d <- within(d, {
     cordova1     <- as.numeric(    cordova==1 | cordova==2);
     garcia1      <- as.numeric(     garcia==1 | garcia==2);
     marvan1      <- as.numeric(     marvan==1 | marvan==2);
+    andrade21    <- as.numeric(   andrade2==1 | andrade2==2);
+    favela1      <- as.numeric(     favela==1 | favela==2);
+    galindo1     <- as.numeric(    galindo==1 | galindo==2);
+    murayama1    <- as.numeric(   murayama==1 | murayama==2);
+    ruiz1        <- as.numeric(       ruiz==1 | ruiz==2);
+    snmartin1    <- as.numeric(   snmartin==1 | snmartin==2);
+    santiago1    <- as.numeric(   santiago==1 | santiago==2);
+    ravel1       <- as.numeric(      ravel==1 | ravel==2);
+    rivera21     <- as.numeric(    rivera2==1 | rivera2==2);
+    zavala1      <- as.numeric(     zavala==1 | zavala==2);
 })
 #
 d$vtot <- NA
-tmp <- d[d$term==1,]
-tmp <- within(tmp, vtot <- segob1 + senpri1 + senprd1 + dippri1 + dippan1 + creel1 + granados1 + pinchetti1 + pozas1 + woldenberg1 + zertuche1) 
-d[d$term==1,] <- tmp
-#
+## tmp <- d[d$term==1,]
+## tmp <- within(tmp, vtot <- segob1 + senpri1 + senprd1 + dippri1 + dippan1 + creel1 + granados1 + pinchetti1 + pozas1 + woldenberg1 + zertuche1) 
+## d[d$term==1,] <- tmp
+## #
 tmp <- d[d$term==2,]
 tmp <- within(tmp, vtot <- woldenberg1 + peschard1 + lujambio1 + cardenas1 + cantu1 + merino1 + barragan1 + zebadua1 + molinar1)
 d[d$term==2,] <- tmp
@@ -208,25 +255,35 @@ tmp <- within(tmp, vtot <- valdes1 + banos1 + nacif1 + elizondo1 + figueroa1 + g
 d[d$term==10,] <- tmp
 #
 tmp <- d[d$term==11,]
-tmp <- within(tmp, vtot <- banos1 + nacif1 + marvan1 + cordova1)
+tmp <- within(tmp, vtot <-           banos1 + nacif1 + marvan1 + cordova1)
 d[d$term==11,] <- tmp
 #
+tmp <- d[d$term==12,]
+tmp <- within(tmp, vtot <- sanchez1 + banos1 + nacif1 + marvan1 + cordova1 + andrade21 + favela1 + galindo1 + murayama1 + ruiz1 + snmartin1 + santiago1)
+d[d$term==12,] <- tmp
+#
+tmp <- d[d$term==13,]
+tmp <- within(tmp, vtot <- banos1 + nacif1 + cordova1 + andrade21 + favela1 + murayama1 + ruiz1 + snmartin1 + ravel1 + rivera21 + zavala1)
+d[d$term==13,] <- tmp
+#
+table(d$vtot)
+#
 d$absten <- NA
-d$absten[d$term==1]           <- 11 - d$vtot[d$term==1]
-d$absten[d$term>1 & d$term<5] <-  9 - d$vtot[d$term>1 & d$term<5]
-d$absten[d$term==5]           <-  8 - d$vtot[d$term==5]
-d$absten[d$term>5 & d$term<8] <-  9 - d$vtot[d$term>5 & d$term<8]
-d$absten[d$term==8]           <-  6 - d$vtot[d$term==8]
-d$absten[d$term==9]           <-  9 - d$vtot[d$term==9]
-d$absten[d$term==10]          <-  8 - d$vtot[d$term==10]
-d$absten[d$term==11]          <-  4 - d$vtot[d$term==11]
+d$absten[d$term==1]              <- 11 - d$vtot[d$term==1]
+d$absten[d$term>1 & d$term<5]    <-  9 - d$vtot[d$term>1 & d$term<5]
+d$absten[d$term==5]              <-  8 - d$vtot[d$term==5]
+d$absten[d$term>5 & d$term<8]    <-  9 - d$vtot[d$term>5 & d$term<8]
+d$absten[d$term==8]              <-  6 - d$vtot[d$term==8]
+d$absten[d$term==9]              <-  9 - d$vtot[d$term==9]
+d$absten[d$term==10]             <-  8 - d$vtot[d$term==10]
+d$absten[d$term>10 & d$term==13] <- 11 - d$vtot[d$term>10 & d$term==13]
 #
 d <- within(d, nays <- vtot - ayes)
 #
 # verify
-## table(d$ayes, useNA = "always")
-## table(d$nays, useNA = "always")
-## table(d$absten, useNA = "always")
+table(d$ayes, useNA = "always")
+table(d$nays, useNA = "always")
+table(d$absten, useNA = "always")
 #
 # recompute result
 d$tmp <- 1 - d$result # for comparison (was coded 0 pass 1 fail)
@@ -253,7 +310,9 @@ d <- d[,-sel]
 d$dunan.old <- 0
 #with(d, table(ayes, nays, absten))
 d$dunan.old[d$absten==0 & (d$ayes==0 | d$nays==0)]  <- 1 
-#
+
+aquí voy
+
 #############################################################
 ## versión que excluye ausentes de la cuenta de unanimidad ##
 #############################################################
