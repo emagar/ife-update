@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 #########################################################
 ## script prepares data and exports files for analysis ##
 #########################################################
@@ -109,6 +111,7 @@ d$tmp58[d$murayama==1]                  <- 1
 d$tmp59[d$ruiz==1]                      <- 1
 d$tmp60[d$snmartin==1]                  <- 1
 d$tmp61[d$santiago==1]                  <- 1
+#
 d$tmp62[d$ravel==1]                     <- 1
 d$tmp63[d$rivera2==1]                   <- 1
 d$tmp64[d$zavala==1]                    <- 1
@@ -211,6 +214,10 @@ d <- within(d, {
     ravel1       <- as.numeric(      ravel==1 | ravel==2);
     rivera21     <- as.numeric(    rivera2==1 | rivera2==2);
     zavala1      <- as.numeric(     zavala==1 | zavala==2);
+    ## magana1      <- as.numeric(     magana==1 | magana==2);
+    ## faz1         <- as.numeric(        faz==1 | faz==2);
+    ## humphrey1    <- as.numeric(   humphrey==1 | humphrey==2);
+    ## kib1         <- as.numeric(        kib==1 | kib==2);
 })
 #
 d$vtot <- NA
@@ -311,44 +318,57 @@ d$dunan.old <- 0
 #with(d, table(ayes, nays, absten))
 d$dunan.old[d$absten==0 & (d$ayes==0 | d$nays==0)]  <- 1 
 
-aquí voy
-
 #############################################################
 ## versión que excluye ausentes de la cuenta de unanimidad ##
 #############################################################
 # falta para carpizo
 d <- within(d, {
-    barragangone <-    as.numeric(barragan==4    | barragan==5);
-    cantugone <-       as.numeric(cantu==4       | cantu==5);
-    cardenasgone <-    as.numeric(cardenas==4    | cardenas==5);
-    molinargone <-     as.numeric(molinar==4     | molinar==5);
-    lujambiogone <-    as.numeric(lujambio==4    | lujambio==5);
-    merinogone <-      as.numeric(merino==4      | merino==5);
-    peschardgone <-    as.numeric(peschard==4    | peschard==5);
-    woldenberggone <-  as.numeric(woldenberg==4  | woldenberg==5);
-    zebaduagone <-     as.numeric(zebadua==4     | zebadua==5);
-    lukengone <-       as.numeric(luken==4       | luken==5);
-    riveragone <-      as.numeric(rivera==4      | rivera==5);
-    albogone <-        as.numeric(albo==4        | albo==5);
-    alcantargone <-    as.numeric(alcantar==4    | alcantar==5);
-    andradegone <-     as.numeric(andrade==4     | andrade==5);
-    glezlunagone <-    as.numeric(glezluna==4    | glezluna==5);
-    latapigone <-      as.numeric(latapi==4      | latapi==5);
+    barragangone <-    as.numeric(   barragan==4 | barragan==5);
+    cantugone <-       as.numeric(      cantu==4 | cantu==5);
+    cardenasgone <-    as.numeric(   cardenas==4 | cardenas==5);
+    molinargone <-     as.numeric(    molinar==4 | molinar==5);
+    lujambiogone <-    as.numeric(   lujambio==4 | lujambio==5);
+    merinogone <-      as.numeric(     merino==4 | merino==5);
+    peschardgone <-    as.numeric(   peschard==4 | peschard==5);
+    woldenberggone <-  as.numeric( woldenberg==4 | woldenberg==5);
+    zebaduagone <-     as.numeric(    zebadua==4 | zebadua==5);
+    lukengone <-       as.numeric(      luken==4 | luken==5);
+    riveragone <-      as.numeric(     rivera==4 | rivera==5);
+    albogone <-        as.numeric(       albo==4 | albo==5);
+    alcantargone <-    as.numeric(   alcantar==4 | alcantar==5);
+    andradegone <-     as.numeric(    andrade==4 | andrade==5);
+    glezlunagone <-    as.numeric(   glezluna==4 | glezluna==5);
+    latapigone <-      as.numeric(     latapi==4 | latapi==5);
     lopezfloresgone <- as.numeric(lopezflores==4 | lopezflores==5);
-    moralesgone <-     as.numeric(morales==4     | morales==5);
-    sanchezgone <-     as.numeric(sanchez==4     | sanchez==5);
-    ugaldegone <-      as.numeric(ugalde==4      | ugalde==5);
-    banosgone <-       as.numeric(banos==4       | banos==5);
-    nacifgone <-       as.numeric(nacif==4       | nacif==5);
-    valdesgone <-      as.numeric(valdes==4      | valdes==5);
-    elizondogone <-    as.numeric(elizondo==4    | elizondo==5);
-    figueroagone <-    as.numeric(figueroa==4    | figueroa==5);
-    guerrerogone <-    as.numeric(guerrero==4    | guerrero==5);
-    cordovagone <-     as.numeric(cordova==4     | cordova==5);
-    garciagone <-      as.numeric(garcia==4      | garcia==5);
-    marvangone <-      as.numeric(marvan==4      | marvan==5);
+    moralesgone <-     as.numeric(    morales==4 | morales==5);
+    sanchezgone <-     as.numeric(    sanchez==4 | sanchez==5);
+    ugaldegone <-      as.numeric(     ugalde==4 | ugalde==5);
+    banosgone <-       as.numeric(      banos==4 | banos==5);
+    nacifgone <-       as.numeric(      nacif==4 | nacif==5);
+    valdesgone <-      as.numeric(     valdes==4 | valdes==5);
+    elizondogone <-    as.numeric(   elizondo==4 | elizondo==5);
+    figueroagone <-    as.numeric(   figueroa==4 | figueroa==5);
+    guerrerogone <-    as.numeric(   guerrero==4 | guerrero==5);
+    cordovagone <-     as.numeric(    cordova==4 | cordova==5);
+    garciagone <-      as.numeric(     garcia==4 | garcia==5);
+    marvangone <-      as.numeric(     marvan==4 | marvan==5);
+    andrade2gone <-    as.numeric(   andrade2==4 | andrade2==5);
+    favelagone <-      as.numeric(     favela==4 | favela==5);
+    galindogone <-     as.numeric(    galindo==4 | galindo==5);
+    murayamagone <-    as.numeric(   murayama==4 | murayama==5);
+    ruizgone <-        as.numeric(       ruiz==4 | ruiz==5);
+    snmartingone <-    as.numeric(   snmartin==4 | snmartin==5);
+    santiagogone <-    as.numeric(   santiago==4 | santiago==5);
+    ravelgone <-       as.numeric(      ravel==4 | ravel==5);
+    rivera2gone <-     as.numeric(    rivera2==4 | rivera2==5);
+    zavalagone <-      as.numeric(     zavala==4 | zavala==5);
+    ## maganagone <-      as.numeric(     magana==4 | magana==5);
+    ## fazgone <-         as.numeric(        faz==4 | faz==5);
+    ## humphreygone <-    as.numeric(   humphrey==4 | humphrey==5);
+    ## kibgone <-         as.numeric(        kib==4 | kib==5);
 })
-d <- within(d, noshow <- woldenberggone + molinargone + lujambiogone + peschardgone + merinogone + cardenasgone + barragangone + cantugone + zebaduagone + lukengone + riveragone + albogone + glezlunagone + sanchezgone + moralesgone + ugaldegone + latapigone + andradegone + lopezfloresgone + alcantargone + valdesgone + banosgone + nacifgone + elizondogone + figueroagone + guerrerogone + marvangone + cordovagone + garciagone)
+d <- within(d, noshow <- woldenberggone + molinargone + lujambiogone + peschardgone + merinogone + cardenasgone + barragangone + cantugone + zebaduagone + lukengone + riveragone + albogone + glezlunagone + sanchezgone + moralesgone + ugaldegone + latapigone + andradegone + lopezfloresgone + alcantargone + valdesgone + banosgone + nacifgone + elizondogone + figueroagone + guerrerogone + marvangone + cordovagone + garciagone + andrade2gone + favelagone + galindogone + murayamagone + ruizgone + snmartingone + santiagogone + ravelgone + rivera2gone + zavalagone)
+## + maganagone + fazgone + humphreygone + kibgone
 # check
 #table(d$noshow)
 # clean
@@ -412,9 +432,11 @@ sel.r <- which(d$term %in% 4:11)
 sel.c <- c("ugalde", "albo", "andrade", "alcantar", "glezluna", "latapi", "lopezflores", "morales", "sanchez", "valdes", "banos", "nacif", "elizondo", "figueroa", "guerrero", "cordova", "garcia", "marvan", info.cols)
 tmp <- d[sel.r, sel.c]
 write.csv(tmp, file = "data/v456789ab.csv", row.names = FALSE)
-
-
-
+#
+sel.r <- which(d$term %in% 12:13)
+sel.c <- c("cordova", "banos", "andrade2", "favela", "galindo", "murayama", "nacif", "ruiz", "sanchez", "santiago", "snmartin", "ravel", "rivera2", "zavala", info.cols)
+tmp <- d[sel.r, sel.c]
+write.csv(tmp, file = "data/vcd.csv", row.names = FALSE)
 
 
 # summarize contested votes
@@ -433,8 +455,6 @@ cuts <- c(
     ymd("20130220"), # 9  to 10
     ymd("20131031")  # 10 to 11
 )
-
-
 
 
 

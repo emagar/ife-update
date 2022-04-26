@@ -22,67 +22,34 @@ library (mcmcplots)
 library (sm)
 library(lubridate)
 
-
 rm(list = ls())
 workdir <- c("/home/eric/Dropbox/data/rollcall/ife_cg/ife-update/data/")
 setwd(workdir)
 
 # Define colors and plotting names
 # OJO: en tenure term==10 es a, term==11 es b etc. 
-ids <- matrix(c("Ugalde",           "ugalde",      "PRI",  "4",
-                "Albo",             "albo",        "PAN",  "456",
-                "Andrade",          "andrade",     "PRI",  "4567", 
-                "Gmz. Alcántar",    "alcantar",    "PVEM", "4567",
-                "Glez. Luna",       "glezluna",    "PAN",  "456",
-                "Latapí",           "latapi",      "PRI",  "45",
-                "López Flores",     "lopezflores", "PRI",  "456",
-                "Morales",          "morales",     "PAN",  "45",
-                "Sánchez",          "sanchez",     "PAN",  "4567c",
-                "Valdés",           "valdes",      "PRD",    "6789a",
-                "Baños",            "banos",       "PRI",    "6789abcde",
-                "Nacif",            "nacif",       "PAN",    "6789abcde",
-                "Elizondo",         "elizondo",    "PAN",     "789a",
-                "Figueroa",         "figueroa",    "PRD",     "789a",
-                "Guerrero",         "guerrero",    "PRI",     "789a",
-                "Córdova",          "cordova",     "PRD",       "9abcdef",
-                "García Rmz.",      "garcia",      "PRI",       "9"  ,
-                "Marván",           "marvan",      "PAN",       "9ab",
-                "E. Andrade",       "andrade2",    "",             "cde",
-                "Favela",           "favela",      "",             "cdef",
-                "Santiago",         "santiago",    "",             "c",
-                "Galindo",          "galindo",     "",             "c",
-                "Murayama",         "murayama",    "",             "cdef",
-                "Ruiz Saldaña",     "ruiz",        "",             "cdef",
-                "San Martín",       "snmartin",    "",             "cde",
-                "Santiago",         "santiago",    "",             "c",
-                "Ravel",            "ravel",       "",              "def",
-                "J. Rivera",        "rivera2",     "",              "def",
-                "Zavala",           "zavala",      "",              "def",
-                "De la Cruz",       "magana",      "",                "f",
-                "Faz",              "faz",         "",                "f",
-                "Humphrey",         "humphrey",    "",                "f",
-                "Kib Espadas",      "kib",         "",                "f"),
-              ncol = 4,
-              byrow = TRUE)
-#
-ids <- as.data.frame(ids, stringsAsFactors = FALSE)
-colnames(ids) <- c("name", "column", "pty", "tenure")                                           
+ids <- read.csv("../ancillary/consejo-general-ine.csv")
+ids <- ids[, -grep("^x", colnames(ids))] # drop redundant "x" columns
+ids[1,]
 #ids$tenure <- as.numeric(ids$tenure)
-ids <- within(ids, party <- ifelse (pty=="PRI", 1,
-                            ifelse (pty=="PAN", 2,
-                            ifelse (pty=="PRD", 3, 
-                            ifelse(pty=="PVEM", 4, 5)))))
-ids <- within(ids, color <- ifelse (pty=="PRI", "red",
-                            ifelse (pty=="PAN", "blue",
-                            ifelse (pty=="PRD", "gold",
-                            ifelse(pty=="PVEM", "green", "orangered4")))))
+ids <- within(ids, party <- ifelse(sponsor==   "pri",   1,
+                            ifelse(sponsor==   "pan",   2,
+                            ifelse(sponsor==   "prd",   3, 
+                            ifelse(sponsor==  "pvem",   4,
+                            ifelse(sponsor=="morena",   5,  6))))))
+ids <- within(ids, color <- ifelse(sponsor==   "pri",        "red",
+                            ifelse(sponsor==   "pan",       "blue",
+                            ifelse(sponsor==   "prd",       "gold",
+                            ifelse(sponsor==  "pvem",      "green",
+                            ifelse(sponsor=="morena", "orangered4", "gray"))))))
 
 # select terms 4-8, more or less
-tees <- 6:7
+tees <- 4:11
 T <- length(tees)
 
-sel    <- grep(pattern = "[67]", ids$tenure) #sel    <- grep(pattern = "[456789ab]", ids$tenure)
-name   <- ids$name[sel]
+#sel    <- grep(pattern = "[67]", ids$tenure)
+sel    <- grep(pattern = "[456789ab]", ids$tenure) # ugalde and valdés councils
+name   <- ids$short[sel]
 party  <- ids$party[sel]
 color  <- ids$color[sel]
 column <- ids$column[sel]
@@ -91,6 +58,40 @@ column <- ids$column[sel]
 ## rgb.23[c(1,6,8,10)] <- rgb(1,       0, 0, 0.6) #red
 ## rgb.23[c(2:4,9)]    <- rgb(1, 215/255, 0, 0.6) #gold
 ## rgb.23[c(5,7,11)]   <- rgb(0,       0, 1, 0.6) #blue
+
+# adjusts approximate years with constant membership
+yr.by.yr <- data.frame(
+    n = 1:26, 
+    cuts = c(
+        ymd("19961031"), #  1
+        ymd("19971031"), #  2
+        ymd("19981031"), #  3
+        ymd("19991031"), #  4
+        ymd("20001211"), #  5
+        ymd("20011031"), #  6
+        ymd("20021031"), #  7
+        ymd("20031031"), #  8
+        ymd("20041031"), #  9
+        ymd("20051031"), # 10
+        ymd("20061031"), # 11
+        ymd("20080215"), # 12
+        ymd("20080821"), # 13
+        ymd("20091031"), # 14
+        ymd("20101031"), # 15
+        ymd("20111215"), # 16
+        ymd("20130220"), # 17
+        ymd("20130401"), # 18
+        ymd("20140411"), # 19
+        ymd("20150411"), # 20
+        ymd("20160411"), # 21
+        ymd("20170405"), # 22
+        ymd("20180405"), # 23
+        ymd("20190405"), # 24
+        ymd("20200417"), # 25
+        ymd("20200723")  # 26
+    ),
+    term = c(2, 2, 2, 2, 3, 3, 3, 4, 4, 4, 4, 6, 7, 7, 8, 9, 10, 11, 12, 12, 12, 13, 14, 14, 15, 16)
+)
 
 ###############################################################################
 ## Read votes (includes informative votes only, exported by code/data-prep.r ##
@@ -111,7 +112,7 @@ rc <- as.data.frame(t(vot[,1:18]))
 leg.index  <- 1:nrow(rc)
 vote.index <- 1:ncol(rc)
 
-## Melt RC
+## Melt RC (turn it into long format, see https://seananderson.ca/2013/10/19/reshape/)
 rc.2 <- as.data.frame (rc)
 colnames (rc.2) <- vote.index
 rc.2$leg <- leg.index
@@ -154,8 +155,8 @@ for (j in 1:n.item){ beta[j] ~ dnorm(0, 0.1) }
 # ideal points
 #theta[4] <- 1
 #theta[9] <- 0 
-theta[4] ~ dnorm( 1,4)T(0,) # normal + truncada
-theta[9] ~ dnorm(-1,4)T(,0) # normal - truncada
+theta[4] ~ dnorm( 1,4)T(0,) # normal + truncated
+theta[9] ~ dnorm(-1,4)T(,0) # normal - truncated
 
 for(i in 1:3)  { theta[i] ~ dnorm(0,1) }
 for(i in 5:8)  { theta[i] ~ dnorm(0,1) }
