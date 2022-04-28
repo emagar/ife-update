@@ -22,34 +22,67 @@ library (mcmcplots)
 library (sm)
 library(lubridate)
 
+
 rm(list = ls())
 workdir <- c("/home/eric/Dropbox/data/rollcall/ife_cg/ife-update/data/")
 setwd(workdir)
 
 # Define colors and plotting names
 # OJO: en tenure term==10 es a, term==11 es b etc. 
-ids <- read.csv("../ancillary/consejo-general-ine.csv")
-ids <- ids[, -grep("^x", colnames(ids))] # drop redundant "x" columns
-ids[1,]
+ids <- matrix(c("Ugalde",           "ugalde",      "PRI",  "4",
+                "Albo",             "albo",        "PAN",  "456",
+                "Andrade",          "andrade",     "PRI",  "4567", 
+                "Gmz. Alcántar",    "alcantar",    "PVEM", "4567",
+                "Glez. Luna",       "glezluna",    "PAN",  "456",
+                "Latapí",           "latapi",      "PRI",  "45",
+                "López Flores",     "lopezflores", "PRI",  "456",
+                "Morales",          "morales",     "PAN",  "45",
+                "Sánchez",          "sanchez",     "PAN",  "4567c",
+                "Valdés",           "valdes",      "PRD",    "6789a",
+                "Baños",            "banos",       "PRI",    "6789abcde",
+                "Nacif",            "nacif",       "PAN",    "6789abcde",
+                "Elizondo",         "elizondo",    "PAN",     "789a",
+                "Figueroa",         "figueroa",    "PRD",     "789a",
+                "Guerrero",         "guerrero",    "PRI",     "789a",
+                "Córdova",          "cordova",     "PRD",       "9abcdef",
+                "García Rmz.",      "garcia",      "PRI",       "9"  ,
+                "Marván",           "marvan",      "PAN",       "9ab",
+                "E. Andrade",       "andrade2",    "",             "cde",
+                "Favela",           "favela",      "",             "cdef",
+                "Santiago",         "santiago",    "",             "c",
+                "Galindo",          "galindo",     "",             "c",
+                "Murayama",         "murayama",    "",             "cdef",
+                "Ruiz Saldaña",     "ruiz",        "",             "cdef",
+                "San Martín",       "snmartin",    "",             "cde",
+                "Santiago",         "santiago",    "",             "c",
+                "Ravel",            "ravel",       "",              "def",
+                "J. Rivera",        "rivera2",     "",              "def",
+                "Zavala",           "zavala",      "",              "def",
+                "De la Cruz",       "magana",      "",                "f",
+                "Faz",              "faz",         "",                "f",
+                "Humphrey",         "humphrey",    "",                "f",
+                "Kib Espadas",      "kib",         "",                "f"),
+              ncol = 4,
+              byrow = TRUE)
+#
+ids <- as.data.frame(ids, stringsAsFactors = FALSE)
+colnames(ids) <- c("name", "column", "pty", "tenure")                                           
 #ids$tenure <- as.numeric(ids$tenure)
-ids <- within(ids, party <- ifelse(sponsor==   "pri",   1,
-                            ifelse(sponsor==   "pan",   2,
-                            ifelse(sponsor==   "prd",   3, 
-                            ifelse(sponsor==  "pvem",   4,
-                            ifelse(sponsor=="morena",   5,  6))))))
-ids <- within(ids, color <- ifelse(sponsor==   "pri",        "red",
-                            ifelse(sponsor==   "pan",       "blue",
-                            ifelse(sponsor==   "prd",       "gold",
-                            ifelse(sponsor==  "pvem",      "green",
-                            ifelse(sponsor=="morena", "orangered4", "gray"))))))
+ids <- within(ids, party <- ifelse (pty=="PRI", 1,
+                            ifelse (pty=="PAN", 2,
+                            ifelse (pty=="PRD", 3, 
+                            ifelse(pty=="PVEM", 4, 5)))))
+ids <- within(ids, color <- ifelse (pty=="PRI", "red",
+                            ifelse (pty=="PAN", "blue",
+                            ifelse (pty=="PRD", "gold",
+                            ifelse(pty=="PVEM", "green", "orangered4")))))
 
-# select terms for analysis
-tees <- 4:11
+# select terms 4-8, more or less
+tees <- 6:7
 T <- length(tees)
 
-#sel    <- grep(pattern = "[67]", ids$tenure)
-sel    <- grep(pattern = "[456789ab]", ids$tenure) # ugalde and valdés councils
-name   <- ids$short[sel]
+sel    <- grep(pattern = "[67]", ids$tenure) #sel    <- grep(pattern = "[456789ab]", ids$tenure)
+name   <- ids$name[sel]
 party  <- ids$party[sel]
 color  <- ids$color[sel]
 column <- ids$column[sel]
@@ -59,117 +92,11 @@ column <- ids$column[sel]
 ## rgb.23[c(2:4,9)]    <- rgb(1, 215/255, 0, 0.6) #gold
 ## rgb.23[c(5,7,11)]   <- rgb(0,       0, 1, 0.6) #blue
 
-# adjusts approximate years with constant membership for year-by-year estimations
-yr.by.yr <- data.frame(
-    n = 1:28, 
-    start = c(
-        ymd("19961031"), #  1
-        ymd("19971031"), #  2
-        ymd("19981031"), #  3
-        ymd("19991031"), #  4
-        ymd("20001211"), #  5
-        ymd("20011031"), #  6
-        ymd("20021031"), #  7
-        ymd("20031105"), #  8
-        ymd("20041105"), #  9
-        ymd("20051105"), # 10
-        ymd("20061105"), # 11
-        ymd("20080215"), # 12
-        ymd("20080821"), # 13
-        ymd("20090821"), # 14
-        ymd("20101031"), # 15
-        ymd("20111215"), # 16
-        ymd("20130220"), # 17
-        ymd("20131031"), # 18
-        ymd("20140411"), # 19
-        ymd("20150411"), # 20
-        ymd("20160411"), # 21
-        ymd("20170405"), # 22
-        ymd("20180405"), # 23
-        ymd("20190405"), # 24
-        ymd("20200417"), # 25
-        ymd("20200723"), # 26
-        ymd("20210723"), # 27
-        ymd("20220723")  # 28
-    ),
-    end = c(
-        ymd("19971030"), #  1
-        ymd("19981030"), #  2
-        ymd("19991030"), #  3
-        ymd("20001210"), #  4
-        ymd("20011030"), #  5
-        ymd("20021030"), #  6
-        ymd("20031104"), #  7
-        ymd("20041104"), #  8
-        ymd("20051104"), #  9
-        ymd("20061104"), # 10
-        ymd("20080214"), # 11
-        ymd("20080820"), # 12
-        ymd("20090820"), # 13
-        ymd("20101030"), # 14
-        ymd("20111214"), # 15
-        ymd("20130219"), # 16
-        ymd("20131030"), # 17
-        ymd("20140410"), # 18
-        ymd("20150410"), # 19
-        ymd("20160410"), # 20
-        ymd("20170404"), # 21
-        ymd("20180404"), # 22
-        ymd("20190404"), # 23
-        ymd("20200416"), # 24
-        ymd("20200722"), # 25
-        ymd("20210722"), # 26
-        ymd("20220722"), # 27
-        ymd("20230112")  # my 53rd bday
-    ),
-    approx.yr = c(1997, 1998, 1999, 2000, 2001, 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009, 2010, 2011, 2012, 2013, 2014.3, 2014.7, 2015, 2016, 2017, 2018, 2019, 2020, 2021, 2022, 2023),
-    term = c(2, 2, 2, 2, 3, 3, 3, 4, 4, 4, 4, 6, 7, 7, 8, 9, 10, 11, 12, 12, 12, 13, 13, 13, 14, 15, 15, 15)
-)
-
-# term-by-term members
-term.members <- data.frame(
-    term = 1:15,
-    period = c(1:9,"a","b","c","d","e","f"))
-#
-tmp <- rbind(
-c("segob", "creel", "granados", "pinchetti", "pozas", "woldenberg", "zertuche", "senpri", "senprd", "dippri", "dippan"),
-c("woldenberg", "barragan", "cantu", "cardenas", "lujambio", "merino", "molinar", "peschard", "zebadua", NA, NA),
-c("woldenberg", "barragan", "cantu", "cardenas", "lujambio", "luken", "merino", "peschard", "rivera", NA, NA),
-c("ugalde", "albo", "alcantar", "andrade", "glezluna", "latapi", "lopezflores", "morales", "sanchez", NA, NA),
-c("albo", "alcantar", "andrade", "glezluna", "latapi", "lopezflores", "morales", "sanchez", NA, NA, NA),
-c("valdes", "albo", "alcantar", "andrade", "banos", "glezluna", "lopezflores", "nacif", "sanchez", NA, NA),
-c("valdes", "alcantar", "andrade", "banos", "elizondo", "figueroa", "guerrero", "nacif", "sanchez", NA, NA),
-c("valdes", "banos", "elizondo", "figueroa", "guerrero", "nacif", NA, NA, NA, NA, NA),
-c("valdes", "banos", "cordova", "elizondo", "figueroa", "garcia", "guerrero", "marvan", "nacif", NA, NA),
-c("valdes", "banos", "cordova", "elizondo", "figueroa", "guerrero", "marvan", "nacif", NA, NA, NA),
-c("cordova", "banos", "marvan", "nacif", NA, NA, NA, NA, NA, NA, NA),
-c("cordova", "andrade2", "banos", "favela", "galindo", "murayama", "nacif", "ruiz", "sanchez", "santiago", "snmartin"),
-c("cordova", "andrade2", "banos", "favela", "murayama", "nacif", "ravel", "rivera2", "ruiz", "snmartin", "zavala"),
-c("cordova", "favela", "murayama", "ravel", "rivera2", "ruiz", "zavala", NA, NA, NA, NA),
-c("cordova", "favela", "murayama", "faz", "humphrey", "kib", "magana", "ravel", "rivera2", "ruiz", "zavala")
-)
-colnames(tmp) <- paste0("m", 1:11)
-term.members <- cbind(term.members, tmp)
-# inspect
-term.members[1,]
-
-
 ###############################################################################
 ## Read votes (includes informative votes only, exported by code/data-prep.r ##
 ###############################################################################
 vot <-read.csv("v456789ab.csv",  header=TRUE)
-
-# add approx yr-by-yr
-tmp <- vot$date # extract dates
-tmp2 <- tmp # duplicate
-for (i in 1:length(tmp)){
-    sel <- which(yr.by.yr$start<=tmp[i] & yr.by.yr$end>=tmp[i])
-    tmp2[i] <- yr.by.yr$approx.yr[sel] # returns yr vote belongs to
-}
-vot$ye <- as.numeric(tmp2)
-# explore
-table(vot$dunan, vot$ye)
-table(vot$term, vot$ye)
+#
 
 
 ##########################
@@ -184,7 +111,7 @@ rc <- as.data.frame(t(vot[,1:18]))
 leg.index  <- 1:nrow(rc)
 vote.index <- 1:ncol(rc)
 
-## Melt RC (turn it into long format, see https://seananderson.ca/2013/10/19/reshape/)
+## Melt RC
 rc.2 <- as.data.frame (rc)
 colnames (rc.2) <- vote.index
 rc.2$leg <- leg.index
@@ -227,8 +154,8 @@ for (j in 1:n.item){ beta[j] ~ dnorm(0, 0.1) }
 # ideal points
 #theta[4] <- 1
 #theta[9] <- 0 
-theta[4] ~ dnorm( 1,4)T(0,) # normal + truncated
-theta[9] ~ dnorm(-1,4)T(,0) # normal - truncated
+theta[4] ~ dnorm( 1,4)T(0,) # normal + truncada
+theta[9] ~ dnorm(-1,4)T(,0) # normal - truncada
 
 for(i in 1:3)  { theta[i] ~ dnorm(0,1) }
 for(i in 5:8)  { theta[i] ~ dnorm(0,1) }
