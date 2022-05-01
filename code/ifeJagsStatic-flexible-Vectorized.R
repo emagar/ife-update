@@ -21,6 +21,8 @@ library (R2jags)
 library (mcmcplots)
 library (sm)
 library(lubridate)
+library (runjags)
+library (coda)
 
 rm(list = ls())
 workdir <- c("/home/eric/Dropbox/data/rollcall/ife_cg/ife-update/data/")
@@ -120,9 +122,9 @@ yr.by.yr <- data.frame(
         ymd("20200722"), # 25
         ymd("20210722"), # 26
         ymd("20220722"), # 27
-        ymd("20230112")  # my 53rd bday
+        ymd("20230112")  # 28 my 53rd bday
     ),
-    approx.yr = c(1997, 1998, 1999, 2000, 2001, 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009, 2010, 2011, 2012, 2013, 2014.3, 2014.7, 2015, 2016, 2017, 2018, 2019, 2020, 2021, 2022, 2023),
+    approx.yr = c(1997, 1998, 1999, 2000, 2001, 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009, 2010, 2011, 2012, 2013, 2014.1, 2014.2, 2015, 2016, 2017, 2018, 2019, 2020, 2021, 2022, 2023),
     term = c(2, 2, 2, 2, 3, 3, 3, 4, 4, 4, 4, 6, 7, 7, 8, 9, 10, 11, 12, 12, 12, 13, 13, 13, 14, 15, 15, 15)
 )
 
@@ -151,116 +153,217 @@ c("cordova", "favela", "murayama", "faz", "humphrey", "kib", "magana", "ravel", 
 colnames(tmp) <- paste0("m", 1:11)
 term.members <- cbind(term.members, tmp)
 # inspect
-term.members[1,]
+tmp <- term.members[4, grep("^m[0-9]", colnames(term.members))]
+tmp[!is.na(tmp)]
 
+###################
+## member priors ##
+###################
+mem.priors <- data.frame(rbind(
+    c("woldenberg" ,  "center"),
+    c("barragan"   ,  "center"),
+    c("cantu"      ,  "center"),
+    c("cardenas"   ,  "center"),
+    c("lujambio"   ,  "center"),
+    c("merino"     ,  "center"),
+    c("molinar"    ,  "center"),
+    c("peschard"   ,  "center"),
+    c("zebadua"    ,  "center"),
+    c("luken"      ,  "center"),
+    c("rivera"     ,  "center"),
+    c("ugalde"     ,  "center"),
+    c("albo"       ,  "center"),
+    c("andrade"    ,  "center"),
+    c("alcantar"   ,            "right"),
+    c("glezluna"   ,  "center"),
+    c("latapi"     ,  "center"),
+    c("lopezflores",  "center"),
+    c("morales"    ,  "center"),
+    c("sanchez"    ,            "left"),
+    c("valdes"     ,  "center"),
+    c("banos"      ,  "center"),
+    c("nacif"      ,  "center"),
+    c("elizondo"   ,  "center"),
+    c("figueroa"   ,  "center"),
+    c("guerrero"   ,  "center"),
+    c("cordova"    ,  "center"),
+    c("garcia"     ,  "center"),
+    c("marvan"     ,  "center"),
+    c("andrade2"   ,  "center"),
+    c("favela"     ,  "center"),
+    c("galindo"    ,  "center"),
+    c("murayama"   ,  "center"),
+    c("ruiz"       ,  "center"),
+    c("snmartin"   ,  "center"),
+    c("santiago"   ,  "center"),
+    c("ravel"      ,  "center"),
+    c("rivera2"    ,  "center"),
+    c("zavala"     ,  "center"),
+    c("cruz"       ,  "center"),
+    c("faz"        ,  "center"),
+    c("humphrey"   ,  "center"),
+    c("kib"        ,  "center")
+))
+colnames(mem.priors) <- c("name", "location")
+rownames(mem.priors) <- mem.priors$name
 
-###############################################################################
-## Read votes (includes informative votes only, exported by code/data-prep.r ##
-###############################################################################
+##################################
+## will receive point estimates ##
+##################################
+options(width=70)
+ls()
+head(mem.priors)
+thetas  <- mem.priors # duplicate
+tmp <- matrix(NA, ncol = 28, nrow = nrow(thetas))
+tmp <- as.data.frame(tmp)
+colnames(tmp) <- paste0("n", 1:28)
+thetas <- cbind(tmp, thetas)
+head(thetas)
+
+##############################################
+## Read votes, exported by code/data-prep.r ##
+##############################################
 vot <-read.csv("v456789ab.csv",  header=TRUE)
 
 # add approx yr-by-yr
 tmp <- vot$date # extract dates
 tmp2 <- tmp # duplicate
+tmp3 <- tmp # triplicate
 for (i in 1:length(tmp)){
     sel <- which(yr.by.yr$start<=tmp[i] & yr.by.yr$end>=tmp[i])
     tmp2[i] <- yr.by.yr$approx.yr[sel] # returns yr vote belongs to
+    tmp3[i] <- yr.by.yr$n[sel]         # returns n vote belongs to
 }
 vot$ye <- as.numeric(tmp2)
+vot$n <-  as.numeric(tmp3)
 # explore
 table(vot$dunan, vot$ye)
 table(vot$term, vot$ye)
 
+############################
+## Drop uncontested votes ##
+############################
+sel <- which(vot$dunan==1)
+vot <- vot[-sel,]
+
+##################################
+## year-by-years to be analyzed ##
+##################################
+table(yr.by.yr$term, yr.by.yr$n) # inspect
+enes <- 8:18 # years 8:18 cover terms 4:11, ug to 2014 reform
+
+#####################################
+## pick one year (make loop later) ##
+#####################################
+n <- enes[1]
+# determine members
+sel <- yr.by.yr[yr.by.yr$n==n,]$term
+mems <- term.members[sel, grep("^m[0-9]", colnames(term.members))]
+mems <- mems[!is.na(mems)]
+
+###########################################
+## subset votes to year n and it members ##
+###########################################
+rc <- vot[vot$n==n, mems]
+dim(rc)
 
 ##########################
 ## Rosas, vectorization ##
 ##########################
-sel <- which(vot$dunan==1)
-vot <- vot[-sel,] # drop uncontested votes
-
-library (runjags)
-library (coda)
-rc <- as.data.frame(t(vot[,1:18]))
-leg.index  <- 1:nrow(rc)
+rc <- as.data.frame(t(rc))
+mem.index  <- 1:nrow(rc)
 vote.index <- 1:ncol(rc)
 
 ## Melt RC (turn it into long format, see https://seananderson.ca/2013/10/19/reshape/)
 rc.2 <- as.data.frame (rc)
 colnames (rc.2) <- vote.index
-rc.2$leg <- leg.index
-molten.rc <- reshape2::melt(rc.2, id.vars="leg", variable.name="vote", value.name="rc")
+rc.2$mem <- mem.index
+molten.rc <- reshape2::melt(rc.2, id.vars="mem", variable.name="vote", value.name="rc")
 molten.rc$rc <- car::recode (molten.rc$rc, "0=NA")
 molten.rc <- na.omit (molten.rc)
 molten.rc$rc <- car::recode (molten.rc$rc, "2=0; c(3,4,5)=NA")
 
-cjr.data.vector <- dump.format(list(y=molten.rc$rc
-                                    , n.legs=max(leg.index)
-                                    , n.item=max(vote.index)
-                                    , n.obs=nrow(molten.rc)
-                                    , vote=molten.rc$vote
-                                    , dep=molten.rc$leg
+ife.data.vector <- dump.format(list(y=molten.rc$rc
+                                    , n.mems = max(mem.index)
+                                    , n.item = max(vote.index)
+                                    , n.obs  = nrow(molten.rc)
+                                    , vote   = molten.rc$vote
+                                    , dep    = molten.rc$mem
 ))
 
-cjr.parameters = c("theta", "alpha", "beta", "deviance")
+ife.parameters = c("theta", "alpha", "beta", "deviance")
 
-cjr.inits <- function() {
+ife.inits <- function() {
   dump.format(
     list(
-#      theta = c(NA, NA, rnorm(max(leg.index)-2))
-      theta = c(rnorm(3), NA, rnorm(4), NA, rnorm(max(leg.index)-9))
+      theta = c(rnorm(2), NA, rnorm(5), NA)
       , alpha = rnorm(max(vote.index))
-      , beta = rnorm(max(vote.index))
+      , beta  = rnorm(max(vote.index))
       ,'.RNG.name'="base::Wichmann-Hill"
       ,'.RNG.seed'= 1971)   #randomNumbers(n = 1, min = 1, max = 1e+04,col=1))
   )
 }
 
-cjr.vector="model {
+# inspect spike priors to code ife.vector
+mem.priors[mems,]
+
+ife.vector = "model {
 	for (i in 1:n.obs) {
 		y[i] ~ dbern (pi[i])
 		probit(pi[i]) <- beta[vote[i]]*theta[dep[i]] - alpha[vote[i]]
 	}
 # PRIORS
-for (j in 1:n.item){ alpha[j] ~ dnorm(0, 0.25) }   
-# Beta (discrimination, dimension 1)
-for (j in 1:n.item){ beta[j] ~ dnorm(0, 0.1) }   
+# Alpha (difficulty)
+for (j in 1:n.item) { alpha[j] ~ dnorm(0, 0.25) }   
+# Beta (discrimination)
+for (j in 1:n.item) { beta[j] ~ dnorm(0, 0.1) }   
 # ideal points
-#theta[4] <- 1
-#theta[9] <- 0 
-theta[4] ~ dnorm( 1,4)T(0,) # normal + truncated
+theta[3] ~ dnorm( 1,4)T(0,) # normal + truncated
 theta[9] ~ dnorm(-1,4)T(,0) # normal - truncated
-
-for(i in 1:3)  { theta[i] ~ dnorm(0,1) }
-for(i in 5:8)  { theta[i] ~ dnorm(0,1) }
-for(i in 10:n.legs)  { theta[i] ~ dnorm(0,1) }
+for(i in c(1,2,4:8))  { theta[i] ~ dnorm(0,1) }
 }"
 
-cjr.model.v <- run.jags(
-  model=cjr.vector,
-  monitor=cjr.parameters,
-  method="parallel",
-  n.chains=2,
-  data=cjr.data.vector,
-  inits=list (cjr.inits(), cjr.inits()),
-  thin=50, burnin=10000, sample=200,
-  # 			      thin=5, burnin=200, sample=200,
-  check.conv=FALSE, plots=FALSE)
+ife.model.v <- run.jags(
+  model    = ife.vector,
+  monitor  = ife.parameters,
+  method   = "parallel",
+  n.chains = 2,
+  data     = ife.data.vector,
+  inits    = list (ife.inits(), ife.inits()),
+  thin = 50, burnin = 10000, sample = 200,
+  #thin = 5, burnin = 200, sample = 200,
+  check.conv = FALSE, plots = FALSE)
 
-chainsCJR.v <- mcmc.list(list (cjr.model.v$mcmc[[1]], cjr.model.v$mcmc[[2]]))
-gelman.diag (chainsCJR.v, multivariate=F) # convergence looks fine for both models
+chainsIFE.v <- mcmc.list(list (ife.model.v$mcmc[[1]], ife.model.v$mcmc[[2]]))
+gelman.diag (chainsIFE.v, multivariate=F) # convergence looks fine for both models
 
-Alpha.v <- rbind ( chainsCJR.v[[1]][,grep("alpha", colnames(chainsCJR.v[[1]]))]
-                   , chainsCJR.v[[2]][,grep("alpha", colnames(chainsCJR.v[[2]]))])
-Beta.v <- rbind ( chainsCJR.v[[1]][,grep("beta", colnames(chainsCJR.v[[1]]))]
-                  , chainsCJR.v[[2]][,grep("beta", colnames(chainsCJR.v[[2]]))])
-Theta.v <- rbind ( chainsCJR.v[[1]][,grep("theta", colnames(chainsCJR.v[[1]]))]
-                   , chainsCJR.v[[2]][,grep("theta", colnames(chainsCJR.v[[2]]))])
+############################
+## store posterior sample ##
+############################
+post.samples <- vector("list", length(1:28))
+names(post.samples) <- paste0("m", 1:28)
+post.samples[[n]] <- chainsIFE.v
+summary(post.samples)
+
+Alpha.v <- rbind ( chainsIFE.v[[1]][,grep("alpha", colnames(chainsIFE.v[[1]]))]
+                   , chainsIFE.v[[2]][,grep("alpha", colnames(chainsIFE.v[[2]]))])
+Beta.v <- rbind ( chainsIFE.v[[1]][,grep("beta", colnames(chainsIFE.v[[1]]))]
+                  , chainsIFE.v[[2]][,grep("beta", colnames(chainsIFE.v[[2]]))])
+Theta.v <- rbind ( chainsIFE.v[[1]][,grep("theta", colnames(chainsIFE.v[[1]]))]
+                   , chainsIFE.v[[2]][,grep("theta", colnames(chainsIFE.v[[2]]))])
 
 plot (colMeans (Alpha.v))  # difficulties
 plot (colMeans (Beta.v))   # signal
 
+
+plot(enes, c(rep(min(Theta.v), length(enes)-1), max(Theta.v)), type = "n", xlab="Year", axes = FALSE)
+axis(1, at=enes, labels=yr.by.yr$approx.yr[enes])
+axis(2)
+plot(rep(n, length(mem.index)), colMeans (Theta.v))
+
+
 par (las=2, mar=c(7,3,2,2))
-plot (1:length(vot$date), colMeans (Beta.v)
+plot (1:nlength(vot$date), colMeans (Beta.v)
       , type="n"
       , axes=F, ylim=c(-1,1)
       , xlab="", ylab="Ideal point")

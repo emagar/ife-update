@@ -1,49 +1,49 @@
-ord,short,column,sponsor,in,out,in2,out2,tenure,x,x,x,x,x,x,x,x,x,x,x,x,x,x,x,x,name
-1,Creel,creel,0,19940603,19961010,,,1,1,,,,,,,,,,,,,,,,Santiago Creel
-2,Pinchetti,pinchetti,0,19940603,19961010,,,1,1,,,,,,,,,,,,,,,,José Agustín Ortiz Pinchetti
-3,Pozas,pozas,0,19940603,19961010,,,1,1,,,,,,,,,,,,,,,,Ricardo Pozas
-4,Granados,granados,0,19940603,19961010,,,1,1,,,,,,,,,,,,,,,,Miguel Angel Granados Chapa
-5,Zertuche,zertuche,0,19940603,19961010,,,1,1,,,,,,,,,,,,,,,,Fernando Zertuche
-6,Woldenberg,woldenberg,pri,19940603,20031031,,,123,1,2,3,,,,,,,,,,,,,,José Woldenberg
-7,Barragán,barragan,prd,19961031,20031031,,,23,,2,3,,,,,,,,,,,,,,José Barragán
-8,Cantú,cantu,prd,19961031,20031031,,,23,,2,3,,,,,,,,,,,,,,Jesús Cantú
-9,Cárdenas,cardenas,prd,19961031,20031031,,,23,,2,3,,,,,,,,,,,,,,Jaime Cárdenas
-10,Lujambio,lujambio,pan,19961031,20031031,,,23,,2,3,,,,,,,,,,,,,,Alonso Lujambio Irazábal
-11,Merino,merino,pri,19961031,20031031,,,23,,2,3,,,,,,,,,,,,,,Mauricio Merino
-12,Molinar,molinar,pan,19961031,20001130,,,2,,2,,,,,,,,,,,,,,,Juan Molinar Horcasitas
-13,Peschard,peschard,pri,19961031,20031031,,,23,,2,3,,,,,,,,,,,,,,Jacqueline Peschard
-14,Zebadúa,zebadua,prd,19961031,20001130,,,2,,2,,,,,,,,,,,,,,,Emilio Zebadúa
-15,Luken,luken,pan,20001211,20031031,,,3,,,3,,,,,,,,,,,,,,Gaston Luken
-16,Rivera,rivera,pri,20001211,20031031,,,3,,,3,,,,,,,,,,,,,,Virgilio Rivera
-17,Ugalde,ugalde,pri,20031103,20071129,,,4,,,,4,,,,,,,,,,,,,Luis Carlos Ugalde  
-18,Albo,albo,pan,20031103,20080814,,,456,,,,4,5,6,,,,,,,,,,,Andrés Albo
-19,Andrade,andrade,pri,20031103,20101027,,,4567,,,,4,5,6,7,,,,,,,,,,Virgilio Andrade
-20,Gmz. Alcántar,alcantar,pvem,20031103,20101027,,,4567,,,,4,5,6,7,,,,,,,,,,Marco Gómez Alcántar 
-21,Glez. Luna,glezluna,pan,20031103,20080814,,,456,,,,4,5,6,,,,,,,,,,,María González Luna
-22,Latapí,latapi,pri,20031103,20071217,,,45,,,,4,5,,,,,,,,,,,,Luisa Latapí
-23,López Flores,lopezflores,pri,20031103,20080814,,,456,,,,4,5,6,,,,,,,,,,,Malú López Flores
-24,Morales,morales,pan,20031103,20071217,,,45,,,,4,5,,,,,,,,,,,,Rodrigo Morales
-25,Sánchez,sanchez,pan,20031103,20101027,20140404,20170403,4567c,,,,4,5,6,7,,,,,c,,,,,Arturo Sánchez
-26,Valdés,valdes,prd,20080208,20131030,,,6789a,,,,,,6,7,8,9,a,,,,,,,Leonardo Valdés
-27,Baños,banos,pri,20080208,20200403,,,6789abcd,,,,,,6,7,8,9,a,b,c,d,,,,Marco Baños
-28,Nacif,nacif,pan,20080208,20200403,,,6789abcd,,,,,,6,7,8,9,a,b,c,d,,,,Benito Nacif
-29,Elizondo,elizondo,pan,20080815,20131030,,,789a,,,,,,,7,8,9,a,,,,,,,María Elizondo
-30,Figueroa,figueroa,prd,20080815,20131030,,,789a,,,,,,,7,8,9,a,,,,,,,Alfredo Figueroa
-31,Guerrero,guerrero,pri,20080815,20131030,,,789a,,,,,,,7,8,9,a,,,,,,,Francisco Javier Guerrero
-32,Córdova,cordova,prd,20111215,20230403,,,9abcdef,,,,,,,,,9,a,b,c,d,e,f,,Lorenzo Córdova Vianello
-33,García Rmz.,garcia,pri,20111215,20130202,,,9,,,,,,,,,9,,,,,,,,Sergio García Ramírez
-34,Marván,marvan,pan,20111215,20140403,,,9ab,,,,,,,,,9,a,b,,,,,,María Marván
-35,E. Andrade,andrade2,0,20140404,20200403,,,cd,,,,,,,,,,,,c,d,,,,Enrique Andrade
-36,Favela,favela,pri,20140404,20230403,,,cdef,,,,,,,,,,,,c,d,e,f,,Adriana Favela Herrera
-37,Galindo,galindo,0,20140404,20170403,,,c,,,,,,,,,,,,c,,,,,Beatriz Galindo
-38,Murayama,murayama,prd,20140404,20230403,,,cdef,,,,,,,,,,,,c,d,e,f,,Ciro Murayama Rendón
-39,Ruiz S.,ruiz,pan,20140404,20230403,,,cdef,,,,,,,,,,,,c,d,e,f,,José Roberto Ruiz Saldaña
-40,San Martín,snmartin,prd,20140404,20200403,,,cd,,,,,,,,,,,,c,d,,,,Pamela San Martín
-41,Santiago,santiago,0,20140404,20170403,,,c,,,,,,,,,,,,c,,,,,Javier Santiago
-42,Ravel,ravel,pri,20170404,20260426,,,def,,,,,,,,,,,,,d,e,f,,Dania Ravel Cuevas
-43,J. Rivera,rivera2,pan,20170404,20260426,,,def,,,,,,,,,,,,,d,e,f,,Jaime Rivera Velázquez
-44,Zavala,zavala,prd,20170404,20260426,,,def,,,,,,,,,,,,,d,e,f,,Beatriz Zavala Pérez
-45,De la Cruz,cruz,morena,20200727,20290726,,,f,,,,,,,,,,,,,,,f,,Norma de la Cruz Magaña
-46,Faz,faz,morena,20200727,20290726,,,f,,,,,,,,,,,,,,,f,,Martín Faz Mora
-47,Humphrey,humphrey,morena,20200727,20290726,,,f,,,,,,,,,,,,,,,f,,Carla Humphrey Jordan
-48,Espadas,kib,morena,20200727,20290726,,,f,,,,,,,,,,,,,,,f,,Uuc-Kib Espadas Ancona
+ord,short,column,sponsor,in,out,in2,out2,tenure,x,x,x,x,x,x,x,x,x,x,x,x,x,x,x,x,name,prior
+1,Creel,creel,0,19940603,19961010,,,1,1,,,,,,,,,,,,,,,,Santiago Creel Miranda,0
+2,Pinchetti,pinchetti,0,19940603,19961010,,,1,1,,,,,,,,,,,,,,,,José Agustín Ortiz Pinchetti,0
+3,Pozas,pozas,0,19940603,19961010,,,1,1,,,,,,,,,,,,,,,,Ricardo Pozas Horcasitas,0
+4,Granados,granados,0,19940603,19961010,,,1,1,,,,,,,,,,,,,,,,Miguel Angel Granados Chapa,0
+5,Zertuche,zertuche,0,19940603,19961010,,,1,1,,,,,,,,,,,,,,,,Fernando Zertuche Muñoz,0
+6,Woldenberg,woldenberg,pri,19940603,20031031,,,123,1,2,3,,,,,,,,,,,,,,José Woldenberg Karakowsky,0
+7,Barragán,barragan,prd,19961031,20031031,,,23,,2,3,,,,,,,,,,,,,,José Barragán Barragán,
+8,Cantú,cantu,prd,19961031,20031031,,,23,,2,3,,,,,,,,,,,,,,Jesús Cantú Escalante,
+9,Cárdenas,cardenas,prd,19961031,20031031,,,23,,2,3,,,,,,,,,,,,,,Jaime Cárdenas Gracia,
+10,Lujambio,lujambio,pan,19961031,20031031,,,23,,2,3,,,,,,,,,,,,,,Alonso Lujambio Irazábal,
+11,Merino,merino,pri,19961031,20031031,,,23,,2,3,,,,,,,,,,,,,,Mauricio Merino Huerta,
+12,Molinar,molinar,pan,19961031,20001130,,,2,,2,,,,,,,,,,,,,,,Juan Molinar Horcasitas,
+13,Peschard,peschard,pri,19961031,20031031,,,23,,2,3,,,,,,,,,,,,,,Jacqueline Peschard Mariscal,
+14,Zebadúa,zebadua,prd,19961031,20001130,,,2,,2,,,,,,,,,,,,,,,Emilio Zebadúa González,
+15,Luken,luken,pan,20001211,20031031,,,3,,,3,,,,,,,,,,,,,,Gastón Luken Garza,
+16,Rivera,rivera,pri,20001211,20031031,,,3,,,3,,,,,,,,,,,,,,Virgilio Rivera Delgadillo,
+17,Ugalde,ugalde,pri,20031103,20071129,,,4,,,,4,,,,,,,,,,,,,Luis Carlos Ugalde  ,
+18,Albo,albo,pan,20031103,20080814,,,456,,,,4,5,6,,,,,,,,,,,Andrés Albo Márquez,
+19,Andrade,andrade,pri,20031103,20101027,,,4567,,,,4,5,6,7,,,,,,,,,,Virgilio Andrade Martínez,
+20,Gmz. Alcántar,alcantar,pvem,20031103,20101027,,,4567,,,,4,5,6,7,,,,,,,,,,Marco Gómez Alcántar ,1
+21,Glez. Luna,glezluna,pan,20031103,20080814,,,456,,,,4,5,6,,,,,,,,,,,María González Luna,
+22,Latapí,latapi,pri,20031103,20071217,,,45,,,,4,5,,,,,,,,,,,,Luisa Latapí Renner,
+23,López Flores,lopezflores,pri,20031103,20080814,,,456,,,,4,5,6,,,,,,,,,,,Malú López Flores,
+24,Morales,morales,pan,20031103,20071217,,,45,,,,4,5,,,,,,,,,,,,Rodrigo Morales Manzanares,
+25,Sánchez,sanchez,pan,20031103,20101027,20140404,20170403,4567c,,,,4,5,6,7,,,,,c,,,,,Arturo Sánchez Gutiérrez,-1
+26,Valdés,valdes,prd,20080208,20131030,,,6789a,,,,,,6,7,8,9,a,,,,,,,Leonardo Valdés Zurita,
+27,Baños,banos,pri,20080208,20200403,,,6789abcd,,,,,,6,7,8,9,a,b,c,d,,,,Marco Baños Martínez,
+28,Nacif,nacif,pan,20080208,20200403,,,6789abcd,,,,,,6,7,8,9,a,b,c,d,,,,Benito Nacif Hernández,
+29,Elizondo,elizondo,pan,20080815,20131030,,,789a,,,,,,,7,8,9,a,,,,,,,María Elizondo Gasperín,
+30,Figueroa,figueroa,prd,20080815,20131030,,,789a,,,,,,,7,8,9,a,,,,,,,Alfredo Figueroa Fernández,
+31,Guerrero,guerrero,pri,20080815,20131030,,,789a,,,,,,,7,8,9,a,,,,,,,Francisco Javier Guerrero,
+32,Córdova,cordova,prd,20111215,20230403,,,9abcdef,,,,,,,,,9,a,b,c,d,e,f,,Lorenzo Córdova Vianello,
+33,García Rmz.,garcia,pri,20111215,20130202,,,9,,,,,,,,,9,,,,,,,,Sergio García Ramírez,
+34,Marván,marvan,pan,20111215,20140403,,,9ab,,,,,,,,,9,a,b,,,,,,María Marván Laborde,
+35,E. Andrade,andrade2,pan?,20140404,20200403,,,cd,,,,,,,,,,,,c,d,,,,Enrique Andrade González,
+36,Favela,favela,pri,20140404,20230403,,,cdef,,,,,,,,,,,,c,d,e,f,,Adriana Favela Herrera,
+37,Galindo,galindo,pri?,20140404,20170403,,,c,,,,,,,,,,,,c,,,,,Beatriz Galindo Centeno,
+38,Murayama,murayama,prd,20140404,20230403,,,cdef,,,,,,,,,,,,c,d,e,f,,Ciro Murayama Rendón,
+39,Ruiz S.,ruiz,pan,20140404,20230403,,,cdef,,,,,,,,,,,,c,d,e,f,,José Roberto Ruiz Saldaña,
+40,San Martín,snmartin,prd,20140404,20200403,,,cd,,,,,,,,,,,,c,d,,,,Pamela San Martín Ríos y Valles,
+41,Santiago,santiago,prd?,20140404,20170403,,,c,,,,,,,,,,,,c,,,,,Javier Santiago Castillo,
+42,Ravel,ravel,pri,20170404,20260426,,,def,,,,,,,,,,,,,d,e,f,,Dania Ravel Cuevas,
+43,J. Rivera,rivera2,pan,20170404,20260426,,,def,,,,,,,,,,,,,d,e,f,,Jaime Rivera Velázquez,
+44,Zavala,zavala,prd,20170404,20260426,,,def,,,,,,,,,,,,,d,e,f,,Beatriz Zavala Pérez,
+45,De la Cruz,cruz,morena,20200727,20290726,,,f,,,,,,,,,,,,,,,f,,Norma de la Cruz Magaña,
+46,Faz,faz,morena,20200727,20290726,,,f,,,,,,,,,,,,,,,f,,Martín Faz Mora,
+47,Humphrey,humphrey,morena,20200727,20290726,,,f,,,,,,,,,,,,,,,f,,Carla Humphrey Jordan,
+48,Espadas,kib,morena,20200727,20290726,,,f,,,,,,,,,,,,,,,f,,Uuc-Kib Espadas Ancona,

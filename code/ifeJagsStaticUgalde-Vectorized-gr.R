@@ -169,8 +169,8 @@ cjr.model.v <- run.jags(
   n.chains=2,
   data=cjr.data.vector,
   inits=list (cjr.inits(), cjr.inits()),
-  thin=50, burnin=10000, sample=200,
-  # 			      thin=5, burnin=200, sample=200,
+  #thin=50, burnin=10000, sample=200,
+  thin=5, burnin=200, sample=200,
   check.conv=FALSE, plots=FALSE)
 
 chainsCJR.v <- mcmc.list(list (cjr.model.v$mcmc[[1]], cjr.model.v$mcmc[[2]]))
