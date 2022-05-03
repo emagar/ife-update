@@ -29,42 +29,42 @@ setwd(workdir)
 
 ids <- matrix(c(
     ## "Woldenberg",       "woldenberg", "PRI", "23",
-    ## "Barrag?n",         "barragan",   "PRD", "23",
-    ## "Cant?",            "cantu",      "PRD", "23",
-    ## "C?rdenas",         "cardenas",   "PRD", "23",
+    ## "Barragán",         "barragan",   "PRD", "23",
+    ## "Cantú",            "cantu",      "PRD", "23",
+    ## "Cárdenas",         "cardenas",   "PRD", "23",
     ## "Lujambio",         "lujambio",   "PAN", "23",
     ## "Merino",           "merino",     "PRI", "23",
     ## "Molinar",          "molinar",    "PAN", "2" ,
     ## "Peschard",         "peschard",   "PRI", "23",
-    ## "Zebad?a",          "zebadua",    "PRD", "2" ,
+    ## "Zebadúa",          "zebadua",    "PRD", "2" ,
     ## "Rivera",           "rivera",     "PRI",  "3",
     ## "Luken",            "luken",      "PAN",  "3",
     #
     "Ugalde",           "ugalde",      "PRI",  "4",
     "Albo",             "albo",        "PAN",  "456",
     "Andrade",          "andrade",     "PRI",  "4567", 
-    "Gmz. Alc?ntar",    "alcantar",    "PVEM", "4567",
+    "Gmz. Alcántar",    "alcantar",    "PVEM", "4567",
     "Glez. Luna",       "glezluna",    "PAN",  "456",
-    "Latap?",           "latapi",      "PRI",  "45",
-    "L?pez Flores",     "lopezflores", "PRI",  "456",
+    "Latapí",           "latapi",      "PRI",  "45",
+    "López Flores",     "lopezflores", "PRI",  "456",
     "Morales",          "morales",     "PAN",  "45",
-    "S?nchez",          "sanchez",     "PAN",  "4567c",
-    "Vald?s",           "valdes",      "PRD",    "6789a",
-    "Ba?os",            "banos",       "PRI",    "6789abcde",
+    "Sánchez",          "sanchez",     "PAN",  "4567c",
+    "Valdés",           "valdes",      "PRD",    "6789a",
+    "Baños",            "banos",       "PRI",    "6789abcde",
     "Nacif",            "nacif",       "PAN",    "6789abcde",
     "Elizondo",         "elizondo",    "PAN",     "789a",
     "Figueroa",         "figueroa",    "PRD",     "789a",
     "Guerrero",         "guerrero",    "PRI",     "789a",
-    "C?rdova",          "cordova",     "PRD",       "9abcdef",
-    "Garc?a Rmz.",      "garcia",      "PRI",       "9"  ,
-    "Marv?n",           "marvan",      "PAN",       "9ab",
+    "Córdova",          "cordova",     "PRD",       "9abcdef",
+    "García Rmz.",      "garcia",      "PRI",       "9"  ,
+    "Marván",           "marvan",      "PAN",       "9ab",
     "E. Andrade",       "andrade2",    "",             "cde",
     "Favela",           "favela",      "",             "cdef",
     "Santiago",         "santiago",    "",             "c",
     "Galindo",          "galindo",     "",             "c",
     "Murayama",         "murayama",    "",             "cdef",
-    "Ruiz Salda?a",     "ruiz",        "",             "cdef",
-    "San Mart?n",       "snmartin",    "",             "cde",
+    "Ruiz Saldaña",     "ruiz",        "",             "cdef",
+    "San Martín",       "snmartin",    "",             "cde",
     "Santiago",         "santiago",    "",             "c",
     "Ravel",            "ravel",       "",              "def",
     "J. Rivera",        "rivera2",     "",              "def",
@@ -116,7 +116,7 @@ column <- ids$column[sel]
 vot4on <- read.csv(  "v456789ab.csv",  header=TRUE)
 # choose what votes will be analyzed
 #vot <- vot23  # Woldenberg
-vot <- vot4on # Ugalde-Vald?s-C?rdova
+vot <- vot4on # Ugalde-Valdés-Córdova
 #colnames(vot)
 # subset to votes in chosen periods
 sel.r <- which(vot$term %in% tees)
@@ -244,7 +244,7 @@ IsCouncilor <- IsCouncilor[, sel.members]
 #                 1  2  3  4  5  6  7  8  9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25
 #                 u  a  a  a  g  l  l  m  s  v  b  n  e  f  g  c  g  m  a  f  g  m  r  s  s  
 #                 g  l  n  l  l  a  p  o  a  a  a  a  l  i  u  o  a  a  n  a  a  u  u  n  a
-#                 a  b  d  c  z  t  z  r  n  l  ?  c  i  g  e  r  r  r  d  v  l  r  i  m  n
+#                 a  b  d  c  z  t  z  r  n  l  ñ  c  i  g  e  r  r  r  d  v  l  r  i  m  n
 #                 l  o  r  a  l  a  f  a  c  d  o  i  z  u  r  d  c  v  r  e  i  a  z  a  t
 x.location <-   c(0, 0, 0, 2, 0, 0, 0, 0,-2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)[sel.members] # sel = members in estimation
 x.precision  <- c(1, 1, 1, 4, 1, 1, 1, 1, 4, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1)[sel.members]
@@ -323,7 +323,7 @@ for (s in 1:S){        # <= loop over S windows
         dump.format(
             list(
                 theta = rnorm(max(member.index))
-                #theta = c(rnorm(3), NA, rnorm(4), NA, rnorm(max(member.index)-9)) # NAs s?lo en caso de spike priors, correcto?
+                #theta = c(rnorm(3), NA, rnorm(4), NA, rnorm(max(member.index)-9)) # NAs sólo en caso de spike priors, correcto?
               , alpha = rnorm(max(vote.index))
               , beta = rnorm(max(vote.index))
               , '.RNG.name'="base::Wichmann-Hill"
@@ -397,7 +397,7 @@ for (s in 1:S){        # <= loop over S windows
 
 
 # plot results
-tit <- "Terms 67 (Vald?s 2007-2010), Bonica method"
+tit <- "Terms 67 (Valdés 2007-2010), Bonica method"
 source("../code/plot-posteriors.r")
 x
 
@@ -562,7 +562,7 @@ for (s in snapshot){
 	for (j in 1:J){
 		lines ( Smooth[[j]]$x[1:s], Smooth[[j]]$y[1:s], lwd=6, col=rgb.45678901[j])
 	}
-	# Eric: Creo que t? tienes m?s informaci?n para hacer los cambios en las siguientes tres l?neas
+	# Eric: Creo que tú tienes más información para hacer los cambios en las siguientes tres líneas
 	legend ("topright", bty="n", legend=paste ("vote", s, sep=" ")) #Change the legend for the date of the vote
 	# Add vertical lines for elections here, but only for some realizations of S
 	# Add names of councilors here as well, but only for some realizations of S
