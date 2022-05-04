@@ -114,7 +114,8 @@ yr.by.yr <- data.frame(
         ymd("20230112")  # 28 my 53rd bday
     ),
     approx.yr = c(1997, 1998, 1999, 2000, 2001, 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009, 2010, 2011, 2012, 2013, 2014.1, 2014.2, 2015, 2016, 2017, 2018, 2019, 2020, 2021, 2022, 2023),
-    term = c(2, 2, 2, 2, 3, 3, 3, 4, 4, 4, 4, 6, 7, 7, 8, 9, 10, 11, 12, 12, 12, 13, 13, 13, 14, 15, 15, 15)
+    term =   c(2, 2, 2, 2, 3, 3, 3, 4, 4, 4, 4, 6, 7, 7, 8, 9, 10, 11, 12, 12, 12, 13, 13, 13, 14, 15, 15, 15),
+    period = c(2, 2, 2, 2, 3, 3, 3, 4, 4, 4, 4, 6, 7, 7, 8, 9, "a","b","c","c","c","d","d","d","e","f","f","f")
 )
 
 ###############################
@@ -125,9 +126,9 @@ tees.grep <- "[456789ab]"
 ids[grep(pattern = tees.grep, ids$tenure), c("column","sponsor","tenure")] # inspect
 T <- length(tees)
 
-##################################################################
-## subset relevant names, parties, colors, columns for analysis ##
-##################################################################
+###############################################################################
+## subset names, parties, colors, columns relevant for terms in the analysis ##
+###############################################################################
 sel    <- grep(pattern = tees.grep, ids$tenure) # ugalde and valdés councils
 name   <- ids$short [sel]
 party  <- ids$party [sel]
@@ -141,7 +142,9 @@ table(term=yr.by.yr$term, n=yr.by.yr$n) # inspect
 enes <- 8:18 # years 8:18 cover terms 4:11, ug to 2014 reform
 N <- length(enes)
 
-# Prep object to receive yearly priors
+##########################################
+## Prep object to receive yearly priors ##
+##########################################
 x.location <- data.frame(matrix(NA, nrow = length(column), ncol = N))
 rownames(x.location) <- column
 colnames(x.location) <- paste0("N", 1:N)
@@ -212,18 +215,23 @@ table(factor(vot$dunan, labels = c("contested","not")), useNA = "ifany")
 sel <- which(vot$dunan==1)
 if (length(sel)>0) vot <- vot[-sel,]
 
-#########################################################################
-## summarize and recode vote values --- probit requires 0s and 1s only ##
-#########################################################################
-tmp <- vot[,column]
-table(vote=as.matrix(tmp), useNA = "always")
-# recode
-tmp[tmp==0] <- NA    ## 1s are ayes, 0s nays
-tmp[tmp>2]  <- NA
-tmp[tmp==2] <- 0
-table(vote=as.matrix(tmp), useNA = "always")
-# return to vote object
-vot[,column] <- tmp
+#######################################################
+## ################################################# ##
+## ## THIS IS DONE BELOW, IN MEMO'S VECTORIZATION ## ##
+## ################################################# ##
+#######################################################
+## #########################################################################
+## ## summarize and recode vote values --- probit requires 0s and 1s only ##
+## #########################################################################
+## tmp <- vot[,column]
+## table(vote=as.matrix(tmp), useNA = "always")
+## # recode
+## tmp[tmp==0] <- NA    ## 1s are ayes, 0s nays
+## tmp[tmp>2]  <- NA
+## tmp[tmp==2] <- 0
+## table(vote=as.matrix(tmp), useNA = "always")
+## # return to vote object
+## vot[,column] <- tmp
 
 ##################################################
 ## will receive point estimates and 80pct bands ##
@@ -243,18 +251,21 @@ rm(tmp,tmp2,tmp3) # clean
 ## pick one year (turn into loop later) ##
 ##########################################
 n <- enes[1]
-# determine members
-name
-ls()
-sel <- yr.by.yr[yr.by.yr$n==n,]$term
-mems <- term.members[sel, grep("^m[0-9]", colnames(term.members))]
-mems <- mems[!is.na(mems)]
+
+#########################################
+## determine members and their parties ##
+#########################################
+sel <- yr.by.yr[yr.by.yr$n==n,]$period
+sel    <- grep(pattern = sel, ids$tenure) # ugalde and valdés councils
+party.n  <- ids$party [sel]
+column.n <- ids$column[sel]
 
 ###########################################
 ## subset votes to year n and it members ##
 ###########################################
-rc <- vot[vot$n==n, mems]
+rc <- vot[vot$n==n, column.n]
 dim(rc)
+#head(rc)
 
 ##########################
 ## Rosas, vectorization ##
@@ -263,14 +274,18 @@ rc <- as.data.frame(t(rc))
 mem.index  <- 1:nrow(rc)
 vote.index <- 1:ncol(rc)
 
-## Melt RC (turn it into long format, see https://seananderson.ca/2013/10/19/reshape/)
+#####################################################
+## Melt RC (turn it into long format)              ##
+## see https://seananderson.ca/2013/10/19/reshape/ ##
+#####################################################
 rc.2 <- as.data.frame (rc)
 colnames (rc.2) <- vote.index
 rc.2$mem <- mem.index
 molten.rc <- reshape2::melt(rc.2, id.vars="mem", variable.name="vote", value.name="rc")
-molten.rc$rc <- car::recode (molten.rc$rc, "0=NA")
-molten.rc <- na.omit (molten.rc)
-molten.rc$rc <- car::recode (molten.rc$rc, "2=0; c(3,4,5)=NA")
+#head(molten.rc, 9)
+molten.rc$rc <- car::recode (molten.rc$rc, "0=NA") # non-members' slots, if any, to NA
+# will try w/o 4may2022 #molten.rc <- na.omit (molten.rc)                   # drops non-members' slots, if any
+molten.rc$rc <- car::recode (molten.rc$rc, "2=0; c(3,4,5)=NA") # abstain|absent to NA
 
 ife.data.vector <- dump.format(list(y=molten.rc$rc
                                     , n.mems = max(mem.index)
