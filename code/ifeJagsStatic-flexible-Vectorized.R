@@ -52,7 +52,7 @@ ids[12,]
 ## adjusts approximate years with constant membership for year-by-year estimations ##
 #####################################################################################
 yr.by.yr <- data.frame(
-    n = 1:28, 
+    p = 1:28, 
     start = c(
         ymd("19961031"), #  1
         ymd("19971031"), #  2
@@ -115,7 +115,7 @@ yr.by.yr <- data.frame(
     ),
     approx.yr = c(1997, 1998, 1999, 2000, 2001, 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009, 2010, 2011, 2012, 2013, 2014.1, 2014.2, 2015, 2016, 2017, 2018, 2019, 2020, 2021, 2022, 2023),
     term =   c(2, 2, 2, 2, 3, 3, 3, 4, 4, 4, 4, 6, 7, 7, 8, 9, 10, 11, 12, 12, 12, 13, 13, 13, 14, 15, 15, 15),
-    period = c(2, 2, 2, 2, 3, 3, 3, 4, 4, 4, 4, 6, 7, 7, 8, 9, "a","b","c","c","c","d","d","d","e","f","f","f")
+    term.a = c(2, 2, 2, 2, 3, 3, 3, 4, 4, 4, 4, 6, 7, 7, 8, 9, "a","b","c","c","c","d","d","d","e","f","f","f")
 )
 
 ###############################
@@ -123,45 +123,42 @@ yr.by.yr <- data.frame(
 ###############################
 tees <- 4:11
 tees.grep <- "[456789ab]"
-ids[grep(pattern = tees.grep, ids$tenure), c("column","sponsor","tenure")] # inspect
-T <- length(tees)
 
-###############################################################################
-## subset names, parties, colors, columns relevant for terms in the analysis ##
-###############################################################################
-sel    <- grep(pattern = tees.grep, ids$tenure) # ugalde and valdés councils
-name   <- ids$short [sel]
-party  <- ids$party [sel]
-color  <- ids$color [sel]
-column <- ids$column[sel]
+######################################################
+## subset ids and periodocization to relevant lines ##
+######################################################
+ids <- ids[grep(pattern = tees.grep, ids$tenure),]
+yr.by.yr <- yr.by.yr[grep(pattern = tees.grep, yr.by.yr$term.a),]
+ids[, c("column","sponsor","tenure")] # inspect
 
-##################################
-## year-by-years to be analyzed ##
-##################################
-table(term=yr.by.yr$term, n=yr.by.yr$n) # inspect
-enes <- 8:18 # years 8:18 cover terms 4:11, ug to 2014 reform
-N <- length(enes)
+######################################
+## discrete periods to be analyzed  ##
+## e.g. year-by-year                ##
+######################################
+table(term=yr.by.yr$term, p=yr.by.yr$p) # inspect
+pees <- yr.by.yr$p # years 8:18 cover terms 4:11, ug to 2014 reform
+P <- length(pees)
 
 ##########################################
 ## Prep object to receive yearly priors ##
 ##########################################
-x.location <- data.frame(matrix(NA, nrow = length(column), ncol = N))
-rownames(x.location) <- column
-colnames(x.location) <- paste0("N", 1:N)
-x.precision <- x.location
-x.precision[] <- 100 # for N=2-on
+prior.location <- data.frame(matrix(NA, nrow = length(ids$column), ncol = P))
+rownames(prior.location) <- ids$column
+colnames(prior.location) <- paste0("p", pees)
+prior.precision <- prior.location
+prior.precision[] <- 100 # for N=2-on
 # assign priors for first round
-x.location[,1] <- 0
-x.location["alcantar",1] <- -2
-x.location ["sanchez",1] <-  2
-x.precision[,1] <- 1
-x.precision["alcantar",1] <- 4
-x.precision ["sanchez",1] <- 4
+prior.location[,1] <- 0
+prior.location["alcantar",1] <-  2
+prior.location ["sanchez",1] <- -2
+prior.precision[,1] <- 1
+prior.precision["alcantar",1] <- 4
+prior.precision ["sanchez",1] <- 4
 
 ## # term-by-term members
 ## term.members <- data.frame(
 ##     term = 1:15,
-##     period = c(1:9,"a","b","c","d","e","f"))
+##     term.a = c(1:9,"a","b","c","d","e","f"))
 ## #
 ## tmp <- rbind(
 ## c("segob", "creel", "granados", "pinchetti", "pozas", "woldenberg", "zertuche", "senpri", "senprd", "dippri", "dippan"),
@@ -199,13 +196,13 @@ tmp2 <- tmp3 <- tmp # triplicate
 for (i in 1:length(tmp)){
     sel <- which(yr.by.yr$start<=tmp[i] & yr.by.yr$end>=tmp[i])
     tmp2[i] <- yr.by.yr$approx.yr[sel] # returns yr vote belongs to
-    tmp3[i] <- yr.by.yr$n[sel]         # returns n vote belongs to
+    tmp3[i] <- yr.by.yr$p[sel]         # returns p vote belongs to
 }
-vot$y <- as.numeric(tmp2)
-vot$n <-  as.numeric(tmp3)
+vot$yr <- as.numeric(tmp2)
+vot$p  <- as.numeric(tmp3)
 # explore
-table(dunan=vot$dunan, y=vot$y)
-table(term=vot$term, y=vot$y)
+table(dunan=vot$dunan, yr=vot$yr)
+with(vot, table(term=term[dunan==0], yr=yr[dunan==0]))
 
 ###########################################
 ## summarize then drop uncontested votes ##
@@ -236,34 +233,34 @@ if (length(sel)>0) vot <- vot[-sel,]
 ##################################################
 ## will receive point estimates and 80pct bands ##
 ##################################################
-exes <- x.location
-exes[,1] <- NA
-lo <- hi <- exes
+point <- prior.location
+point[,1] <- NA
+lo <- hi <- point
 
 ####################################
 ## will receive posterior samples ##
 ####################################
-post.samples <- vector("list", N)
-names(post.samples) <- paste0("N", 1:N)
-rm(tmp,tmp2,tmp3) # clean
+post.samples <- vector("list", P)
+names(post.samples) <- paste0("p", pees)
+rm(i,sel,tmp,tmp2,tmp3) # clean
 
 ##########################################
 ## pick one year (turn into loop later) ##
 ##########################################
-n <- enes[1]
+p <- c(1:P)[1]
 
 #########################################
 ## determine members and their parties ##
 #########################################
-sel <- yr.by.yr[yr.by.yr$n==n,]$period
+sel <- yr.by.yr[yr.by.yr$p==pees[p],]$term.a
 sel    <- grep(pattern = sel, ids$tenure) # ugalde and valdés councils
-party.n  <- ids$party [sel]
-column.n <- ids$column[sel]
+party.p  <- ids$party [sel]
+column.p <- ids$column[sel]
 
-###########################################
-## subset votes to year n and it members ##
-###########################################
-rc <- vot[vot$n==n, column.n]
+#############################################
+## subset votes to period p and it members ##
+#############################################
+rc <- vot[vot$p==pees[p], column.p]
 dim(rc)
 #head(rc)
 
@@ -271,28 +268,37 @@ dim(rc)
 ## Rosas, vectorization ##
 ##########################
 rc <- as.data.frame(t(rc))
-mem.index  <- 1:nrow(rc)
-vote.index <- 1:ncol(rc)
+M <- nrow(rc) # total members in period
+V <- ncol(rc) # total votes in period
+map.vote.indices   <- data.frame(actual=as.numeric(colnames(rc)),
+                                 sequential=1:V)
+map.member.indices <- data.frame(actual=rownames(rc),
+                                 sequential=1:M)
+map.period.indices <- data.frame(actual=yr.by.yr$p,
+                                 yr=yr.by.yr$approx.yr,
+                                 sequential=1:P)
+## mem.index  <- 1:M
+## vote.index <- 1:V
 
 #####################################################
 ## Melt RC (turn it into long format)              ##
 ## see https://seananderson.ca/2013/10/19/reshape/ ##
 #####################################################
 rc.2 <- as.data.frame (rc)
-colnames (rc.2) <- vote.index
-rc.2$mem <- mem.index
-molten.rc <- reshape2::melt(rc.2, id.vars="mem", variable.name="vote", value.name="rc")
-#head(molten.rc, 9)
+colnames (rc.2) <- 1:V
+rc.2$member <- 1:M
+molten.rc <- reshape2::melt(rc.2, id.vars="member", variable.name="vote", value.name="rc")
+#head(molten.rc, 10)
 molten.rc$rc <- car::recode (molten.rc$rc, "0=NA") # non-members' slots, if any, to NA
 # will try w/o 4may2022 #molten.rc <- na.omit (molten.rc)                   # drops non-members' slots, if any
 molten.rc$rc <- car::recode (molten.rc$rc, "2=0; c(3,4,5)=NA") # abstain|absent to NA
 
-ife.data.vector <- dump.format(list(y=molten.rc$rc
-                                    , n.mems = max(mem.index)
-                                    , n.item = max(vote.index)
-                                    , n.obs  = nrow(molten.rc)
-                                    , vote   = molten.rc$vote
-                                    , dep    = molten.rc$mem
+ife.data.vector <- dump.format(list(y = molten.rc$rc, 
+#                                    n.mems = M,
+                                    n.item = V,
+                                    n.obs  = nrow(molten.rc),
+                                    vote   = molten.rc$vote,
+                                    member = molten.rc$member
 ))
 
 ife.parameters = c("theta", "alpha", "beta", "deviance")
@@ -300,21 +306,21 @@ ife.parameters = c("theta", "alpha", "beta", "deviance")
 ife.inits <- function() {
   dump.format(
     list(
-      theta = c(rnorm(2), NA, rnorm(5), NA)
-      , alpha = rnorm(max(vote.index))
-      , beta  = rnorm(max(vote.index))
+      theta = c(rnorm(3), NA, rnorm(4), NA)
+      , alpha = rnorm(V)
+      , beta  = rnorm(V)
       ,'.RNG.name'="base::Wichmann-Hill"
       ,'.RNG.seed'= 1971)   #randomNumbers(n = 1, min = 1, max = 1e+04,col=1))
   )
 }
 
 # inspect spike priors to code ife.vector
-mem.priors[mems,]
+prior.location[,p]
 
-ife.vector = "model {
+ife.model = "model {
 	for (i in 1:n.obs) {
 		y[i] ~ dbern (pi[i])
-		probit(pi[i]) <- beta[vote[i]]*theta[dep[i]] - alpha[vote[i]]
+		probit(pi[i]) <- beta[vote[i]]*theta[member[i]] - alpha[vote[i]]
 	}
 	# PRIORS
 	# Alpha (difficulty)
@@ -322,47 +328,63 @@ ife.vector = "model {
 	# Beta (discrimination)
 	for (j in 1:n.item) { beta[j] ~ dnorm(0, 0.1) }   
 	# ideal points
-	theta[3] ~ dnorm( 2,4)T(0,) # normal + truncated
+	theta[4] ~ dnorm( 2,4)T(0,) # normal + truncated
 	theta[9] ~ dnorm(-2,4)T(,0) # normal - truncated
-	for(i in c(1,2,4:8))  { theta[i] ~ dnorm(0,1) }
-	#for(i in setdiff(1:n.mems, c(3,9)))  { theta[i] ~ dnorm(0,1) } # no parece gustarle a jags
+	for(i in c(1:3,5:8))  { theta[i] ~ dnorm(0,1) }
+	#for(i in setdiff(1:n.mems, c(4,9)))  { theta[i] ~ dnorm(0,1) } # no parece gustarle a jags
 }"
 
-ife.model.v <- run.jags(
-  model    = ife.vector,
+results <- run.jags(
+  model    = ife.model,
   monitor  = ife.parameters,
   method   = "parallel",
   n.chains = 2,
   data     = ife.data.vector,
   inits    = list (ife.inits(), ife.inits()),
-  #thin = 50, burnin = 10000, sample = 200,
-  thin = 5, burnin = 200, sample = 200,
+  thin = 50, burnin = 10000, sample = 200,
+  #thin = 5, burnin = 200, sample = 200,
   check.conv = FALSE, plots = FALSE)
 
-chainsIFE.v <- mcmc.list(list (ife.model.v$mcmc[[1]], ife.model.v$mcmc[[2]]))
-gelman.diag (chainsIFE.v, multivariate=F) # convergence looks fine for both models
+chains <- mcmc.list(list (results$mcmc[[1]], results$mcmc[[2]]))
+# check model convergence 
+gelman.diag (chains, multivariate=F)
 
 ############################
 ## store posterior sample ##
 ############################
-post.samples[[n]] <- chainsIFE.v
-summary(post.samples)
+post.samples[[p]] <- chains
+#summary(post.samples)
 
-Alpha.v <- rbind ( chainsIFE.v[[1]][,grep("alpha", colnames(chainsIFE.v[[1]]))]
-                   , chainsIFE.v[[2]][,grep("alpha", colnames(chainsIFE.v[[2]]))])
-Beta.v <- rbind ( chainsIFE.v[[1]][,grep("beta", colnames(chainsIFE.v[[1]]))]
-                  , chainsIFE.v[[2]][,grep("beta", colnames(chainsIFE.v[[2]]))])
-Theta.v <- rbind ( chainsIFE.v[[1]][,grep("theta", colnames(chainsIFE.v[[1]]))]
-                   , chainsIFE.v[[2]][,grep("theta", colnames(chainsIFE.v[[2]]))])
+################################################################
+## store point estimates etc and update priors for next round ##
+################################################################
+thetas <- rbind ( chains[[1]][,grep("theta", colnames(chains[[1]]))] ,
+                  chains[[2]][,grep("theta", colnames(chains[[2]]))] )
+point[map.member.indices$actual,p] <- round(colMeans(thetas),3)
+lo[map.member.indices$actual,p] <- apply(X=thetas, 2, FUN = function(X) quantile(X, probs = .1))
+hi[map.member.indices$actual,p] <- apply(X=thetas, 2, FUN = function(X) quantile(X, probs = .9))
+#
+prior.location[,(p+1)] <- 0 # start with zeroes
+prior.location[map.member.indices$actual,(p+1)] <- point[map.member.indices$actual,p]
+
+##################
+## plot results ##
+##################
+Alpha.v <- rbind ( chains[[1]][,grep("alpha", colnames(chains[[1]]))] ,
+                   chains[[2]][,grep("alpha", colnames(chains[[2]]))] )
+Beta.v  <- rbind ( chains[[1]][,grep("beta",  colnames(chains[[1]]))] ,
+                   chains[[2]][,grep("beta",  colnames(chains[[2]]))] )
+Theta.v <- rbind ( chains[[1]][,grep("theta", colnames(chains[[1]]))] ,
+                   chains[[2]][,grep("theta", colnames(chains[[2]]))] )
 
 plot (colMeans (Alpha.v))  # difficulties
 plot (colMeans (Beta.v))   # signal
 
 
-plot(enes, c(rep(min(Theta.v), length(enes)-1), max(Theta.v)), type = "n", xlab="Year", axes = FALSE)
-axis(1, at=enes, labels=yr.by.yr$approx.yr[enes])
+plot(1:P, c(rep(min(Theta.v), length(pees)-1), max(Theta.v)), type = "n", xlab="Year", axes = FALSE)
+axis(1, at=1:P, labels=yr.by.yr$approx.yr[1:P])
 axis(2)
-plot(rep(n, length(mem.index)), colMeans (Theta.v))
+plot(rep(p, M), colMeans (Theta.v))
 
 
 par (las=2, mar=c(7,3,2,2))
