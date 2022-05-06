@@ -52,7 +52,7 @@ ids[12,]
 ## adjusts approximate years with constant membership for year-by-year estimations ##
 #####################################################################################
 yr.by.yr <- data.frame(
-    p = 1:28, 
+    t = 1:28, 
     start = c(
         ymd("19961031"), #  1
         ymd("19971031"), #  2
@@ -121,39 +121,60 @@ yr.by.yr <- data.frame(
 ###############################
 ## select terms for analysis ##
 ###############################
-tees <- 4:11
-tees.grep <- "[456789ab]"
+terms <- 4:11
+terms.grep <- "[456789ab]"
 
 ######################################################
 ## subset ids and periodocization to relevant lines ##
 ######################################################
-ids <- ids[grep(pattern = tees.grep, ids$tenure),]
-yr.by.yr <- yr.by.yr[grep(pattern = tees.grep, yr.by.yr$term.a),]
+ids <- ids[grep(pattern = terms.grep, ids$tenure),]
+yr.by.yr <- yr.by.yr[grep(pattern = terms.grep, yr.by.yr$term.a),]
 ids[, c("column","sponsor","tenure")] # inspect
 
 ######################################
 ## discrete periods to be analyzed  ##
 ## e.g. year-by-year                ##
 ######################################
-table(term=yr.by.yr$term, p=yr.by.yr$p) # inspect
-pees <- yr.by.yr$p # years 8:18 cover terms 4:11, ug to 2014 reform
-P <- length(pees)
+table(term=yr.by.yr$term, t=yr.by.yr$t) # inspect
+tees <- yr.by.yr$t # years 8:18 cover terms 4:11, ug to 2014 reform
+T <- length(tees)
 
 ##########################################
 ## Prep object to receive yearly priors ##
 ##########################################
-prior.location <- data.frame(matrix(NA, nrow = length(ids$column), ncol = P))
+prior.location <- data.frame(matrix(NA, nrow = length(ids$column), ncol = T))
 rownames(prior.location) <- ids$column
-colnames(prior.location) <- paste0("p", pees)
+colnames(prior.location) <- paste0("t", tees)
 prior.precision <- prior.location
-prior.precision[] <- 100 # for N=2-on
-# assign priors for first round
-prior.location[,1] <- 0
-prior.location["alcantar",1] <-  2
-prior.location ["sanchez",1] <- -2
+prior.precision[] <- 1 # for N=2-on
+## # assign priors for first round only
+## prior.location[,1] <- 0
+## prior.location["alcantar",1] <-  2
+## prior.location ["sanchez",1] <- -2
+## prior.precision[,1] <- 1
+## prior.precision["alcantar",1] <- 4
+## prior.precision ["sanchez",1] <- 4
+# assign priors for first round in council
+prior.location[] <- 0
+prior.location["alcantar",] <-  2
+prior.location ["sanchez",] <- -2
+prior.location["banos",] <-  2
+prior.location["figueroa",] <- -2
 prior.precision[,1] <- 1
-prior.precision["alcantar",1] <- 4
-prior.precision ["sanchez",1] <- 4
+prior.precision["alcantar",] <- 4
+prior.precision ["sanchez",] <- 4
+prior.precision ["banos",] <- 4
+prior.precision ["figueroa",] <- 4
+
+prior.location  # inspect
+prior.precision # inspect
+
+##############################
+## will receive party means ##
+##############################
+party.locations <- data.frame(matrix(NA, ncol = T, nrow = 5))
+colnames(party.locations) <- colnames(prior.location)
+rownames(party.locations) <- c("pri", "pan", "prd", "pvem", "morena")
 
 ## # term-by-term members
 ## term.members <- data.frame(
@@ -196,10 +217,10 @@ tmp2 <- tmp3 <- tmp # triplicate
 for (i in 1:length(tmp)){
     sel <- which(yr.by.yr$start<=tmp[i] & yr.by.yr$end>=tmp[i])
     tmp2[i] <- yr.by.yr$approx.yr[sel] # returns yr vote belongs to
-    tmp3[i] <- yr.by.yr$p[sel]         # returns p vote belongs to
+    tmp3[i] <- yr.by.yr$t[sel]         # returns t vote belongs to
 }
 vot$yr <- as.numeric(tmp2)
-vot$p  <- as.numeric(tmp3)
+vot$t  <- as.numeric(tmp3)
 # explore
 table(dunan=vot$dunan, yr=vot$yr)
 with(vot, table(term=term[dunan==0], yr=yr[dunan==0]))
@@ -240,27 +261,28 @@ lo <- hi <- point
 ####################################
 ## will receive posterior samples ##
 ####################################
-post.samples <- vector("list", P)
-names(post.samples) <- paste0("p", pees)
+post.samples <- vector("list", T)
+names(post.samples) <- paste0("t", tees)
 rm(i,sel,tmp,tmp2,tmp3) # clean
 
 ##########################################
 ## pick one year (turn into loop later) ##
 ##########################################
-p <- c(1:P)[1]
+t <- c(1:T)[1]
+for (t in 1:7){
 
 #########################################
 ## determine members and their parties ##
 #########################################
-sel <- yr.by.yr[yr.by.yr$p==pees[p],]$term.a
+sel <- yr.by.yr[yr.by.yr$t==tees[t],]$term.a
 sel    <- grep(pattern = sel, ids$tenure) # ugalde and valdés councils
-party.p  <- ids$party [sel]
-column.p <- ids$column[sel]
+party.t  <- ids$party [sel]
+column.t <- ids$column[sel]
 
 #############################################
 ## subset votes to period p and it members ##
 #############################################
-rc <- vot[vot$p==pees[p], column.p]
+rc <- vot[vot$t==tees[t], column.t]
 dim(rc)
 #head(rc)
 
@@ -274,11 +296,9 @@ map.vote.indices   <- data.frame(actual=as.numeric(colnames(rc)),
                                  sequential=1:V)
 map.member.indices <- data.frame(actual=rownames(rc),
                                  sequential=1:M)
-map.period.indices <- data.frame(actual=yr.by.yr$p,
-                                 yr=yr.by.yr$approx.yr,
-                                 sequential=1:P)
-## mem.index  <- 1:M
-## vote.index <- 1:V
+map.time.indices <- data.frame(actual=yr.by.yr$t,
+                               yr=yr.by.yr$approx.yr,
+                               sequential=1:T)
 
 #####################################################
 ## Melt RC (turn it into long format)              ##
@@ -293,13 +313,17 @@ molten.rc$rc <- car::recode (molten.rc$rc, "0=NA") # non-members' slots, if any,
 # will try w/o 4may2022 #molten.rc <- na.omit (molten.rc)                   # drops non-members' slots, if any
 molten.rc$rc <- car::recode (molten.rc$rc, "2=0; c(3,4,5)=NA") # abstain|absent to NA
 
-ife.data.vector <- dump.format(list(y = molten.rc$rc, 
-#                                    n.mems = M,
-                                    n.item = V,
-                                    n.obs  = nrow(molten.rc),
-                                    vote   = molten.rc$vote,
-                                    member = molten.rc$member
-))
+    
+ife.data.vector <-
+    dump.format(list(y = molten.rc$rc, 
+                     n.member = M,
+                     n.item = V,
+                     n.obs  = nrow(molten.rc),
+                     mean.theta = prior.location[map.member.indices$actual ,t],
+                     precision.theta = prior.precision[map.member.indices$actual ,t],
+                     vote   = molten.rc$vote,
+                     member = molten.rc$member
+                     ))
 
 ife.parameters = c("theta", "alpha", "beta", "deviance")
 
@@ -315,7 +339,8 @@ ife.inits <- function() {
 }
 
 # inspect spike priors to code ife.vector
-prior.location[,p]
+prior.location[map.member.indices$actual,t]
+prior.precision[map.member.indices$actual,t]
 
 ife.model = "model {
 	for (i in 1:n.obs) {
@@ -328,9 +353,10 @@ ife.model = "model {
 	# Beta (discrimination)
 	for (j in 1:n.item) { beta[j] ~ dnorm(0, 0.1) }   
 	# ideal points
-	theta[4] ~ dnorm( 2,4)T(0,) # normal + truncated
-	theta[9] ~ dnorm(-2,4)T(,0) # normal - truncated
-	for(i in c(1:3,5:8))  { theta[i] ~ dnorm(0,1) }
+	for(i in 1:n.member)  { theta[i] ~ dnorm( mean.theta[i], precision.theta[i] ) }
+	## theta[4] ~ dnorm( 2,4)T(0,) # normal + truncated
+	## theta[9] ~ dnorm(-2,4)T(,0) # normal - truncated
+	## for(i in c(1:3,5:8))  { theta[i] ~ dnorm(0,1) }
 	#for(i in setdiff(1:n.mems, c(4,9)))  { theta[i] ~ dnorm(0,1) } # no parece gustarle a jags
 }"
 
@@ -341,6 +367,7 @@ results <- run.jags(
   n.chains = 2,
   data     = ife.data.vector,
   inits    = list (ife.inits(), ife.inits()),
+  #thin = 500, burnin = 100000, sample = 200,
   thin = 50, burnin = 10000, sample = 200,
   #thin = 5, burnin = 200, sample = 200,
   check.conv = FALSE, plots = FALSE)
@@ -352,20 +379,52 @@ gelman.diag (chains, multivariate=F)
 ############################
 ## store posterior sample ##
 ############################
-post.samples[[p]] <- chains
+post.samples[[t]] <- chains
 #summary(post.samples)
 
-################################################################
-## store point estimates etc and update priors for next round ##
-################################################################
+
+################################################
+## store point estimates and confidence bands ##
+################################################
 thetas <- rbind ( chains[[1]][,grep("theta", colnames(chains[[1]]))] ,
                   chains[[2]][,grep("theta", colnames(chains[[2]]))] )
-point[map.member.indices$actual,p] <- round(colMeans(thetas),3)
-lo[map.member.indices$actual,p] <- apply(X=thetas, 2, FUN = function(X) quantile(X, probs = .1))
-hi[map.member.indices$actual,p] <- apply(X=thetas, 2, FUN = function(X) quantile(X, probs = .9))
-#
-prior.location[,(p+1)] <- 0 # start with zeroes
-prior.location[map.member.indices$actual,(p+1)] <- point[map.member.indices$actual,p]
+point[map.member.indices$actual,t] <- round(colMeans(thetas),3)
+lo[map.member.indices$actual,t] <- apply(X=thetas, 2, FUN = function(X) quantile(X, probs = .1))
+hi[map.member.indices$actual,t] <- apply(X=thetas, 2, FUN = function(X) quantile(X, probs = .9))
+
+#########################
+## update party means  ##
+#########################
+party.locations[,t] <- 0 # start with zeroes
+for (p in 1:5){
+    tmp <- round(mean(point[ids$party==p,t], na.rm = TRUE),3)
+    if (!is.na(tmp)) party.locations[p,t] <- tmp
+}
+rm(p)
+#party.locations # inspect
+
+##################################
+## update priors for next round ##
+##################################
+## # start with party means
+## for (p in 1:5){
+##     prior.location[which(ids$party==p), (t+1)] <- party.locations[p,t]
+## }
+## rm(p)
+# 
+## prior.location[map.member.indices$actual,(t+1)] <- point[map.member.indices$actual,t]
+## prior.precision[map.member.indices$actual,(t+1)] <- 100 # change precision to 100 for non-new members
+}
+
+map.member.indices
+point # inspect
+party.locations
+prior.location
+prior.precision
+
+###################
+## end loop here ##
+###################
 
 ##################
 ## plot results ##
@@ -381,7 +440,7 @@ plot (colMeans (Alpha.v))  # difficulties
 plot (colMeans (Beta.v))   # signal
 
 
-plot(1:P, c(rep(min(Theta.v), length(pees)-1), max(Theta.v)), type = "n", xlab="Year", axes = FALSE)
+plot(1:P, c(rep(min(Theta.v), length(tees)-1), max(Theta.v)), type = "n", xlab="Year", axes = FALSE)
 axis(1, at=1:P, labels=yr.by.yr$approx.yr[1:P])
 axis(2)
 plot(rep(p, M), colMeans (Theta.v))

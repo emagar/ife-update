@@ -14,7 +14,7 @@ setwd("~/Dropbox/data/rollcall/ife_cg/ife-update/")
 library(lubridate) # easier dates
 
 # read data
-d <- read.csv(file = "data/base_ife_eric_oct1990-jun2017.csv", stringsAsFactors = FALSE)
+d <- read.csv(file = "data/base_ife_eric_oct1990-may2017.csv", stringsAsFactors = FALSE)
 str(d)
 
 # drop endline if any

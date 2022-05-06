@@ -1,0 +1,37 @@
+Buen día Memo,
+
+- Fecha/hora para llamada
+
+Tengo más material para discusión. Mis intentos de conseguir estimaciones estáticas anuales me han hecho repensar otro elemento del modelo dinámico. La versión tipo Bónica con ventanas procede así: (1) abre una ventana de ~30 votaciones secuenciales; (2) centra la distribución a priori de cada theta en el punto estimado para la ventana previa (si el consejero ya estaba ahí) o en la media partidista (si el consejero acaba de entrar); (3) produce una muestra a posteriori y pasa a la siguiente ventana. 
+
+Caigo en cuenta de que, cuando identificamos es espacio con extremistas, restringimos sus respectivas distribuciones al rango positivo o negativo según el caso (líneas 7 y 8):
+ 
+1 ife.vector <- "model {
+2    ...
+3     # PRIORS
+4     for(i in setdiff(1:n.members, c(north, south))){
+5         theta[i] ~ dnorm ( x.mean[i], x.tau[i] ) 
+6     }
+7     theta[north] ~ dnorm ( x.mean[north], x.tau[north] ) T(0, ) # truncated + normal
+8     theta[south] ~ dnorm ( x.mean[south], x.tau[south] ) T( ,0) # truncated - normal
+9    ... 
+
+Esto lo hacemos para todas las ventanas, no solo la primera de la serie. Y tiene sentido, creo, ya que se mantiene viva la identificación del espacio ventana tras ventana, incluso si el extremista modera su postura. Esto sería problemático en caso de que el extremista se comportara como, digamos, Barragán en el consejo Woldengerg dinámico: arrancó claramente anclado en el extremo norte, pero después de 2000 dio bandazo y se unió a Cárdenas del lado sur del espectro.
+
+Esto no fue problemático para aquel paper, donde identificamos el espacio mediante betas (issues). Pero si hubieśemos elegido a Barragán como ancla, truncar su muestreo a valores positivos cuando pasó del ecuador en la segunda mitad de la serie, habría arruinado el truco. (Sospecho que si sacas una muestra truncada positiva pero centrada en una media negativa, obtienes casi puros ceros...)
+
+¿No podría estar ocurriendo justamente esto en el consejo Valdés, donde los bandazos son frecuentes y múltiples? Antes de buscar issues para anclar (que debería resolver este problema) quiero seguir explorando anclaje con extremistas (más simple para explorar). ¿Ves factible usar muestreo truncado sólo en la primera ventana pero luego permitir más flexibilidad, y aún así preservar la identificación del espacio?
+
+for semi-spikes
+
+In R define
+north.index
+south.index
+rest.indices <- setdiff(1:M, c(north.index, south.index))
+
+Plug these into bugs.data
+
+And in model use priors
+theta[north.index] truncada +
+theta[south.index] truncada -
+theta[rest.indices]
