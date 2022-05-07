@@ -276,14 +276,15 @@ d[d$term==13,] <- tmp
 table(d$vtot)
 #
 d$absten <- NA
-d$absten[d$term==1]              <- 11 - d$vtot[d$term==1]
-d$absten[d$term>1 & d$term<5]    <-  9 - d$vtot[d$term>1 & d$term<5]
-d$absten[d$term==5]              <-  8 - d$vtot[d$term==5]
-d$absten[d$term>5 & d$term<8]    <-  9 - d$vtot[d$term>5 & d$term<8]
-d$absten[d$term==8]              <-  6 - d$vtot[d$term==8]
-d$absten[d$term==9]              <-  9 - d$vtot[d$term==9]
-d$absten[d$term==10]             <-  8 - d$vtot[d$term==10]
-d$absten[d$term>10 & d$term==13] <- 11 - d$vtot[d$term>10 & d$term==13]
+d$absten[d$term==1]               <- 11 - d$vtot[d$term==1]
+d$absten[d$term>1 & d$term<5]     <-  9 - d$vtot[d$term>1 & d$term<5]
+d$absten[d$term==5]               <-  8 - d$vtot[d$term==5]
+d$absten[d$term>5 & d$term<8]     <-  9 - d$vtot[d$term>5 & d$term<8]
+d$absten[d$term==8]               <-  6 - d$vtot[d$term==8]
+d$absten[d$term==9]               <-  9 - d$vtot[d$term==9]
+d$absten[d$term==10]              <-  8 - d$vtot[d$term==10]
+d$absten[d$term==11]              <-  4 - d$vtot[d$term==11]
+d$absten[d$term==12 | d$term==13] <- 11 - d$vtot[d$term==12 | d$term==13]
 #
 d <- within(d, nays <- vtot - ayes)
 #
@@ -389,7 +390,7 @@ d$dunan[d$absten==0 & (d$ayes==0 | d$nays==0)]  <- 1
 #
 # inspect
 table(factor(d$dunan, labels = c("contested","not")), factor(d$dunan.old, labels = c("old-contested","not")), useNA = "always")
-table(factor(d$dunan, labels = c("contested","not")), d$term, useNA = "ifany")
+table(factor(d$dunan, labels = c("contested","not")), term=d$term, useNA = "ifany")
 
 # sort agg vote count columns
 sel <- which(colnames(d) %in% c("vtot","ayes","nays","absten","noshow"))
@@ -456,5 +457,20 @@ cuts <- c(
     ymd("20131031")  # 10 to 11
 )
 
-
-
+############################################
+## explore issues to is search of anchors ##
+############################################
+sel.r <- which(d$term %in% 4:11)
+sel.c <- c("term", "noCG", "date", "folio", "dlogroll", "result", "dunan", "vtot", "ayes", "nays", "absten", "noshow", "acuerdo", "ugalde", "albo", "andrade", "alcantar", "glezluna", "latapi", "lopezflores", "morales", "sanchez", "valdes", "banos", "nacif", "elizondo", "figueroa", "guerrero", "cordova", "garcia", "marvan")
+tmp <- d[sel.r, sel.c]
+# drop unanimous
+sel <- which(tmp$dunan==1)
+tmp <- tmp[-sel,]
+dim(tmp)
+table(tmp$term)
+with(tmp, table(ayes=ayes[term==6], nays=nays[term==6]))
+with(tmp, table(ayes=ayes[term==7], nays=nays[term==7]))
+with(tmp, table(ayes=ayes[term==8], nays=nays[term==8]))
+with(tmp, table(ayes=ayes[term==9], nays=nays[term==9]))
+with(tmp, table(ayes=ayes[term==10], nays=nays[term==10]))
+with(tmp, table(ayes=ayes[term==11], nays=nays[term==11]))
