@@ -30,7 +30,7 @@ setwd(workdir)
 
 # Define colors and plotting names
 # OJO: en tenure term==10 es a, term==11 es b etc. 
-ids <- read.csv("../ancillary/consejo-general-ine.csv")
+ids <- read.csv("../ancillary/consejo-general-ife-ine.csv")
 ids <- ids[, -grep("^x", colnames(ids))] # drop redundant "x" columns
 ids <- ids[-grep("^1$", ids$tenure),]    # drop consejeros ciudadanos 1994-96
 #
@@ -52,7 +52,7 @@ ids[12,]
 ## adjusts approximate years with constant membership for year-by-year estimations ##
 #####################################################################################
 yr.by.yr <- data.frame(
-    t = 1:28, 
+    yrn = 1:28, 
     start = c(
         ymd("19961031"), #  1
         ymd("19971031"), #  2
@@ -118,11 +118,14 @@ yr.by.yr <- data.frame(
     term.a = c(2, 2, 2, 2, 3, 3, 3, 4, 4, 4, 4, 6, 7, 7, 8, 9, "a","b","c","c","c","d","d","d","e","f","f","f")
 )
 
+
 ###############################
 ## select terms for analysis ##
 ###############################
-terms <- 4:11
-terms.grep <- "[456789ab]"
+## terms <- 4:11
+## terms.grep <- "[456789ab]"
+terms <- 4:7
+terms.grep <- "[4567]"
 
 ######################################################
 ## subset ids and periodocization to relevant lines ##
@@ -131,12 +134,13 @@ ids <- ids[grep(pattern = terms.grep, ids$tenure),]
 yr.by.yr <- yr.by.yr[grep(pattern = terms.grep, yr.by.yr$term.a),]
 ids[, c("column","sponsor","tenure")] # inspect
 
-######################################
-## discrete periods to be analyzed  ##
-## e.g. year-by-year                ##
-######################################
-table(term=yr.by.yr$term, t=yr.by.yr$t) # inspect
-tees <- yr.by.yr$t # years 8:18 cover terms 4:11, ug to 2014 reform
+#############################################################
+## select temporal unit -- discrete periods to be analyzed ##
+## e.g. terms, year-by-year, semester...                   ##
+#############################################################
+table(term=yr.by.yr$term, yrn=yr.by.yr$yrn) # inspect
+#tees <- yr.by.yr$yrn # years 8:18 cover terms 4:11, ug to 2014 reform
+tees <- c(4,6:7) # terms ugalde valdés I and II
 T <- length(tees)
 
 ##########################################
@@ -209,21 +213,43 @@ rownames(party.locations) <- c("pri", "pan", "prd", "pvem", "morena")
 ##############################################
 vot <-read.csv("v456789ab.csv",  header=TRUE)
 
-##################################
-## add temporal periodicization ##
-##################################
-tmp <- vot$date # extract dates
-tmp2 <- tmp3 <- tmp # triplicate
-for (i in 1:length(tmp)){
-    sel <- which(yr.by.yr$start<=tmp[i] & yr.by.yr$end>=tmp[i])
-    tmp2[i] <- yr.by.yr$approx.yr[sel] # returns yr vote belongs to
-    tmp3[i] <- yr.by.yr$t[sel]         # returns t vote belongs to
+#########################################################
+## term 5 has one contested vote only, merge to term 4 ##
+#########################################################
+sel <- which(vot$term==5)
+vot$term[sel] <- 4
+
+###########################################
+## using terms: subset to desired terms  ##
+###########################################
+source("~/Dropbox/data/useful-functions/notin.r")
+sel <- which(vot$term %notin% tees) # for some reason %in% behaves unexpectedly but %notin% works
+vot <- vot[-sel,]
+# add temporal aggregation as column t
+vot$t <- NA
+for (i in 1:T){
+    sel <- which(vot$term==tees[i])
+    vot$t[sel] <- i
 }
-vot$yr <- as.numeric(tmp2)
-vot$t  <- as.numeric(tmp3)
 # explore
-table(dunan=vot$dunan, yr=vot$yr)
-with(vot, table(term=term[dunan==0], yr=yr[dunan==0]))
+table(dunan=vot$dunan, t=vot$t)
+
+## ####################################################
+## ## using approx.yrs: add temporal periodicization ##
+## ####################################################
+## # approx yr version
+## tmp <- vot$date # extract dates
+## tmp2 <- tmp3 <- tmp # triplicate
+## for (i in 1:length(tmp)){
+##     sel <- which(yr.by.yr$start<=tmp[i] & yr.by.yr$end>=tmp[i])
+##     tmp2[i] <- yr.by.yr$approx.yr[sel] # returns yr vote belongs to
+##     tmp3[i] <- yr.by.yr$yrn[sel]         # returns t vote belongs to
+## }
+## vot$yrn <- as.numeric(tmp2)
+## vot$t  <- as.numeric(tmp3)
+## # explore
+## table(dunan=vot$dunan, yr=vot$yrn)
+## with(vot, table(term=term[dunan==0], yr=yr[dunan==0]))
 
 ###########################################
 ## summarize then drop uncontested votes ##
@@ -255,34 +281,83 @@ if (length(sel)>0) vot <- vot[-sel,]
 ## will receive point estimates and 80pct bands ##
 ##################################################
 point <- prior.location
-point[,1] <- NA
+point[] <- NA
 lo <- hi <- point
 
 ####################################
 ## will receive posterior samples ##
 ####################################
 post.samples <- vector("list", T)
-names(post.samples) <- paste0("t", tees)
-rm(i,sel,tmp,tmp2,tmp3) # clean
+#names(post.samples) <- paste0("term", tees)
+rm(i,sel) # clean
 
 ##########################################
 ## pick one year (turn into loop later) ##
 ##########################################
 t <- c(1:T)[1]
-for (t in 1:7){
+#for (t in 1:7){
 
-#########################################
-## determine members and their parties ##
-#########################################
-sel <- yr.by.yr[yr.by.yr$t==tees[t],]$term.a
-sel    <- grep(pattern = sel, ids$tenure) # ugalde and valdés councils
+###################################################
+## by terms: determine members and their parties ##
+###################################################
+sel <- c("4","6","7","8","9","a","b")
+sel <- sel[t]
+sel    <- grep(pattern = sel, ids$tenure)
 party.t  <- ids$party [sel]
 column.t <- ids$column[sel]
+
+## ####################################################
+## ## yr.approx: determine members and their parties ##
+## ####################################################
+## sel <- yr.by.yr[yr.by.yr$term==tees[t],]$term.a
+## sel    <- grep(pattern = sel, ids$tenure) # ugalde and valdés councils
+## party.t  <- ids$party [sel]
+## column.t <- ids$column[sel]
+
+
+####################################################################################################
+## identify item anchors and place them as votes 1 (north) and 2 (south)                          ##
+## if necessary, recode ayes/nays so that aye points to desired side                              ##
+## ** term==4 **                                                                                  ##
+## - folio 2401 Agenda power for President (PRI-sponsored): should candidate for top-level        ##
+## appointment, proposed by Council President without relevant commission's consent, be           ##
+## ratified? (Minority=pan minus Morales, Latapí, nay) Aye=right                                  ##
+## - folio 2479 Scope of IFE authority: must PVEM statutes make party leaders accountable to      ##
+## rank-and-file? (Andrade, Lpz Flores, Morales, Gmz Alcántar, nay) Aye=left                      ##
+## ** term==6 **                                                                                  ##
+## - folio 3641 Designación Director Ejecutivo Serv Prof Elect (Minority pan minus Nacif, nay)    ##
+## Aye=right                                                                                      ##
+## - folio 3924 Fine PRD and coalition partners for a negative campaign ad against the PRI in     ##
+## Baja California (Minority pan minus Albo, nay) Aye=right                                       ##
+## ** term==7 **                                                                                  ##
+## - folio 6127 Penalty to PVEM federal deputies for TV advertisement promoting the death penalty ##
+## (Minority PRI, PVEM, nay) Aye=left, needs justification (other than free speech?)              ##
+## - folio 6174 Drop libel case against PAN for sopa de letras newspaper negative ad against the  ##
+## PRI (Minority PRI, PVEM, nay) Aye=left                                                         ##
+####################################################################################################
+anchors <- which(vot$folio %in% c(2401,2479,3641,3924,6127,6174))
+# 3924 and 6127 need reversal to point to right direction
+library(plyr)
+sel <- which(vot$folio==3924)
+tmp <- as.character(vot[sel,column.t]) # extract vector, to character
+tmp <- mapvalues(tmp, from = c(1,2), to = c(2,1))
+vot[sel,column.t] <- as.numeric(tmp)
+sel <- which(vot$folio==6127)
+tmp <- as.character(vot[sel,column.t]) # extract vector, to character
+tmp <- mapvalues(tmp, from = c(1,2), to = c(2,1))
+vot[sel,column.t] <- as.numeric(tmp)
+
+#######################################################################
+## move anchor votes to start of time series, so that they appear as ##
+## votes 1 and 2 when term is subsetted                              ##
+#######################################################################
+vot <- rbind(vot[anchors,], vot[-anchors,])
+rm(anchors) # indices no longer valid
 
 #############################################
 ## subset votes to period p and it members ##
 #############################################
-rc <- vot[vot$t==tees[t], column.t]
+rc <- vot[vot$t==t, column.t]
 dim(rc)
 #head(rc)
 
@@ -296,8 +371,8 @@ map.vote.indices   <- data.frame(actual=as.numeric(colnames(rc)),
                                  sequential=1:V)
 map.member.indices <- data.frame(actual=rownames(rc),
                                  sequential=1:M)
-map.time.indices <- data.frame(actual=yr.by.yr$t,
-                               yr=yr.by.yr$approx.yr,
+map.time.indices <- data.frame(actual=tees,
+                               #yr=yr.by.yr$approx.yr,
                                sequential=1:T)
 
 #####################################################
@@ -319,8 +394,8 @@ ife.data.vector <-
                      n.member = M,
                      n.item = V,
                      n.obs  = nrow(molten.rc),
-                     mean.theta = prior.location[map.member.indices$actual ,t],
-                     precision.theta = prior.precision[map.member.indices$actual ,t],
+#                     mean.theta = prior.location[map.member.indices$actual ,t],
+#                     precision.theta = prior.precision[map.member.indices$actual ,t],
                      vote   = molten.rc$vote,
                      member = molten.rc$member
                      ))
@@ -342,10 +417,10 @@ ife.inits <- function() {
 prior.location[map.member.indices$actual,t]
 prior.precision[map.member.indices$actual,t]
 
-ife.model = "model {
-	for (i in 1:n.obs) {
-		y[i] ~ dbern (pi[i])
-		probit(pi[i]) <- beta[vote[i]]*theta[member[i]] - alpha[vote[i]]
+ife.model.members = "model {
+	for (n in 1:n.obs) {
+		y[n] ~ dbern (pi[n])
+		probit(pi[n]) <- beta[vote[n]]*theta[member[n]] - alpha[vote[n]]
 	}
 	# PRIORS
 	# Alpha (difficulty)
@@ -360,8 +435,26 @@ ife.model = "model {
 	#for(i in setdiff(1:n.mems, c(4,9)))  { theta[i] ~ dnorm(0,1) } # no parece gustarle a jags
 }"
 
+ife.model.items = "model {
+	for (n in 1:n.obs) {
+		y[n] ~ dbern (pi[n])
+		probit(pi[n]) <- beta[vote[n]]*theta[member[n]] - alpha[vote[n]]
+	}
+	# PRIORS
+	# Alpha (difficulty)
+	for (j in 1:n.item) { alpha[j] ~ dnorm(0, 0.25) }   
+	# Beta (discrimination) --- votes sorted such that 1-2 are north-south, rest uninformative
+        for(j in 3:n.item){ 
+            beta [j] ~ dnorm(0, 0.1)
+        }
+        beta [1] ~ dnorm(-4, 4)
+        beta [2] ~ dnorm( 4, 4)
+	# ideal points
+	for(i in 1:n.member) { theta[i] ~ dnorm(0,1) }
+}"
+
 results <- run.jags(
-  model    = ife.model,
+  model    = ife.model.items,
   monitor  = ife.parameters,
   method   = "parallel",
   n.chains = 2,
@@ -388,9 +481,9 @@ post.samples[[t]] <- chains
 ################################################
 thetas <- rbind ( chains[[1]][,grep("theta", colnames(chains[[1]]))] ,
                   chains[[2]][,grep("theta", colnames(chains[[2]]))] )
-point[map.member.indices$actual,t] <- round(colMeans(thetas),3)
-lo[map.member.indices$actual,t] <- apply(X=thetas, 2, FUN = function(X) quantile(X, probs = .1))
-hi[map.member.indices$actual,t] <- apply(X=thetas, 2, FUN = function(X) quantile(X, probs = .9))
+point[map.member.indices$actual, t] <- round(colMeans(thetas),3)
+lo   [map.member.indices$actual, t] <- apply(X=thetas, 2, FUN = function(X) quantile(X, probs = .1))
+hi   [map.member.indices$actual, t] <- apply(X=thetas, 2, FUN = function(X) quantile(X, probs = .9))
 
 #########################
 ## update party means  ##

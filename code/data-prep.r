@@ -468,9 +468,35 @@ sel <- which(tmp$dunan==1)
 tmp <- tmp[-sel,]
 dim(tmp)
 table(tmp$term)
+with(tmp, table(ayes=ayes[term==4], nays=nays[term==4]))
+# folio 2401 Agenda power for President (PRI-sponsored): should candidate for top-level appointment, proposed by Council President without relevant commission’s consent, be ratified? aye=right
+# folio 2479 Scope of IFE authority: must PVEM statutes make party leaders accountable to rank-and-file? Aye=left
 with(tmp, table(ayes=ayes[term==6], nays=nays[term==6]))
+# folio 3641 Designación Director Ejecutivo Serv Prof Elect (Minority pan minus Nacif) Aye=right
+# folio 3924 Fine PRD and coalition partners for a negative campaign ad against the PRI in Baja California. Aye=right
+# folio 3636 Vote to amend Reglamento de Propaganda Institucional y Político Electoral de Servidores Públicos to allow public servants, in some circumstances, to buy advertisements with private funds. PROYECTO DE ACUERDO DEL CONSEJO GENERAL DEL INSTITUTO FEDERAL ELECTORAL POR EL CUAL SE EMITEN CRITERIOS COMPLEMENTARIOS DE INTERPRETACION AL ARTICULO 134 PARRAFO SIETE DE LA CONSTITUCION POLITICA DE LOS ESTADOS UNIDOS MEXICANOS. Aye=left?
+
 with(tmp, table(ayes=ayes[term==7], nays=nays[term==7]))
+# folio 6127 Penalty to PVEM federal deputies for TV advertisement promoting the death penalty --- minority PRI+PVEM, nay=left (not ideal, freedom of speech supported by the right? sounds partisan) --> will try aye=left, but needs justification
+# folio 6174 Drop libel case against PAN for a newspaper ad calling PRI corrupt (sopa de letras) minority PRI+PVEM, nay=right
+# folio 6286 church
+# folio 6472 algún aspecto de multa a Senador Monreal por promover informe de actividades en Zacatecas de senador,  minority Alcántar Valdés Nacif Elizondo nay=?
+# folio 6487 raise penalty to PAN for sopa de letras ad for failing to act against subsequent publication by 10k units instead of 76k units, minority pri minus guerrero + elizondo, aye=left
+## sel <- which(tmp$term==7 & tmp$ayes==5)
+## tmp[sel, c("acuerdo","folio","noCG", "date")][34,]
+
 with(tmp, table(ayes=ayes[term==8], nays=nays[term==8]))
+tmp[which(tmp$ayes==4 & tmp$term==8),][2,]
+sel <- grep("designa", tmp$acuerdo[tmp$term==8], ignore.case = TRUE)
+tmp$folio[tmp$term==8][sel]
+tmp$acuerdo[tmp$folio==7411]
+x
+
 with(tmp, table(ayes=ayes[term==9], nays=nays[term==9]))
+
 with(tmp, table(ayes=ayes[term==10], nays=nays[term==10]))
-with(tmp, table(ayes=ayes[term==11], nays=nays[term==11]))
+# folio 9236 Should PAN be fined for a candidate showing up in an event where federal authorities handed money grants and property titles to, and received requests from peasants in Veracruz? Minority = Figueroa, Guerrero, Nacif (Nay). 
+# folio 9245 Debe IFE sancionar a funcionarios federales y estatales de Veracruz por usar la Cruzada contra el Hambre con fines electorales en el proceso estatal?
+
+with(tmp, table(ayes=ayes[term==11], nays=nays[term==11])) # four-member term, drop it
+
