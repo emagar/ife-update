@@ -23,6 +23,7 @@ library (sm)
 library(lubridate)
 library (runjags)
 library (coda)
+library(plyr)
 
 rm(list = ls())
 workdir <- c("/home/eric/Dropbox/data/rollcall/ife_cg/ife-update/data/")
@@ -118,18 +119,17 @@ yr.by.yr <- data.frame(
     term.a = c(2, 2, 2, 2, 3, 3, 3, 4, 4, 4, 4, 6, 7, 7, 8, 9, "a","b","c","c","c","d","d","d","e","f","f","f")
 )
 
-
-###############################
-## select terms for analysis ##
-###############################
+################################################################
+## select temporal range of full analysis (broken down below) ##
+################################################################
 ## terms <- 4:11
 ## terms.grep <- "[456789ab]"
 terms <- 4:7
 terms.grep <- "[4567]"
 
-######################################################
-## subset ids and periodocization to relevant lines ##
-######################################################
+#############################################
+## subset ids and periodicization to range ##
+#############################################
 ids <- ids[grep(pattern = terms.grep, ids$tenure),]
 yr.by.yr <- yr.by.yr[grep(pattern = terms.grep, yr.by.yr$term.a),]
 ids[, c("column","sponsor","tenure")] # inspect
@@ -211,7 +211,8 @@ rownames(party.locations) <- c("pri", "pan", "prd", "pvem", "morena")
 ##############################################
 ## Read votes, exported by code/data-prep.r ##
 ##############################################
-vot <-read.csv("v456789ab.csv",  header=TRUE)
+vot.raw <-read.csv("v456789ab.csv",  header=TRUE)
+vot <- vot.raw # duplicate for manipulation
 
 #########################################################
 ## term 5 has one contested vote only, merge to term 4 ##
@@ -277,44 +278,6 @@ if (length(sel)>0) vot <- vot[-sel,]
 ## # return to vote object
 ## vot[,column] <- tmp
 
-##################################################
-## will receive point estimates and 80pct bands ##
-##################################################
-point <- prior.location
-point[] <- NA
-lo <- hi <- point
-
-####################################
-## will receive posterior samples ##
-####################################
-post.samples <- vector("list", T)
-#names(post.samples) <- paste0("term", tees)
-rm(i,sel) # clean
-
-##########################################
-## pick one year (turn into loop later) ##
-##########################################
-t <- c(1:T)[1]
-#for (t in 1:7){
-
-###################################################
-## by terms: determine members and their parties ##
-###################################################
-sel <- c("4","6","7","8","9","a","b")
-sel <- sel[t]
-sel    <- grep(pattern = sel, ids$tenure)
-party.t  <- ids$party [sel]
-column.t <- ids$column[sel]
-
-## ####################################################
-## ## yr.approx: determine members and their parties ##
-## ####################################################
-## sel <- yr.by.yr[yr.by.yr$term==tees[t],]$term.a
-## sel    <- grep(pattern = sel, ids$tenure) # ugalde and valdés councils
-## party.t  <- ids$party [sel]
-## column.t <- ids$column[sel]
-
-
 ####################################################################################################
 ## identify item anchors and place them as votes 1 (north) and 2 (south)                          ##
 ## if necessary, recode ayes/nays so that aye points to desired side                              ##
@@ -335,17 +298,18 @@ column.t <- ids$column[sel]
 ## - folio 6174 Drop libel case against PAN for sopa de letras newspaper negative ad against the  ##
 ## PRI (Minority PRI, PVEM, nay) Aye=left                                                         ##
 ####################################################################################################
-anchors <- which(vot$folio %in% c(2401,2479,3641,3924,6127,6174))
+anchors <- which(vot$folio %in% c(2401,2479,  # term==4:5
+                                  3641,3924,  # term==6
+                                  6127,6174)) # term==7
 # 3924 and 6127 need reversal to point to right direction
-library(plyr)
 sel <- which(vot$folio==3924)
-tmp <- as.character(vot[sel,column.t]) # extract vector, to character
+tmp <- as.character(vot[sel, ids$column]) # extract vector, to character
 tmp <- mapvalues(tmp, from = c(1,2), to = c(2,1))
-vot[sel,column.t] <- as.numeric(tmp)
+vot[sel, ids$column] <- as.numeric(tmp)
 sel <- which(vot$folio==6127)
-tmp <- as.character(vot[sel,column.t]) # extract vector, to character
+tmp <- as.character(vot[sel, ids$column]) # extract vector, to character
 tmp <- mapvalues(tmp, from = c(1,2), to = c(2,1))
-vot[sel,column.t] <- as.numeric(tmp)
+vot[sel, ids$column] <- as.numeric(tmp)
 
 #######################################################################
 ## move anchor votes to start of time series, so that they appear as ##
@@ -353,6 +317,42 @@ vot[sel,column.t] <- as.numeric(tmp)
 #######################################################################
 vot <- rbind(vot[anchors,], vot[-anchors,])
 rm(anchors) # indices no longer valid
+
+###########################################################
+## use votes in 1st half of term==7 only for exploration ##
+###########################################################
+sel <- which(vot$date > ymd("2009-06-30"))
+vot <- vot[-sel,]
+
+####################################
+## will receive posterior samples ##
+####################################
+post.samples <- vector("list", T)
+#names(post.samples) <- paste0("term", tees)
+rm(i,sel) # clean
+
+##########################################
+## pick one year (turn into loop later) ##
+##########################################
+t <- c(1:T)[3]
+#for (t in 1:7){
+
+###################################################
+## by terms: determine members and their parties ##
+###################################################
+sel <- c("4","6","7","8","9","a","b")
+sel <- sel[t]
+sel    <- grep(pattern = sel, ids$tenure)
+party.t  <- ids$party [sel]
+column.t <- ids$column[sel]
+
+## ####################################################
+## ## yr.approx: determine members and their parties ##
+## ####################################################
+## sel <- yr.by.yr[yr.by.yr$term==tees[t],]$term.a
+## sel    <- grep(pattern = sel, ids$tenure) # ugalde and valdés councils
+## party.t  <- ids$party [sel]
+## column.t <- ids$column[sel]
 
 #############################################
 ## subset votes to period p and it members ##
@@ -388,7 +388,6 @@ molten.rc$rc <- car::recode (molten.rc$rc, "0=NA") # non-members' slots, if any,
 # will try w/o 4may2022 #molten.rc <- na.omit (molten.rc)                   # drops non-members' slots, if any
 molten.rc$rc <- car::recode (molten.rc$rc, "2=0; c(3,4,5)=NA") # abstain|absent to NA
 
-    
 ife.data.vector <-
     dump.format(list(y = molten.rc$rc, 
                      n.member = M,
@@ -414,6 +413,7 @@ ife.inits <- function() {
 }
 
 # inspect spike priors to code ife.vector
+point.est
 prior.location[map.member.indices$actual,t]
 prior.precision[map.member.indices$actual,t]
 
@@ -460,10 +460,10 @@ results <- run.jags(
   n.chains = 2,
   data     = ife.data.vector,
   inits    = list (ife.inits(), ife.inits()),
-  #thin = 500, burnin = 100000, sample = 200,
+  #thin = 250, burnin = 50000, sample = 200,
   thin = 50, burnin = 10000, sample = 200,
   #thin = 5, burnin = 200, sample = 200,
-  check.conv = FALSE, plots = FALSE)
+  plots = FALSE)
 
 chains <- mcmc.list(list (results$mcmc[[1]], results$mcmc[[2]]))
 # check model convergence 
@@ -472,25 +472,55 @@ gelman.diag (chains, multivariate=F)
 ############################
 ## store posterior sample ##
 ############################
-post.samples[[t]] <- chains
-#summary(post.samples)
+load("tmp.RData")
+post.samples[[t]] <- list(map.vote.indices=map.vote.indices,
+                          map.member.indices=map.member.indices,
+                          map.time.indices=map.time.indices,
+                          chains=chains)
+summary(post.samples)
+save(post.samples, file = "tmp.RData")
 
+##################################################
+## will receive point estimates and 80pct bands ##
+##################################################
+point.est <- prior.location
+point.est[] <- NA
+lo <- hi <- point.est
 
 ################################################
 ## store point estimates and confidence bands ##
 ################################################
-thetas <- rbind ( chains[[1]][,grep("theta", colnames(chains[[1]]))] ,
-                  chains[[2]][,grep("theta", colnames(chains[[2]]))] )
-point[map.member.indices$actual, t] <- round(colMeans(thetas),3)
-lo   [map.member.indices$actual, t] <- apply(X=thetas, 2, FUN = function(X) quantile(X, probs = .1))
-hi   [map.member.indices$actual, t] <- apply(X=thetas, 2, FUN = function(X) quantile(X, probs = .9))
+indices <- function(x) return(which(rownames(point.est)==map.member.indices$actual[x])) # get target rows function
+#indices <- unlist(lapply(1:M, FUN = indices)) # all at once
+for (t in 1:T){
+    #t <- 1
+    #summary(post.samples[[i]])
+    map.member.indices <- post.samples[[t]]$map.member.indices
+    chains <- post.samples[[t]]$chains
+    thetas <- rbind ( chains[[1]][,grep("theta", colnames(chains[[1]]))] ,
+                      chains[[2]][,grep("theta", colnames(chains[[2]]))] )
+    for (i in i:nrow(map.member.indices)){
+        #i <- 1
+        sel.r <- indices(i)
+        point.est[sel.r, t] <- round(colMeans(thetas)[i], 3)
+        lo       [sel.r, t] <- round(quantile(thetas[,i], probs = .1),3)
+        hi       [sel.r, t] <- round(quantile(thetas[,i], probs = .9),3)
+    }
+}
+
+point.est[,2] <- -point.est[,2]
+
+plot(1:3, c(min(point.est, na.rm = TRUE), 0, max(point.est, na.rm = TRUE))) 
+points(rep(1,ids)
+       help(which)
+       x
 
 #########################
 ## update party means  ##
 #########################
 party.locations[,t] <- 0 # start with zeroes
 for (p in 1:5){
-    tmp <- round(mean(point[ids$party==p,t], na.rm = TRUE),3)
+    tmp <- round(mean(point.est[ids$party==p,t], na.rm = TRUE),3)
     if (!is.na(tmp)) party.locations[p,t] <- tmp
 }
 rm(p)
@@ -505,12 +535,12 @@ rm(p)
 ## }
 ## rm(p)
 # 
-## prior.location[map.member.indices$actual,(t+1)] <- point[map.member.indices$actual,t]
+## prior.location[map.member.indices$actual,(t+1)] <- point.est[map.member.indices$actual,t]
 ## prior.precision[map.member.indices$actual,(t+1)] <- 100 # change precision to 100 for non-new members
 }
 
 map.member.indices
-point # inspect
+point.est # inspect
 party.locations
 prior.location
 prior.precision

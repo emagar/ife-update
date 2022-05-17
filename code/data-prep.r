@@ -478,7 +478,7 @@ with(tmp, table(ayes=ayes[term==6], nays=nays[term==6]))
 
 with(tmp, table(ayes=ayes[term==7], nays=nays[term==7]))
 # folio 6127 Penalty to PVEM federal deputies for TV advertisement promoting the death penalty --- minority PRI+PVEM, nay=left (not ideal, freedom of speech supported by the right? sounds partisan) --> will try aye=left, but needs justification
-# folio 6174 Drop libel case against PAN for a newspaper ad calling PRI corrupt (sopa de letras) minority PRI+PVEM, nay=right
+# folio 6174 Drop libel case against PAN for a newspaper ad calling PRI corrupt (sopa de letras) minority PRI+PVEM, aye=left
 # folio 6286 church
 # folio 6472 algún aspecto de multa a Senador Monreal por promover informe de actividades en Zacatecas de senador,  minority Alcántar Valdés Nacif Elizondo nay=?
 # folio 6487 raise penalty to PAN for sopa de letras ad for failing to act against subsequent publication by 10k units instead of 76k units, minority pri minus guerrero + elizondo, aye=left
