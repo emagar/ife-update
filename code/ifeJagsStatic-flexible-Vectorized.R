@@ -476,7 +476,7 @@ gelman.diag (chains, multivariate=F)
 ############################
 ## store posterior sample ##
 ############################
-load("tmp.RData")
+load("posterior-samples/theta-chains-statics-45-6-7-items.RData")
 post.samples[[t]] <- list(map.vote.indices=map.vote.indices,
                           map.member.indices=map.member.indices,
                           map.time.indices=map.time.indices,
@@ -497,13 +497,13 @@ lo <- hi <- point.est
 indices <- function(x) return(which(rownames(point.est)==map.member.indices$actual[x])) # get target rows function
 #indices <- unlist(lapply(1:M, FUN = indices)) # all at once
 for (t in 1:T){
-    #t <- 2
+    #t <- 1
     #summary(post.samples[[i]])
     map.member.indices <- post.samples[[t]]$map.member.indices
     chains <- post.samples[[t]]$chains
     thetas <- rbind ( chains[[1]][,grep("theta", colnames(chains[[1]]))] ,
                       chains[[2]][,grep("theta", colnames(chains[[2]]))] )
-    for (i in i:nrow(map.member.indices)){
+    for (i in 1:nrow(map.member.indices)){
         #i <- 1
         sel.r <- indices(i)
         point.est[sel.r, t] <- round(colMeans(thetas)[i], 3)
@@ -514,8 +514,11 @@ for (t in 1:T){
 
 point.est <- -point.est
 
-plot(c(.25,T+.75), c(min(point.est, na.rm = TRUE), max(point.est, na.rm = TRUE)), type="n", xlab = "term", ylab = "ideal point", axes = FALSE) 
-axis(1, at = 1:T, labels = c("4-5", "6", "7"))
+pdf(file = "../plots/statics-terms-45-6-7-item.pdf")
+plot(c(.25,T+.75), c(min(point.est, na.rm = TRUE), max(point.est, na.rm = TRUE)), type="n", xlab = "term", ylab = "ideal point", axes = FALSE,
+     main = "Static estims by term, item anchors") 
+#axis(1, at = 1:T, labels = c("4-5", "6", "7"))
+axis(1, at = 1:T, labels = c("Ugalde-Albo\n2003-08", "Valdés I", "Valdés II"))
 axis(2)
 for (t in 1:T){
     sel <- c("4","6","7","8","9","a","b"); sel <- sel[t]; sel <- grep(pattern = sel, ids$tenure)
@@ -542,7 +545,7 @@ text(x = 3,
      y = point.est[sel.r, 3],
      labels = ids[sel.r, "short"],
      pos = 4 )
-
+dev.off()
 
 
 #########################
