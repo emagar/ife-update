@@ -47,6 +47,7 @@ ids <- within(ids, color <- ifelse(party== 1,        "red",
                             ifelse(party== 3,       "gold",
                             ifelse(party== 4,      "green",
                             ifelse(party== 5, "orangered4", "gray"))))))
+rownames(ids) <- ids$column
 ids[12,]
 
 #####################################################################################
@@ -148,7 +149,7 @@ T <- length(tees)
 ##########################################
 prior.location <- data.frame(matrix(NA, nrow = length(ids$column), ncol = T))
 rownames(prior.location) <- ids$column
-colnames(prior.location) <- paste0("t", tees)
+colnames(prior.location) <- paste0("term", tees)
 prior.precision <- prior.location
 prior.precision[] <- 1 # for N=2-on
 ## # assign priors for first round only
@@ -223,9 +224,8 @@ vot$term[sel] <- 4
 ###########################################
 ## using terms: subset to desired terms  ##
 ###########################################
-source("~/Dropbox/data/useful-functions/notin.r")
-sel <- which(vot$term %notin% tees) # for some reason %in% behaves unexpectedly but %notin% works
-vot <- vot[-sel,]
+sel <- which(vot$term %in% tees)
+vot <- vot[sel,]
 # add temporal aggregation as column t
 vot$t <- NA
 for (i in 1:T){
@@ -316,25 +316,26 @@ vot[sel, ids$column] <- as.numeric(tmp)
 ## votes 1 and 2 when term is subsetted                              ##
 #######################################################################
 vot <- rbind(vot[anchors,], vot[-anchors,])
+#head(vot)
 rm(anchors) # indices no longer valid
 
-###########################################################
-## use votes in 1st half of term==7 only for exploration ##
-###########################################################
-sel <- which(vot$date > ymd("2009-06-30"))
-vot <- vot[-sel,]
+## ###########################################################
+## ## use votes in 1st half of term==7 only for exploration ##
+## ###########################################################
+## sel <- which(vot$date > ymd("2009-06-30"))
+## vot <- vot[-sel,]
 
 ####################################
 ## will receive posterior samples ##
 ####################################
 post.samples <- vector("list", T)
-#names(post.samples) <- paste0("term", tees)
+names(post.samples) <- paste0("term", tees)
 rm(i,sel) # clean
 
 ##########################################
 ## pick one year (turn into loop later) ##
 ##########################################
-t <- c(1:T)[3]
+t <- c(1:T)[2]
 #for (t in 1:7){
 
 ###################################################
@@ -354,13 +355,14 @@ column.t <- ids$column[sel]
 ## party.t  <- ids$party [sel]
 ## column.t <- ids$column[sel]
 
-#############################################
-## subset votes to period p and it members ##
-#############################################
+##############################################
+## subset votes to period t and its members ##
+##############################################
 rc <- vot[vot$t==t, column.t]
 dim(rc)
-#head(rc)
-
+## head(vot[vot$t==1,])
+## head(rc)
+x
 ##########################
 ## Rosas, vectorization ##
 ##########################
@@ -404,18 +406,20 @@ ife.parameters = c("theta", "alpha", "beta", "deviance")
 ife.inits <- function() {
   dump.format(
     list(
-      theta = c(rnorm(3), NA, rnorm(4), NA)
+#      theta = c(rnorm(3), NA, rnorm(4), NA)
+      theta   = rnorm(M)
       , alpha = rnorm(V)
-      , beta  = rnorm(V)
+#      , beta  = rnorm(V)
+      , beta  = c(NA, NA, rnorm(V-2))
       ,'.RNG.name'="base::Wichmann-Hill"
       ,'.RNG.seed'= 1971)   #randomNumbers(n = 1, min = 1, max = 1e+04,col=1))
   )
 }
 
-# inspect spike priors to code ife.vector
-point.est
-prior.location[map.member.indices$actual,t]
-prior.precision[map.member.indices$actual,t]
+## # inspect spike priors to code ife.vector
+## point.est
+## prior.location[map.member.indices$actual,t]
+## prior.precision[map.member.indices$actual,t]
 
 ife.model.members = "model {
 	for (n in 1:n.obs) {
@@ -460,8 +464,8 @@ results <- run.jags(
   n.chains = 2,
   data     = ife.data.vector,
   inits    = list (ife.inits(), ife.inits()),
-  #thin = 250, burnin = 50000, sample = 200,
-  thin = 50, burnin = 10000, sample = 200,
+  thin = 250, burnin = 50000, sample = 200,
+  #thin = 50, burnin = 10000, sample = 200,
   #thin = 5, burnin = 200, sample = 200,
   plots = FALSE)
 
@@ -493,7 +497,7 @@ lo <- hi <- point.est
 indices <- function(x) return(which(rownames(point.est)==map.member.indices$actual[x])) # get target rows function
 #indices <- unlist(lapply(1:M, FUN = indices)) # all at once
 for (t in 1:T){
-    #t <- 1
+    #t <- 2
     #summary(post.samples[[i]])
     map.member.indices <- post.samples[[t]]$map.member.indices
     chains <- post.samples[[t]]$chains
@@ -508,12 +512,38 @@ for (t in 1:T){
     }
 }
 
-point.est[,2] <- -point.est[,2]
+point.est <- -point.est
 
-plot(1:3, c(min(point.est, na.rm = TRUE), 0, max(point.est, na.rm = TRUE))) 
-points(rep(1,ids)
-       help(which)
-       x
+plot(c(.25,T+.75), c(min(point.est, na.rm = TRUE), max(point.est, na.rm = TRUE)), type="n", xlab = "term", ylab = "ideal point", axes = FALSE) 
+axis(1, at = 1:T, labels = c("4-5", "6", "7"))
+axis(2)
+for (t in 1:T){
+    sel <- c("4","6","7","8","9","a","b"); sel <- sel[t]; sel <- grep(pattern = sel, ids$tenure)
+    party.t  <- ids$party [sel]
+    column.t <- ids$column[sel]
+    color.t <- ids$color[sel]
+    tmp <- point.est[column.t, t]
+    points(x = rep(t, length(tmp)),
+           y = tmp,
+           col = color.t)
+}
+for (i in 1:nrow(point.est)){
+    lines(x = 1:T,
+          y = point.est[i,],
+          col = ids$color[i])
+}
+sel.r <- ids$column[which(!is.na(point.est[,1]))]
+text(x = 1,
+     y = point.est[sel.r, 1],
+     labels = ids[sel.r, "short"],
+     pos = 2 )
+sel.r <- ids$column[which(!is.na(point.est[,3]))]
+text(x = 3,
+     y = point.est[sel.r, 3],
+     labels = ids[sel.r, "short"],
+     pos = 4 )
+
+
 
 #########################
 ## update party means  ##
