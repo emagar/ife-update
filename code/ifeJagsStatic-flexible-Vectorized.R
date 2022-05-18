@@ -125,8 +125,8 @@ yr.by.yr <- data.frame(
 ################################################################
 ## terms <- 4:11
 ## terms.grep <- "[456789ab]"
-terms <- 4:7
-terms.grep <- "[4567]"
+terms <- 4:9
+terms.grep <- "[456789]"
 
 #############################################
 ## subset ids and periodicization to range ##
@@ -141,7 +141,7 @@ ids[, c("column","sponsor","tenure")] # inspect
 #############################################################
 table(term=yr.by.yr$term, yrn=yr.by.yr$yrn) # inspect
 #tees <- yr.by.yr$yrn # years 8:18 cover terms 4:11, ug to 2014 reform
-tees <- c(4,6:7) # terms ugalde valdés I and II
+tees <- c(4,6:9) # terms ugalde valdés I II and III
 T <- length(tees)
 
 ##########################################
@@ -297,19 +297,29 @@ if (length(sel)>0) vot <- vot[-sel,]
 ## (Minority PRI, PVEM, nay) Aye=left, needs justification (other than free speech?)              ##
 ## - folio 6174 Drop libel case against PAN for sopa de letras newspaper negative ad against the  ##
 ## PRI (Minority PRI, PVEM, nay) Aye=left                                                         ##
+## ** term==8 **                                                                                  ##
+## - folio 7421 Penalty to Enrique Peña (Minority pri), aye=left                                  ##
+## - folio 7633 PRD-sponsored penalty to governor of state of Guerrero (Minority prd), aye=right  ## 
+## ** term==9 **                                                                                  ##
+## - folio 8317 Break PRI's denuncia against PAN in two, fine and FCH's direct responsibility     ##
+## (Minority PRI with Córdova) Aye=left                                                           ##
+## - folio 8814 Aristegui's vs PRD-PT with engrose (Minority PRD plus Nacif) Aye=left             ##
 ####################################################################################################
 anchors <- which(vot$folio %in% c(2401,2479,  # term==4:5
                                   3641,3924,  # term==6
-                                  6127,6174)) # term==7
-# 3924 and 6127 need reversal to point to right direction
-sel <- which(vot$folio==3924)
-tmp <- as.character(vot[sel, ids$column]) # extract vector, to character
-tmp <- mapvalues(tmp, from = c(1,2), to = c(2,1))
-vot[sel, ids$column] <- as.numeric(tmp)
-sel <- which(vot$folio==6127)
-tmp <- as.character(vot[sel, ids$column]) # extract vector, to character
-tmp <- mapvalues(tmp, from = c(1,2), to = c(2,1))
-vot[sel, ids$column] <- as.numeric(tmp)
+                                  6127,6174,  # term==7
+                                  7421,7633,  # term==8
+                                  8317,8814)) # term==9
+# some votes need aye/nay reversal to point to correct direction
+sel <- which(vot$folio[anchors] %in% c(3924, 6127, 7421, 7633, 8317))
+tmp <- vot[anchors[sel], ids$column] # subset votes that must chg
+for (i in 1:nrow(tmp)){
+    tmp2 <- as.character(tmp[i,]) # extract vector, to character
+    tmp2 <- mapvalues(tmp2, from = c(1,2), to = c(2,1))
+    tmp[i,] <- as.numeric(tmp2)
+}
+vot[anchors[sel], ids$column] <- tmp
+rm(tmp,tmp2)
 
 #######################################################################
 ## move anchor votes to start of time series, so that they appear as ##
@@ -451,8 +461,8 @@ ife.model.items = "model {
         for(j in 3:n.item){ 
             beta [j] ~ dnorm(0, 0.1)
         }
-        beta [1] ~ dnorm(-4, 4)
-        beta [2] ~ dnorm( 4, 4)
+        beta [1] ~ dnorm( 4, 4)
+        beta [2] ~ dnorm(-4, 4)
 	# ideal points
 	for(i in 1:n.member) { theta[i] ~ dnorm(0,1) }
 }"

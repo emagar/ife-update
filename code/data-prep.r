@@ -440,9 +440,9 @@ tmp <- d[sel.r, sel.c]
 write.csv(tmp, file = "data/vcd.csv", row.names = FALSE)
 
 
-# summarize contested votes
-with(d[d$dunan==0,], plot(as.factor(year(date)+quarter(date)/10), main = "N monthly contested votes"))
-with(d[d$dunan==0,], plot(as.factor(date), main = "N contested votes by session"))
+## # summarize contested votes
+## with(d[d$dunan==0,], plot(as.factor(year(date)+quarter(date)/10), main = "N monthly contested votes"))
+## with(d[d$dunan==0,], plot(as.factor(date), main = "N contested votes by session"))
 
 cuts <- c(
     ymd("19961031"), # 1  to 2
@@ -486,13 +486,29 @@ with(tmp, table(ayes=ayes[term==7], nays=nays[term==7]))
 ## tmp[sel, c("acuerdo","folio","noCG", "date")][34,]
 
 with(tmp, table(ayes=ayes[term==8], nays=nays[term==8]))
-tmp[which(tmp$ayes==4 & tmp$term==8),][2,]
-sel <- grep("designa", tmp$acuerdo[tmp$term==8], ignore.case = TRUE)
+# folio 7358 pri vs rest, trivial matter
+# folio 7411 pri vs rest, queja pri sanción a gabino cue por algún mensaje, aye = left
+# folio 7416 pri vs rest, sanción panal, aye = left
+# folio 7418 pri vs rest, sanción panal, aye = left
+# folio 7421 pri vs rest, sanción peña, aye = left                       <--
+# folio 7503 baños+figueroa vs rest, sanción iglesia, aye = right
+# folio 7622 nacif+figueroa vs rest, sanción a peña, aye = right
+# folio 7633 prd vs rest, prd sanción a gob pri de guerrero, aye = right <--
+tmp[which(tmp$nays==4 & tmp$term==8),][4,]
 tmp$folio[tmp$term==8][sel]
+
+with(tmp, table(ayes=ayes[term==9], nays=nays[term==9]))
+# folio 8148 Drop PRI complaint against PAN (Minority pri minus Guerrero + Valdés + Elizondo) Aye=left
+# folio 8215 Cut PRI's fine to half after TRIFE appeal (Minority PRD with Elizondo abstaining) Aye=right
+# folio 8317 Break PRI's denuncia against FCH in two issues, fine and FCH's direct responsibility (Minority PRI with Córdova) Aye=left  <--
+# folio 8320 PRI's denuncia against FCH (Minority PRI with Córdova) Aye=left
+# folio 8814 Aristegui's denuncia vs PRD-PT with engrose (Minority PRD plus Nacif) Aye=left  <--
+tmp[which(tmp$ayes==4 & tmp$term==9),][15,]
+sel <- grep("designa", tmp$acuerdo[tmp$term==9], ignore.case = TRUE)
+tmp$folio[tmp$term==9][sel]
 tmp$acuerdo[tmp$folio==7411]
 x
 
-with(tmp, table(ayes=ayes[term==9], nays=nays[term==9]))
 
 with(tmp, table(ayes=ayes[term==10], nays=nays[term==10]))
 # folio 9236 Should PAN be fined for a candidate showing up in an event where federal authorities handed money grants and property titles to, and received requests from peasants in Veracruz? Minority = Figueroa, Guerrero, Nacif (Nay). 
