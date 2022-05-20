@@ -501,18 +501,24 @@ with(tmp, table(ayes=ayes[term==9], nays=nays[term==9]))
 # folio 8148 Drop PRI complaint against PAN (Minority pri minus Guerrero + Valdés + Elizondo) Aye=left
 # folio 8215 Cut PRI's fine to half after TRIFE appeal (Minority PRD with Elizondo abstaining) Aye=right
 # folio 8317 Break PRI's denuncia against FCH in two issues, fine and FCH's direct responsibility (Minority PRI with Córdova) Aye=left  <--
-# folio 8320 PRI's denuncia against FCH (Minority PRI with Córdova) Aye=left
-# folio 8814 Aristegui's denuncia vs PRD-PT with engrose (Minority PRD plus Nacif) Aye=left  <--
+# folio 8320 PRI's denuncia against FCH (Minority PRI with Córdova) Aye=left  <--
+# folio 8814 Aristegui's denuncia vs PRD-PT with engrose (Minority PRD plus Nacif) Aye=left
 tmp[which(tmp$ayes==4 & tmp$term==9),][15,]
-sel <- grep("designa", tmp$acuerdo[tmp$term==9], ignore.case = TRUE)
 tmp$folio[tmp$term==9][sel]
-tmp$acuerdo[tmp$folio==7411]
-x
-
 
 with(tmp, table(ayes=ayes[term==10], nays=nays[term==10]))
 # folio 9236 Should PAN be fined for a candidate showing up in an event where federal authorities handed money grants and property titles to, and received requests from peasants in Veracruz? Minority = Figueroa, Guerrero, Nacif (Nay). 
 # folio 9245 Debe IFE sancionar a funcionarios federales y estatales de Veracruz por usar la Cruzada contra el Hambre con fines electorales en el proceso estatal?
+# folio 9230 Sanción del pri al pan y gob huauchinango (Minority = pri) aye = left <--
+# folio 9243 Sanción del pri a fch y el pan (Minority = pri) aye = left
+# folio 9342 (Minority = prd)
+# folio 9408 Declarar leve la multa a un periódico (Minority pri plus nacif) aye = right <--
+tmp[which(tmp$ayes==3 & tmp$term==10),][5,]
+sel <- grep("designa", tmp$acuerdo[tmp$term==10], ignore.case = TRUE)
+tmp$folio[tmp$term==10][sel]
+tmp$acuerdo[tmp$folio==7411]
 
 with(tmp, table(ayes=ayes[term==11], nays=nays[term==11])) # four-member term, drop it
+
+with(tmp, table(ayes=ayes[term==12], nays=nays[term==12])) # four-member term, drop it
 

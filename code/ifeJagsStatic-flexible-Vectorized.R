@@ -125,8 +125,8 @@ yr.by.yr <- data.frame(
 ################################################################
 ## terms <- 4:11
 ## terms.grep <- "[456789ab]"
-terms <- 4:9
-terms.grep <- "[456789]"
+terms <- 4:10
+terms.grep <- "[45679a]"
 
 #############################################
 ## subset ids and periodicization to range ##
@@ -141,7 +141,7 @@ ids[, c("column","sponsor","tenure")] # inspect
 #############################################################
 table(term=yr.by.yr$term, yrn=yr.by.yr$yrn) # inspect
 #tees <- yr.by.yr$yrn # years 8:18 cover terms 4:11, ug to 2014 reform
-tees <- c(4,6:9) # terms ugalde valdés I II and III
+tees <- c(4,6:10) # terms ugalde I+II valdés I II III IV and V
 T <- length(tees)
 
 ##########################################
@@ -220,6 +220,11 @@ vot <- vot.raw # duplicate for manipulation
 #########################################################
 sel <- which(vot$term==5)
 vot$term[sel] <- 4
+## #####################################################
+## ## term 10 has 84 contested votes, merge to term 9 ##
+## #####################################################
+## sel <- which(vot$term==10)
+## vot$term[sel] <- 9
 
 ###########################################
 ## using terms: subset to desired terms  ##
@@ -303,15 +308,21 @@ if (length(sel)>0) vot <- vot[-sel,]
 ## ** term==9 **                                                                                  ##
 ## - folio 8317 Break PRI's denuncia against PAN in two, fine and FCH's direct responsibility     ##
 ## (Minority PRI with Córdova) Aye=left                                                           ##
+## - folio 8320 PRI's denuncia against FCH (Minority PRI plus Córdova) Aye=left                   ##
 ## - folio 8814 Aristegui's vs PRD-PT with engrose (Minority PRD plus Nacif) Aye=left             ##
+## ** term==10 **                                                                                 ##
+## - folio 9230 Sanción del pri al pan y gob huauchinango (Minority = pri) aye = left             ##
+## - folio 9408 Declarar leve la multa a un periódico (Minority pri plus nacif) aye = right       ##
 ####################################################################################################
-anchors <- which(vot$folio %in% c(2401,2479,  # term==4:5
-                                  3641,3924,  # term==6
-                                  6127,6174,  # term==7
-                                  7421,7633,  # term==8
-                                  8317,8814)) # term==9
+anchors <- which(vot$folio %in% c(2401, 2479  # term==4:5
+                                , 3641, 3924  # term==6
+                                , 6127, 6174  # term==7
+                                , 7421, 7633  # term==8
+                                , 8317, 8320  # term==9
+                                , 9230, 9408  # term==10
+                                           ))
 # some votes need aye/nay reversal to point to correct direction
-sel <- which(vot$folio[anchors] %in% c(3924, 6127, 7421, 7633, 8317))
+sel <- which(vot$folio[anchors] %in% c(3924, 6127, 7421, 7633, 8317, 9230, 9408))
 tmp <- vot[anchors[sel], ids$column] # subset votes that must chg
 for (i in 1:nrow(tmp)){
     tmp2 <- as.character(tmp[i,]) # extract vector, to character
@@ -345,7 +356,8 @@ rm(i,sel) # clean
 ##########################################
 ## pick one year (turn into loop later) ##
 ##########################################
-t <- c(1:T)[2]
+t <- c(1:T)[6]
+paste("t =", t, "is term", tees[t])
 #for (t in 1:7){
 
 ###################################################
@@ -372,7 +384,7 @@ rc <- vot[vot$t==t, column.t]
 dim(rc)
 ## head(vot[vot$t==1,])
 ## head(rc)
-x
+
 ##########################
 ## Rosas, vectorization ##
 ##########################
@@ -474,8 +486,8 @@ results <- run.jags(
   n.chains = 2,
   data     = ife.data.vector,
   inits    = list (ife.inits(), ife.inits()),
-  thin = 250, burnin = 50000, sample = 200,
-  #thin = 50, burnin = 10000, sample = 200,
+  #thin = 250, burnin = 50000, sample = 200,
+  thin = 50, burnin = 10000, sample = 200,
   #thin = 5, burnin = 200, sample = 200,
   plots = FALSE)
 
@@ -486,13 +498,15 @@ gelman.diag (chains, multivariate=F)
 ############################
 ## store posterior sample ##
 ############################
-load("posterior-samples/theta-chains-statics-45-6-7-items.RData")
+getwd()
+load("posterior-samples/in-git/theta-chains-statics-45-6-7-8-9-10-items.RData")
 post.samples[[t]] <- list(map.vote.indices=map.vote.indices,
                           map.member.indices=map.member.indices,
                           map.time.indices=map.time.indices,
                           chains=chains)
+names(post.samples) <- paste0("term", tees)
 summary(post.samples)
-save(post.samples, file = "tmp.RData")
+save(post.samples, file = "posterior-samples/in-git/theta-chains-statics-45-6-7-8-9-10-items.RData")
 
 ##################################################
 ## will receive point estimates and 80pct bands ##
@@ -522,13 +536,27 @@ for (t in 1:T){
     }
 }
 
-point.est <- -point.est
+################################
+## t 1--4 used votes inverted ##
+################################
+point.est[,1:4] <- -point.est[,1:4]
 
-pdf(file = "../plots/statics-terms-45-6-7-item.pdf")
+#######################
+## normalize to -1 1 ##
+#######################
+tmp <- point.est
+m <- apply(tmp, 2, function(x) min(x, na.rm = TRUE))
+M <- apply(tmp, 2, function(x) max(x, na.rm = TRUE))
+for (i in 1:T){
+    tmp[,i] <- (tmp[,i]-m[i]) / (M[i]-m[i])
+}
+point.est <- tmp
+
+pdf(file = "../plots/statics-terms-45-6-7-8-9-10-item.pdf", width = 10, height = 7)
 plot(c(.25,T+.75), c(min(point.est, na.rm = TRUE), max(point.est, na.rm = TRUE)), type="n", xlab = "term", ylab = "ideal point", axes = FALSE,
-     main = "Static estims by term, item anchors") 
+     main = "Normalized static estimates by term, item-identified") 
 #axis(1, at = 1:T, labels = c("4-5", "6", "7"))
-axis(1, at = 1:T, labels = c("Ugalde-Albo\n2003-08", "Valdés I", "Valdés II"))
+axis(1, at = 1:T, labels = c("Ugalde\n2003-08", "Valdés I\n2008", "Valdés II\n2008-10", "Valdés III\n2010-11", "Valdés IV\n2011-13", "Valdés V\n2013"), padj = .25)
 axis(2)
 for (t in 1:T){
     sel <- c("4","6","7","8","9","a","b"); sel <- sel[t]; sel <- grep(pattern = sel, ids$tenure)
@@ -550,9 +578,9 @@ text(x = 1,
      y = point.est[sel.r, 1],
      labels = ids[sel.r, "short"],
      pos = 2 )
-sel.r <- ids$column[which(!is.na(point.est[,3]))]
-text(x = 3,
-     y = point.est[sel.r, 3],
+sel.r <- ids$column[which(!is.na(point.est[,5]))]
+text(x = 5,
+     y = point.est[sel.r, 5],
      labels = ids[sel.r, "short"],
      pos = 4 )
 dev.off()
