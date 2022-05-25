@@ -33,6 +33,7 @@ setwd(workdir)
 # OJO: en tenure term==10 es a, term==11 es b etc. 
 ids <- read.csv("../ancillary/consejo-general-ife-ine.csv")
 ids <- ids[, -grep("^x", colnames(ids))] # drop redundant "x" columns
+ids <- ids[, -grep("^job", colnames(ids))] # drop jobs
 ids <- ids[-grep("^1$", ids$tenure),]    # drop consejeros ciudadanos 1994-96
 #
 ids$party <- 0
@@ -42,13 +43,36 @@ ids$party[grep   ("prd", ids$sponsor)] <- 3
 ids$party[grep  ("pvem", ids$sponsor)] <- 4
 ids$party[grep("morena", ids$sponsor)] <- 5
 #
-ids <- within(ids, color <- ifelse(party== 1,        "red",
-                            ifelse(party== 2,       "blue",
-                            ifelse(party== 3,       "gold",
-                            ifelse(party== 4,      "green",
-                            ifelse(party== 5, "orangered4", "gray"))))))
+ids <- within(ids, {
+    color <- ifelse(party== 1, rgb(205/255,  0/255,  0/255),      # "red",
+             ifelse(party== 2, rgb( 58/255, 95/255,205/255),      # "blue",
+             ifelse(party== 3, rgb(205/255,215/255,  0/255),      # "gold",
+             ifelse(party== 4, rgb(34/255, 139/255, 34/255),      # "green",
+             ifelse(party== 5, rgb(139/255, 37/255,  0/255),      # "orangered4" 
+                               rgb(190/255,190/255,190/255)))))); # "gray"
+    color50 <- ifelse(party== 1, rgb(205/255,  0/255,  0/255, alpha=.3),     # "red",
+               ifelse(party== 2, rgb( 58/255, 95/255,205/255, alpha=.3),     # "blue",
+               ifelse(party== 3, rgb(205/255,215/255,  0/255, alpha=.3),     # "gold",
+               ifelse(party== 4, rgb( 34/255,139/255, 34/255, alpha=.3),     # "green",
+               ifelse(party== 5, rgb(139/255, 37/255,  0/255, alpha=.3),     # "orangered4" 
+                                 rgb(190/255,190/255,190/255, alpha=.3)))))) # "gray"
+    })
+## ids <- within(ids, {
+##     color <- ifelse(party== 1, "red",
+##              ifelse(party== 2, "blue",
+##              ifelse(party== 3, "gold",
+##              ifelse(party== 4, "green",
+##              ifelse(party== 5, "orangered4", 
+##                                "gray")))));
+##     color50 <- ifelse(party== 1, "red",
+##                ifelse(party== 2, "blue",
+##                ifelse(party== 3, "gold",
+##                ifelse(party== 4, "green",
+##                ifelse(party== 5, "orangered4", 
+##                                  "gray")))));
+##     })
 rownames(ids) <- ids$column
-ids[12,]
+ids[13,]
 
 #####################################################################################
 ## adjusts approximate years with constant membership for year-by-year estimations ##
@@ -181,11 +205,24 @@ party.locations <- data.frame(matrix(NA, ncol = T, nrow = 5))
 colnames(party.locations) <- colnames(prior.location)
 rownames(party.locations) <- c("pri", "pan", "prd", "pvem", "morena")
 
-## # term-by-term members
-## term.members <- data.frame(
-##     term = 1:15,
-##     term.a = c(1:9,"a","b","c","d","e","f"))
-## #
+#######################################
+## term-by-term start-en and members ##
+#######################################
+terms.dates <- data.frame(
+    term = 1:15,
+    term.a = c(1:9,"a","b","c","d","e","f"),
+    vot1st = ymd("19940603", "19961031", "20001211", "20031105", "20071217", "20080215", "20080821", "20101031", "20111215", "20130220", "20131031", "20140411", "20170405", "20200417", "20200723"),
+    votlast = ymd("19960712", "20001114", "20031021", "20071128", "20080128", "20080814", "20101027", "20111214", "20130206", "20131028", "20140402", "20170328", "20200401", "20200708", "20230403"))
+terms.dates$start <- terms.dates$vot1st
+terms.dates$end <- c(terms.dates$vot1st[2:15], NA)
+# merge term 5 to 4
+terms.dates$end[terms.dates$term==4] <- terms.dates$end[terms.dates$term==5]
+terms.dates <- terms.dates[-which(terms.dates$term==5),]
+# mid-date
+terms.dates$mid <- as.Date(terms.dates$start + as.duration(interval(terms.dates$start, terms.dates$end))/2) # as.Date drop UTC
+
+#
+## # members
 ## tmp <- rbind(
 ## c("segob", "creel", "granados", "pinchetti", "pozas", "woldenberg", "zertuche", "senpri", "senprd", "dippri", "dippan"),
 ## c("woldenberg", "barragan", "cantu", "cardenas", "lujambio", "merino", "molinar", "peschard", "zebadua", NA, NA),
@@ -204,9 +241,9 @@ rownames(party.locations) <- c("pri", "pan", "prd", "pvem", "morena")
 ## c("cordova", "favela", "murayama", "faz", "humphrey", "kib", "magana", "ravel", "rivera2", "ruiz", "zavala")
 ## )
 ## colnames(tmp) <- paste0("m", 1:11)
-## term.members <- cbind(term.members, tmp)
+## term.members <- cbind(terms.dates, tmp)
 ## # inspect
-## tmp <- term.members[4, grep("^m[0-9]", colnames(term.members))]
+## tmp <- term.members[4, grep("^m[0-9]", colnames(terms.dates))]
 ## tmp[!is.na(tmp)]
 
 ##############################################
@@ -495,22 +532,23 @@ chains <- mcmc.list(list (results$mcmc[[1]], results$mcmc[[2]]))
 # check model convergence 
 gelman.diag (chains, multivariate=F)
 
-############################
-## store posterior sample ##
-############################
-getwd()
-load("posterior-samples/in-git/theta-chains-statics-45-6-7-8-9-10-items.RData")
-post.samples[[t]] <- list(map.vote.indices=map.vote.indices,
-                          map.member.indices=map.member.indices,
-                          map.time.indices=map.time.indices,
-                          chains=chains)
-names(post.samples) <- paste0("term", tees)
-summary(post.samples)
-save(post.samples, file = "posterior-samples/in-git/theta-chains-statics-45-6-7-8-9-10-items.RData")
+## ############################
+## ## store posterior sample ##
+## ############################
+## getwd()
+## load("posterior-samples/in-git/theta-chains-statics-45-6-7-8-9-10-items.RData")
+## post.samples[[t]] <- list(map.vote.indices=map.vote.indices,
+##                           map.member.indices=map.member.indices,
+##                           map.time.indices=map.time.indices,
+##                           chains=chains)
+## names(post.samples) <- paste0("term", tees)
+## summary(post.samples)
+## save(post.samples, file = "posterior-samples/in-git/theta-chains-statics-45-6-7-8-9-10-items.RData")
 
 ##################################################
 ## will receive point estimates and 80pct bands ##
 ##################################################
+load("posterior-samples/in-git/theta-chains-statics-45-6-7-8-9-10-items.RData")
 point.est <- prior.location
 point.est[] <- NA
 lo <- hi <- point.est
@@ -540,6 +578,8 @@ for (t in 1:T){
 ## t 1--4 used votes inverted ##
 ################################
 point.est[,1:4] <- -point.est[,1:4]
+lo[,1:4] <- -lo[,1:4]; hi[,1:4] <- -hi[,1:4]
+tmp <- lo[,1:4]; lo[,1:4] <- hi[,1:4]; hi[,1:4] <- tmp
 
 #######################
 ## normalize to -1 1 ##
@@ -552,17 +592,17 @@ for (i in 1:T){
 }
 point.est <- tmp
 
-pdf(file = "../plots/statics-terms-45-6-7-8-9-10-item.pdf", width = 10, height = 7)
+#pdf(file = "../plots/statics-terms-45-6-7-8-9-10-item.pdf", width = 10, height = 7)
 plot(c(.25,T+.75), c(min(point.est, na.rm = TRUE), max(point.est, na.rm = TRUE)), type="n", xlab = "term", ylab = "ideal point", axes = FALSE,
-     main = "Normalized static estimates by term, item-identified") 
-#axis(1, at = 1:T, labels = c("4-5", "6", "7"))
+     main = "Static estimates by term, item-identified") 
 axis(1, at = 1:T, labels = c("Ugalde\n2003-08", "Valdés I\n2008", "Valdés II\n2008-10", "Valdés III\n2010-11", "Valdés IV\n2011-13", "Valdés V\n2013"), padj = .25)
 axis(2)
 for (t in 1:T){
     sel <- c("4","6","7","8","9","a","b"); sel <- sel[t]; sel <- grep(pattern = sel, ids$tenure)
-    party.t  <- ids$party [sel]
-    column.t <- ids$column[sel]
-    color.t <- ids$color[sel]
+    party.t   <- ids$party [sel]
+    column.t  <- ids$column[sel]
+    color.t   <- ids$color[sel]
+    color50.t <- ids$color50[sel]
     tmp <- point.est[column.t, t]
     points(x = rep(t, length(tmp)),
            y = tmp,
@@ -583,8 +623,23 @@ text(x = 5,
      y = point.est[sel.r, 5],
      labels = ids[sel.r, "short"],
      pos = 4 )
-dev.off()
+#dev.off()
 
+#################################
+## plot with time-scale X axis ##
+#################################
+sel <- which(terms.dates$term %in% 4:10)
+plot(c(min(terms.dates$start[sel]), max(terms.dates$end[sel])), c(min(point.est, na.rm = TRUE), max(point.est, na.rm = TRUE)), type="n", xlab = "term", ylab = "ideal point", axes = FALSE,
+     main = "Static estimates by term, item-identified")
+for (
+for (i in sel){
+    lines(x = c(terms.dates$start[i], terms.dates$end[i]),
+          y = c(i,i)
+          )
+}
+
+
+terms.dates[1,]
 
 #########################
 ## update party means  ##
