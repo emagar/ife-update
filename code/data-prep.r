@@ -14,7 +14,7 @@ setwd("~/Dropbox/data/rollcall/ife_cg/ife-update/")
 library(lubridate) # easier dates
 
 # read data
-d <- read.csv(file = "data/base_ife_eric_oct1990-may2017.csv", stringsAsFactors = FALSE)
+d <- read.csv(file = "data/base_ife_eric_oct1990-dic2017.csv", stringsAsFactors = FALSE)
 str(d)
 
 # drop endline if any
@@ -434,10 +434,10 @@ sel.c <- c("ugalde", "albo", "andrade", "alcantar", "glezluna", "latapi", "lopez
 tmp <- d[sel.r, sel.c]
 write.csv(tmp, file = "data/v456789ab.csv", row.names = FALSE)
 #
-sel.r <- which(d$term %in% 12:13)
+sel.r <- which(d$term %in% 12:14)
 sel.c <- c("cordova", "banos", "andrade2", "favela", "galindo", "murayama", "nacif", "ruiz", "sanchez", "santiago", "snmartin", "ravel", "rivera2", "zavala", info.cols)
 tmp <- d[sel.r, sel.c]
-write.csv(tmp, file = "data/vcd.csv", row.names = FALSE)
+write.csv(tmp, file = "data/vcde.csv", row.names = FALSE)
 
 
 ## # summarize contested votes

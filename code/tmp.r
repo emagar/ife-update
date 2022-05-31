@@ -46,66 +46,40 @@ nota: creo que a[] tiene que ser un vector de tres 1s en los datos (límite supe
 
 ###########
 
-sel.r <- ids$column[which(!is.na(point.est[,1]))]
-text(x = 1,
-     y = point.est[sel.r, 1],
-     labels = ids[sel.r, "short"],
-     pos = 2 )
-sel.r <- ids$column[which(!is.na(point.est[,5]))]
-text(x = 5,
-     y = point.est[sel.r, 5],
-     labels = ids[sel.r, "short"],
-     pos = 4 )
-#dev.off()
 
-#################################
-## plot with time-scale X axis ##
-#################################
-sel <- which(terms.dates$term %in% 4:10)
-terms.dates <- terms.dates[sel,] # subset terms.dates
-plot(c(min(terms.dates$start), max(terms.dates$end)), c(min(lo, na.rm = TRUE), max(hi, na.rm = TRUE)), type="n", xlab = "term", ylab = "ideal point", axes = FALSE,
-     main = "Static estimates by term, item-identified")
-axis(1, at = c(min(terms.dates$start), max(terms.dates$end)), labels = FALSE)
+
+
+
+# contested votes histogram at bottom
+vot$date <- ymd(vot$date)
+# aggregate weekly split votes
+tmp <- data.frame(
+    dt = vot$date,
+    wk = floor_date(vot$date, "weeks"))
+tmp <- tmp[order(tmp$wk),]
+tmp$n <- 0
+tmp$n <- ave(tmp$n, as.factor(tmp$wk), FUN=length, na.rm=TRUE)
+tmp <- tmp[duplicated(tmp$wk)==FALSE,]
+# to list
+tmp1 <- lapply(1:nrow(tmp), function(x){
+    res <- list(xx = c(tmp$wk[x], tmp$wk[x]),
+                yy = c(0, tmp$n[x]))
+    return(res)
+})
+#
+plot(c(min(vot$date), max(vot$date)),
+     c(0, max(tmp$n)),
+     type="n", xlab = "week", ylab = "freq", axes = FALSE,
+     main = "Weekly contested votes")
+axis(1, at = c(min(vot$date), max(vot$date)), labels = FALSE)
 axis(1, at = terms.dates$mid, labels = c("Ugalde\n2003-08", "Valdés I\n2008", "Valdés II\n2008-10", "Valdés III\n2010-11", "Valdés IV\n2011-13", "Valdés V\n2013"), padj = .25)
 axis(2)
+#
+lapply(tmp1, function(x){lines(x$xx,x$yy, col = "gray")}) # draws transparent confidence bands
 
-for (t in 1:T){
-    #t <- 1
-    sel <- c("4","6","7","8","9","a","b"); sel <- sel[t]; sel <- grep(pattern = sel, ids$tenure)
-    party.t  <- ids$party [sel]
-    column.t <- ids$column[sel]
-    color.t <- ids$color[sel]
-    color50.t <- ids$color50[sel]
-    tmp <- point.est[column.t, t]
-    points(x = rep(terms.dates$mid[t], length(tmp)),
-           y = tmp,
-           col = color.t)
-    tmp <- data.frame(y1 = lo[column.t, t],
-                      y2 = lo[column.t, t],
-                      y3 = hi[column.t, t],
-                      y4 = hi[column.t, t])
-    tmp$x1 <- terms.dates$start[t]
-    tmp$x2 <- terms.dates$end[t]
-    tmp$x3 <- terms.dates$end[t]
-    tmp$x4 <- terms.dates$start[t]
-    tmp$color <- color50.t
-    tmp$who <- column.t
-    # turn into list
-    tmp1 <- lapply(1:length(sel), function(x){
-        res <- list(xx = tmp[x, grep("^x", colnames(tmp))],
-                    yy = tmp[x, grep("^y", colnames(tmp))],
-                    color = tmp$color[x],
-                    who = tmp$who[x])
-        return(res)
-    })
-    ## tmp1 <- vector(mode = "list", length = nrow(ids))
-    ## tmp1[sel] <- lapply(1:length(sel), function(x){
-    ##     res <- list(xx = tmp[x, grep("^x", colnames(tmp))],
-    ##                 yy = tmp[x, grep("^y", colnames(tmp))])
-    ##     return(res)
-    ## })
-    lapply(tmp1, function(x){polygon(x$xx,x$yy, col=x$color, border=x$color)})
-}
+
+
+lines()
 
 i <- 2
 polygon(tmp1[[i]]$xx,tmp1[[i]]$yy, border=tmp1[[i]]$color)
@@ -117,15 +91,3 @@ for (i in 1:nrow(point.est)){
           y = point.est[i,])
 }
 
-for (t in 1:T){
-    sel <- c("4","6","7","8","9","a","b"); sel <- sel[t]; sel <- grep(pattern = sel, ids$tenure)
-    party.t  <- ids$party [sel]
-    column.t <- ids$column[sel]
-    color.t <- ids$color[sel]
-    color50.t <- ids$color50[sel]
-    tmp <- point.est[column.t, t]
-    points(x = rep(terms.dates$mid[t], length(tmp)),
-           y = tmp,
-           col = color.t[t])
-}
-    

@@ -50,12 +50,12 @@ ids <- within(ids, {
              ifelse(party== 4, rgb(34/255, 139/255, 34/255),      # "green",
              ifelse(party== 5, rgb(139/255, 37/255,  0/255),      # "orangered4" 
                                rgb(190/255,190/255,190/255)))))); # "gray"
-    color50 <- ifelse(party== 1, rgb(205/255,  0/255,  0/255, alpha=.3),     # "red",
-               ifelse(party== 2, rgb( 58/255, 95/255,205/255, alpha=.3),     # "blue",
-               ifelse(party== 3, rgb(205/255,215/255,  0/255, alpha=.3),     # "gold",
-               ifelse(party== 4, rgb( 34/255,139/255, 34/255, alpha=.3),     # "green",
-               ifelse(party== 5, rgb(139/255, 37/255,  0/255, alpha=.3),     # "orangered4" 
-                                 rgb(190/255,190/255,190/255, alpha=.3)))))) # "gray"
+    color50 <- ifelse(party== 1, rgb(205/255,  0/255,  0/255, alpha=.25),     # "red",
+               ifelse(party== 2, rgb( 58/255, 95/255,205/255, alpha=.25),     # "blue",
+               ifelse(party== 3, rgb(205/255,215/255,  0/255, alpha=.25),     # "gold",
+               ifelse(party== 4, rgb( 34/255,139/255, 34/255, alpha=.25),     # "green",
+               ifelse(party== 5, rgb(139/255, 37/255,  0/255, alpha=.25),     # "orangered4" 
+                                 rgb(190/255,190/255,190/255, alpha=.25)))))) # "gray"
     })
 ## ids <- within(ids, {
 ##     color <- ifelse(party== 1, "red",
@@ -592,6 +592,9 @@ for (i in 1:T){
 }
 point.est <- tmp
 
+##########################
+## plot point estimates ##
+##########################
 #pdf(file = "../plots/statics-terms-45-6-7-8-9-10-item.pdf", width = 10, height = 7)
 plot(c(.25,T+.75), c(min(point.est, na.rm = TRUE), max(point.est, na.rm = TRUE)), type="n", xlab = "term", ylab = "ideal point", axes = FALSE,
      main = "Static estimates by term, item-identified") 
@@ -625,21 +628,127 @@ text(x = 5,
      pos = 4 )
 #dev.off()
 
-#################################
-## plot with time-scale X axis ##
-#################################
+######################################################
+## plot with time-scale X axis and confidence bands ##
+######################################################
+pdf(file = "../plots/statics-terms-45-6-7-8-9-10-item-time-scale.pdf", width = 10, height = 7)
 sel <- which(terms.dates$term %in% 4:10)
-plot(c(min(terms.dates$start[sel]), max(terms.dates$end[sel])), c(min(point.est, na.rm = TRUE), max(point.est, na.rm = TRUE)), type="n", xlab = "term", ylab = "ideal point", axes = FALSE,
+terms.dates <- terms.dates[sel,] # subset terms.dates
+# set plot
+plot(c(min(terms.dates$start), max(terms.dates$end)+100),
+     c(min(lo, na.rm = TRUE)-.5, max(hi, na.rm = TRUE)+.15), type="n", xlab = "Year", ylab = "Ideal point", axes = FALSE,
      main = "Static estimates by term, item-identified")
-for (
-for (i in sel){
-    lines(x = c(terms.dates$start[i], terms.dates$end[i]),
-          y = c(i,i)
-          )
+#axis(1, at = c(min(terms.dates$start), max(terms.dates$end)), labels = FALSE)
+axis(1, at = seq(from = ymd("19960101"), to = ymd("20220101"), by = "year"), labels = FALSE)
+axis(1, at = seq(from = ymd("20040701"), to = ymd("20130701"), by = "year"), tick = FALSE, labels = 2004:2013)
+#axis(1, at = terms.dates$mid, labels = c("Ugalde\n2003-08", "Valdés I\n2008", "Valdés II\n2008-10", "Valdés III\n2010-11", "Valdés IV\n2011-13", "Valdés V\n2013"), padj = .25)
+axis(2)
+# lines connecting point estimates
+for (i in 1:nrow(point.est)){
+    #i <- 1
+    lines(x = terms.dates$mid,
+          y = point.est[i,],
+          col = ids$color[i])
 }
+# add point estimates and confidence bands
+for (t in 1:T){
+    #t <- 2
+    sel <- c("4","6","7","8","9","a","b"); sel <- sel[t]; sel <- grep(pattern = sel, ids$tenure)
+    party.t  <- ids$party [sel]
+    column.t <- ids$column[sel]
+    color.t <- ids$color[sel]
+    color50.t <- ids$color50[sel]
+    tmp <- point.est[column.t, t]
+    points(x = rep(terms.dates$mid[t], length(tmp)),
+           y = tmp,
+           col = "white", pch = 19) # makes points non-transparent
+    points(x = rep(terms.dates$mid[t], length(tmp)),
+           y = tmp,
+           col = color.t)           # draws point estimates
+    # prepares data for conf bands
+    tmp <- data.frame(y1 = lo[column.t, t],
+                      y2 = lo[column.t, t],
+                      y3 = hi[column.t, t],
+                      y4 = hi[column.t, t])
+    tmp$x1 <- terms.dates$start[t]
+    tmp$x2 <- terms.dates$end[t]
+    tmp$x3 <- terms.dates$end[t]
+    tmp$x4 <- terms.dates$start[t]
+    tmp$color <- color50.t
+    tmp$who <- column.t
+    # turn into list
+    tmp1 <- lapply(1:length(sel), function(x){
+        res <- list(xx = tmp[x, grep("^x", colnames(tmp))],
+                    yy = tmp[x, grep("^y", colnames(tmp))],
+                    color = tmp$color[x],
+                    who = tmp$who[x])
+        return(res)
+    })
+    lapply(tmp1, function(x){polygon(x$xx,x$yy, col=x$color, border=NA)}) # draws transparent confidence bands
+    if (t==1) abline(v = tmp1[[1]]$xx$x1, lty = 3)
+    abline(v = tmp1[[1]]$xx$x2, lty = 3)
+}
+# add member names
+sel.r <- ids$column[which(!is.na(point.est[,1]))]
+text(x = terms.dates$mid[1],
+     y = point.est[sel.r, 1],
+     labels = ids[sel.r, "short"],
+     cex = .9, 
+     pos = c(2,2,4,2,2,2,2,2,2) )
+sel.r <- ids$column[which(!is.na(point.est[,2]))]
+sel.r <- sel.r[7] # keep valdés only
+text(x = terms.dates$mid[2],
+     y = point.est[sel.r, 2],
+     labels = ids[sel.r, "short"],
+     cex = .9, 
+     pos = c(2) )
+sel.r <- ids$column[which(!is.na(point.est[,5]))]
+sel.r <- sel.r[-c(1,5,7,9)] # don't put figueroa here
+text(x = terms.dates$mid[5],
+     y = point.est[sel.r, 5],
+     labels = ids[sel.r, "short"],
+     cex = .9, 
+     pos = c(2,4,2,2,2) )
+sel.r <- ids$column[which(!is.na(point.est[,6]))]
+sel.r <- sel.r[c(5,7,8)] # figueroa marván here
+text(x = terms.dates$mid[6],
+     y = point.est[sel.r, 6],
+     labels = ids[sel.r, "short"],
+     cex = .9, 
+     pos = c(4,4,4) )
+#
+# add term labels on top
+text(x = terms.dates$mid,
+     y = max(hi, na.rm = TRUE)+.25,
+     labels = c("Ugalde", "Valdés I", "Valdés II", "Valdés III", "Valdés IV", "Valdés V"), cex = .8)
+#
+# add elections
+text(x=ymd(c("20060702", "20090705", "20120701", "20150607", "20180701", "20210606")),
+     y=min(lo, na.rm = TRUE)-.7 ,
+     labels="*")
+#
+# contested votes histogram at bottom
+vot$date <- ymd(vot$date)
+# aggregate weekly split votes
+tmp <- data.frame(
+    dt = vot$date,
+    wk = floor_date(vot$date, "weeks"))
+tmp <- tmp[order(tmp$wk),]
+tmp$n <- 0
+tmp$n <- ave(tmp$n, as.factor(tmp$wk), FUN=length, na.rm=TRUE)
+tmp <- tmp[duplicated(tmp$wk)==FALSE,]
+# change scale
+tmp$n <- (tmp$n/(2*max(tmp$n))) + (min(lo, na.rm = TRUE)-.5)
+# to list
+tmp1 <- lapply(1:nrow(tmp), function(x){
+    res <- list(xx = c(tmp$wk[x], tmp$wk[x]),
+                yy = c((min(lo, na.rm = TRUE)-.5), tmp$n[x]))
+    return(res)
+})
+#
+lapply(tmp1, function(x){lines(x$xx,x$yy, col = "gray")}) # draws transparent confidence bands
+dev.off()
 
-
-terms.dates[1,]
 
 #########################
 ## update party means  ##
