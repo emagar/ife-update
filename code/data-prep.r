@@ -460,6 +460,22 @@ cuts <- c(
 ############################################
 ## explore issues to is search of anchors ##
 ############################################
+sel.r <- which(d$term %in% 2:3)
+sel.c <- c("term", "noCG", "date", "folio", "dlogroll", "result", "dunan", "vtot", "ayes", "nays", "absten", "noshow", "acuerdo", "woldenberg", "barragan", "cantu", "cardenas", "lujambio", "merino", "molinar", "peschard", "zebadua", "luken", "rivera")
+tmp <- d[sel.r, sel.c]
+# drop unanimous
+sel <- which(tmp$dunan==1)
+tmp <- tmp[-sel,]
+dim(tmp)
+# folio = 385 aye = left
+tmp[28,]
+# folio = 1045 aye = right
+tmp[228,]
+# folio = 1298 aye = right
+tmp[tmp$term==3,][27,] 
+# folio = 1669 aye = right
+tmp[tmp$term==3,][206,] 
+#
 sel.r <- which(d$term %in% 4:11)
 sel.c <- c("term", "noCG", "date", "folio", "dlogroll", "result", "dunan", "vtot", "ayes", "nays", "absten", "noshow", "acuerdo", "ugalde", "albo", "andrade", "alcantar", "glezluna", "latapi", "lopezflores", "morales", "sanchez", "valdes", "banos", "nacif", "elizondo", "figueroa", "guerrero", "cordova", "garcia", "marvan")
 tmp <- d[sel.r, sel.c]
@@ -469,16 +485,16 @@ tmp <- tmp[-sel,]
 dim(tmp)
 table(tmp$term)
 with(tmp, table(ayes=ayes[term==4], nays=nays[term==4]))
-# folio 2401 Agenda power for President (PRI-sponsored): should candidate for top-level appointment, proposed by Council President without relevant commission’s consent, be ratified? aye=right
-# folio 2479 Scope of IFE authority: must PVEM statutes make party leaders accountable to rank-and-file? Aye=left
+# folio 2401 Agenda power for President (PRI-sponsored): should candidate for top-level appointment, proposed by Council President without relevant commission’s consent, be ratified? aye=right <--
+# folio 2479 Scope of IFE authority: must PVEM statutes make party leaders accountable to rank-and-file? Aye=left <--
 with(tmp, table(ayes=ayes[term==6], nays=nays[term==6]))
-# folio 3641 Designación Director Ejecutivo Serv Prof Elect (Minority pan minus Nacif) Aye=right
-# folio 3924 Fine PRD and coalition partners for a negative campaign ad against the PRI in Baja California. Aye=right
+# folio 3641 Designación Director Ejecutivo Serv Prof Elect (Minority pan minus Nacif) Aye=right <--
+# folio 3924 Fine PRD and coalition partners for a negative campaign ad against the PRI in Baja California. Aye=right <--
 # folio 3636 Vote to amend Reglamento de Propaganda Institucional y Político Electoral de Servidores Públicos to allow public servants, in some circumstances, to buy advertisements with private funds. PROYECTO DE ACUERDO DEL CONSEJO GENERAL DEL INSTITUTO FEDERAL ELECTORAL POR EL CUAL SE EMITEN CRITERIOS COMPLEMENTARIOS DE INTERPRETACION AL ARTICULO 134 PARRAFO SIETE DE LA CONSTITUCION POLITICA DE LOS ESTADOS UNIDOS MEXICANOS. Aye=left?
 
 with(tmp, table(ayes=ayes[term==7], nays=nays[term==7]))
-# folio 6127 Penalty to PVEM federal deputies for TV advertisement promoting the death penalty --- minority PRI+PVEM, nay=left (not ideal, freedom of speech supported by the right? sounds partisan) --> will try aye=left, but needs justification
-# folio 6174 Drop libel case against PAN for a newspaper ad calling PRI corrupt (sopa de letras) minority PRI+PVEM, aye=left
+# folio 6127 Penalty to PVEM federal deputies for TV advertisement promoting the death penalty --- minority PRI+PVEM, nay=left (not ideal, freedom of speech supported by the right? sounds partisan) --> will try aye=left, but needs justification <--
+# folio 6174 Drop libel case against PAN for a newspaper ad calling PRI corrupt (sopa de letras) minority PRI+PVEM, aye=left <--
 # folio 6286 church
 # folio 6472 algún aspecto de multa a Senador Monreal por promover informe de actividades en Zacatecas de senador,  minority Alcántar Valdés Nacif Elizondo nay=?
 # folio 6487 raise penalty to PAN for sopa de letras ad for failing to act against subsequent publication by 10k units instead of 76k units, minority pri minus guerrero + elizondo, aye=left
@@ -486,33 +502,33 @@ with(tmp, table(ayes=ayes[term==7], nays=nays[term==7]))
 ## tmp[sel, c("acuerdo","folio","noCG", "date")][34,]
 
 with(tmp, table(ayes=ayes[term==8], nays=nays[term==8]))
+# folio 7421 pri vs rest, sanción peña, aye = left                       <--
+# folio 7633 prd vs rest, prd sanción a gob pri de guerrero, aye = right <--
 # folio 7358 pri vs rest, trivial matter
 # folio 7411 pri vs rest, queja pri sanción a gabino cue por algún mensaje, aye = left
 # folio 7416 pri vs rest, sanción panal, aye = left
 # folio 7418 pri vs rest, sanción panal, aye = left
-# folio 7421 pri vs rest, sanción peña, aye = left                       <--
 # folio 7503 baños+figueroa vs rest, sanción iglesia, aye = right
 # folio 7622 nacif+figueroa vs rest, sanción a peña, aye = right
-# folio 7633 prd vs rest, prd sanción a gob pri de guerrero, aye = right <--
 tmp[which(tmp$nays==4 & tmp$term==8),][4,]
 tmp$folio[tmp$term==8][sel]
 
 with(tmp, table(ayes=ayes[term==9], nays=nays[term==9]))
-# folio 8148 Drop PRI complaint against PAN (Minority pri minus Guerrero + Valdés + Elizondo) Aye=left
-# folio 8215 Cut PRI's fine to half after TRIFE appeal (Minority PRD with Elizondo abstaining) Aye=right
 # folio 8317 Break PRI's denuncia against FCH in two issues, fine and FCH's direct responsibility (Minority PRI with Córdova) Aye=left  <--
 # folio 8320 PRI's denuncia against FCH (Minority PRI with Córdova) Aye=left  <--
+# folio 8148 Drop PRI complaint against PAN (Minority pri minus Guerrero + Valdés + Elizondo) Aye=left
+# folio 8215 Cut PRI's fine to half after TRIFE appeal (Minority PRD with Elizondo abstaining) Aye=right
 # folio 8814 Aristegui's denuncia vs PRD-PT with engrose (Minority PRD plus Nacif) Aye=left
 tmp[which(tmp$ayes==4 & tmp$term==9),][15,]
 tmp$folio[tmp$term==9][sel]
 
 with(tmp, table(ayes=ayes[term==10], nays=nays[term==10]))
+# folio 9230 Sanción del pri al pan y gob huauchinango (Minority = pri) aye = left <--
+# folio 9408 Declarar leve la multa a un periódico (Minority pri plus nacif) aye = right <--
 # folio 9236 Should PAN be fined for a candidate showing up in an event where federal authorities handed money grants and property titles to, and received requests from peasants in Veracruz? Minority = Figueroa, Guerrero, Nacif (Nay). 
 # folio 9245 Debe IFE sancionar a funcionarios federales y estatales de Veracruz por usar la Cruzada contra el Hambre con fines electorales en el proceso estatal?
-# folio 9230 Sanción del pri al pan y gob huauchinango (Minority = pri) aye = left <--
 # folio 9243 Sanción del pri a fch y el pan (Minority = pri) aye = left
 # folio 9342 (Minority = prd)
-# folio 9408 Declarar leve la multa a un periódico (Minority pri plus nacif) aye = right <--
 tmp[which(tmp$ayes==3 & tmp$term==10),][5,]
 sel <- grep("designa", tmp$acuerdo[tmp$term==10], ignore.case = TRUE)
 tmp$folio[tmp$term==10][sel]
@@ -520,5 +536,20 @@ tmp$acuerdo[tmp$folio==7411]
 
 with(tmp, table(ayes=ayes[term==11], nays=nays[term==11])) # four-member term, drop it
 
-with(tmp, table(ayes=ayes[term==12], nays=nays[term==12])) # four-member term, drop it
+sel.r <- which(d$term %in% 12)
+sel.c <- c("term", "noCG", "date", "folio", "dlogroll", "result", "dunan", "vtot", "ayes", "nays", "absten", "noshow", "acuerdo", "cordova", "andrade2", "banos", "favela", "galindo", "murayama", "nacif", "ruiz", "sanchez", "santiago", "snmartin")
+tmp <- d[sel.r, sel.c]
+# drop unanimous
+sel <- which(tmp$dunan==1)
+tmp <- tmp[-sel,]
+dim(tmp)
+table(tmp$term)
+with(tmp, table(ayes=ayes[term==12], nays=nays[term==12]))
+# folio 10096 Resolucion del Consejo General del Instituto Nacional Electoral respecto de la denuncia presentada por el Partido del Trabajo en contra del C. Enrique Peña Nieto otrora candidato a la Presidencia de la Republica postulado por la entonces Coalicion Compromiso por Mexico asi como de los partidos politicos que la integraron por hechos que considera constituyen infracciones al Codigo Federal de Instituciones y Procedimientos Electorales identificado con el numero de expediente SCG/QPT/JD27/MEX/213/2012 (minority pan-prd minus murayama cordoba) aye = right
+# folio 10268 Se voto el Punto Resolutivo Tercero en los terminos originalmente presentado que declara infundado el procedimiento en contra del Partido Revolucionario Institucional (minority prd plus sanchez) aye = right
+sel <- which(tmp$term==12 & tmp$ayes==6)
+tmp[which(tmp$ayes==6 & tmp$term==12),][6,]
+tmp$folio[tmp$term==12][sel]
+
+
 

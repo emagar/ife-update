@@ -72,7 +72,7 @@ ids <- within(ids, {
 ##                                  "gray")))));
 ##     })
 rownames(ids) <- ids$column
-ids[13,]
+ids[5,]
 
 #####################################################################################
 ## adjusts approximate years with constant membership for year-by-year estimations ##
@@ -147,10 +147,14 @@ yr.by.yr <- data.frame(
 ################################################################
 ## select temporal range of full analysis (broken down below) ##
 ################################################################
+terms <- 12:13
+terms.grep <- "[cd]"
 ## terms <- 4:11
 ## terms.grep <- "[456789ab]"
-terms <- 4:10
-terms.grep <- "[45679a]"
+## terms <- 4:10
+## terms.grep <- "[45679a]"
+## terms <- 23
+## terms.grep <- "[23]"
 
 #############################################
 ## subset ids and periodicization to range ##
@@ -165,7 +169,10 @@ ids[, c("column","sponsor","tenure")] # inspect
 #############################################################
 table(term=yr.by.yr$term, yrn=yr.by.yr$yrn) # inspect
 #tees <- yr.by.yr$yrn # years 8:18 cover terms 4:11, ug to 2014 reform
-tees <- c(4,6:10) # terms ugalde I+II valdés I II III IV and V
+tees <- c(12:13) # post-2014 terms córdoba I and II
+## tees <- c(4,6:11) # terms ugalde I+II valdés I II III IV and V+VI
+## tees <- c(4,6:10) # terms ugalde I+II valdés I II III IV and V
+## tees <- c(2:3)
 T <- length(tees)
 
 ##########################################
@@ -176,24 +183,41 @@ rownames(prior.location) <- ids$column
 colnames(prior.location) <- paste0("term", tees)
 prior.precision <- prior.location
 prior.precision[] <- 1 # for N=2-on
-## # assign priors for first round only
+#
+# assign priors for first round in council term 12
+prior.location[] <- 0
+prior.location  ["favela",] <-  2
+prior.location["murayama",] <- -2
+prior.precision[,1] <- 1
+prior.precision  ["favela",] <- 4
+prior.precision["murayama",] <- 4
+## #
+## # assign priors for first round in council terms 4 to 11
 ## prior.location[,1] <- 0
 ## prior.location["alcantar",1] <-  2
 ## prior.location ["sanchez",1] <- -2
 ## prior.precision[,1] <- 1
 ## prior.precision["alcantar",1] <- 4
 ## prior.precision ["sanchez",1] <- 4
-# assign priors for first round in council
-prior.location[] <- 0
-prior.location["alcantar",] <-  2
-prior.location ["sanchez",] <- -2
-prior.location["banos",] <-  2
-prior.location["figueroa",] <- -2
-prior.precision[,1] <- 1
-prior.precision["alcantar",] <- 4
-prior.precision ["sanchez",] <- 4
-prior.precision ["banos",] <- 4
-prior.precision ["figueroa",] <- 4
+## # assign priors for first round in council
+## prior.location[] <- 0
+## prior.location["alcantar",] <-  2
+## prior.location ["sanchez",] <- -2
+## prior.location["banos",] <-  2
+## prior.location["figueroa",] <- -2
+## prior.precision[,1] <- 1
+## prior.precision["alcantar",] <- 4
+## prior.precision ["sanchez",] <- 4
+## prior.precision ["banos",] <- 4
+## prior.precision ["figueroa",] <- 4
+## #
+## # assign priors for first round in council terms 2 and 3
+## prior.location[] <- 0
+## prior.location  ["merino",] <-  2
+## prior.location["cardenas",] <- -2
+## prior.precision[,1] <- 1
+## prior.precision  ["merino",] <- 4
+## prior.precision["cardenas",] <- 4
 
 prior.location  # inspect
 prior.precision # inspect
@@ -249,19 +273,22 @@ terms.dates$mid <- as.Date(terms.dates$start + as.duration(interval(terms.dates$
 ##############################################
 ## Read votes, exported by code/data-prep.r ##
 ##############################################
-vot.raw <-read.csv("v456789ab.csv",  header=TRUE)
+#vot.raw <-read.csv("v23.csv",  header=TRUE)
+#vot.raw <-read.csv("v456789ab.csv",  header=TRUE)
+vot.raw <-read.csv("vcde.csv",  header=TRUE)
 vot <- vot.raw # duplicate for manipulation
 
 #########################################################
 ## term 5 has one contested vote only, merge to term 4 ##
 #########################################################
 sel <- which(vot$term==5)
-vot$term[sel] <- 4
-## #####################################################
-## ## term 10 has 84 contested votes, merge to term 9 ##
-## #####################################################
-## sel <- which(vot$term==10)
-## vot$term[sel] <- 9
+if (length(sel)>0) vot$term[sel] <- 4
+#######################################################################################
+## term 11 has 2 contested votes, drop it (tried merging to term 10, no convergence) ##
+#######################################################################################
+sel <- which(vot$term==11)
+#if (length(sel)>0) vot$term[sel] <- 10
+if (length(sel)>0) vot <- vot[-sel,]
 
 ###########################################
 ## using terms: subset to desired terms  ##
@@ -321,7 +348,7 @@ if (length(sel)>0) vot <- vot[-sel,]
 ## vot[,column] <- tmp
 
 ####################################################################################################
-## identify item anchors and place them as votes 1 (north) and 2 (south)                          ##
+## identify item anchors and place them as votes 1 and 2, both should point aye = north/right     ##
 ## if necessary, recode ayes/nays so that aye points to desired side                              ##
 ## ** term==4 **                                                                                  ##
 ## - folio 2401 Agenda power for President (PRI-sponsored): should candidate for top-level        ##
@@ -351,15 +378,19 @@ if (length(sel)>0) vot <- vot[-sel,]
 ## - folio 9230 Sanción del pri al pan y gob huauchinango (Minority = pri) aye = left             ##
 ## - folio 9408 Declarar leve la multa a un periódico (Minority pri plus nacif) aye = right       ##
 ####################################################################################################
-anchors <- which(vot$folio %in% c(2401, 2479  # term==4:5
-                                , 3641, 3924  # term==6
-                                , 6127, 6174  # term==7
-                                , 7421, 7633  # term==8
-                                , 8317, 8320  # term==9
-                                , 9230, 9408  # term==10
-                                           ))
-# some votes need aye/nay reversal to point to correct direction
-sel <- which(vot$folio[anchors] %in% c(3924, 6127, 7421, 7633, 8317, 9230, 9408))
+anch <- c(  385,  1045  # term==2
+        ,  1298,  1669  # term==3
+        ,  2401,  2479  # term==4:5
+        ,  3641,  3924  # term==6
+        ,  6127,  6174  # term==7
+        ,  7421,  7633  # term==8
+        ,  8317,  8320  # term==9
+        ,  9230,  9408  # term==10:11
+        , 10096, 10268  # term==12
+          )
+anchors <- which(vot$folio %in% anch)
+# some votes need aye/nay reversal to point North
+sel <- which(vot$folio[anchors] %in% c(385, 2479, 6127, 6174, 7421, 8317, 8320, 9230, 10096, 10228))
 tmp <- vot[anchors[sel], ids$column] # subset votes that must chg
 for (i in 1:nrow(tmp)){
     tmp2 <- as.character(tmp[i,]) # extract vector, to character
@@ -367,12 +398,12 @@ for (i in 1:nrow(tmp)){
     tmp[i,] <- as.numeric(tmp2)
 }
 vot[anchors[sel], ids$column] <- tmp
-rm(tmp,tmp2)
+rm(tmp,tmp2,anch)
 
-#######################################################################
-## move anchor votes to start of time series, so that they appear as ##
-## votes 1 and 2 when term is subsetted                              ##
-#######################################################################
+#########################################################
+## move anchor votes to start of time series, so that  ##
+## they appear as votes 1 and 2 when term is subsetted ##
+#########################################################
 vot <- rbind(vot[anchors,], vot[-anchors,])
 #head(vot)
 rm(anchors) # indices no longer valid
@@ -393,7 +424,7 @@ rm(i,sel) # clean
 ##########################################
 ## pick one year (turn into loop later) ##
 ##########################################
-t <- c(1:T)[6]
+t <- c(1:T)[7]
 paste("t =", t, "is term", tees[t])
 #for (t in 1:7){
 
@@ -401,6 +432,7 @@ paste("t =", t, "is term", tees[t])
 ## by terms: determine members and their parties ##
 ###################################################
 sel <- c("4","6","7","8","9","a","b")
+## sel <- c("2","3")
 sel <- sel[t]
 sel    <- grep(pattern = sel, ids$tenure)
 party.t  <- ids$party [sel]
@@ -447,7 +479,7 @@ molten.rc <- reshape2::melt(rc.2, id.vars="member", variable.name="vote", value.
 #head(molten.rc, 10)
 molten.rc$rc <- car::recode (molten.rc$rc, "0=NA") # non-members' slots, if any, to NA
 # will try w/o 4may2022 #molten.rc <- na.omit (molten.rc)                   # drops non-members' slots, if any
-molten.rc$rc <- car::recode (molten.rc$rc, "2=0; c(3,4,5)=NA") # abstain|absent to NA
+molten.rc$rc <- car::recode (molten.rc$rc, "2=0; c(3,4,5,6)=NA") # abstain|absent|recuse to NA
 
 ife.data.vector <-
     dump.format(list(y = molten.rc$rc, 
@@ -471,7 +503,7 @@ ife.inits <- function() {
 #      , beta  = rnorm(V)
       , beta  = c(NA, NA, rnorm(V-2))
       ,'.RNG.name'="base::Wichmann-Hill"
-      ,'.RNG.seed'= 1971)   #randomNumbers(n = 1, min = 1, max = 1e+04,col=1))
+      ,'.RNG.seed'= 1971)   #randomNumbers(n = 1, min = 1, max = 1e+04, col=1))
   )
 }
 
@@ -511,7 +543,7 @@ ife.model.items = "model {
             beta [j] ~ dnorm(0, 0.1)
         }
         beta [1] ~ dnorm( 4, 4)
-        beta [2] ~ dnorm(-4, 4)
+        beta [2] ~ dnorm( 4, 4)
 	# ideal points
 	for(i in 1:n.member) { theta[i] ~ dnorm(0,1) }
 }"
@@ -523,8 +555,8 @@ results <- run.jags(
   n.chains = 2,
   data     = ife.data.vector,
   inits    = list (ife.inits(), ife.inits()),
-  #thin = 250, burnin = 50000, sample = 200,
-  thin = 50, burnin = 10000, sample = 200,
+  thin = 250, burnin = 50000, sample = 200,
+  #thin = 50, burnin = 10000, sample = 200,
   #thin = 5, burnin = 200, sample = 200,
   plots = FALSE)
 
@@ -532,18 +564,20 @@ chains <- mcmc.list(list (results$mcmc[[1]], results$mcmc[[2]]))
 # check model convergence 
 gelman.diag (chains, multivariate=F)
 
-## ############################
-## ## store posterior sample ##
-## ############################
-## getwd()
-## load("posterior-samples/in-git/theta-chains-statics-45-6-7-8-9-10-items.RData")
-## post.samples[[t]] <- list(map.vote.indices=map.vote.indices,
-##                           map.member.indices=map.member.indices,
-##                           map.time.indices=map.time.indices,
-##                           chains=chains)
-## names(post.samples) <- paste0("term", tees)
-## summary(post.samples)
-## save(post.samples, file = "posterior-samples/in-git/theta-chains-statics-45-6-7-8-9-10-items.RData")
+############################
+## store posterior sample ##
+############################
+getwd()
+load("posterior-samples/in-git/theta-chains-statics-2-3-items.RData")
+load("posterior-samples/in-git/theta-chains-statics-45-6-7-8-9-10-items.RData")
+post.samples[[t]] <- list(map.vote.indices=map.vote.indices,
+                          map.member.indices=map.member.indices,
+                          map.time.indices=map.time.indices,
+                          chains=chains)
+names(post.samples) <- paste0("term", tees)
+summary(post.samples)
+#save(post.samples, file = "posterior-samples/in-git/theta-chains-statics-45-6-7-8-9-10-items.RData")
+save(post.samples, file = "posterior-samples/in-git/theta-chains-statics-2-3-items.RData")
 
 ##################################################
 ## will receive point estimates and 80pct bands ##
@@ -574,12 +608,19 @@ for (t in 1:T){
     }
 }
 
-################################
-## t 1--4 used votes inverted ##
-################################
+#################################################
+## t 1--4 (terms 45-6-7-8) used votes inverted ##
+#################################################
 point.est[,1:4] <- -point.est[,1:4]
 lo[,1:4] <- -lo[,1:4]; hi[,1:4] <- -hi[,1:4]
 tmp <- lo[,1:4]; lo[,1:4] <- hi[,1:4]; hi[,1:4] <- tmp
+
+######################################
+## t 2 (term 3) used votes inverted ##
+######################################
+point.est[,2] <- -point.est[,2]
+lo[,2] <- -lo[,2]; hi[,2] <- -hi[,2]
+tmp <- lo[,2]; lo[,2] <- hi[,2]; hi[,2] <- tmp
 
 #######################
 ## normalize to -1 1 ##
@@ -592,9 +633,9 @@ for (i in 1:T){
 }
 point.est <- tmp
 
-##########################
-## plot point estimates ##
-##########################
+#####################################
+## plot terms 4:11 point estimates ##
+#####################################
 #pdf(file = "../plots/statics-terms-45-6-7-8-9-10-item.pdf", width = 10, height = 7)
 plot(c(.25,T+.75), c(min(point.est, na.rm = TRUE), max(point.est, na.rm = TRUE)), type="n", xlab = "term", ylab = "ideal point", axes = FALSE,
      main = "Static estimates by term, item-identified") 
@@ -628,10 +669,10 @@ text(x = 5,
      pos = 4 )
 #dev.off()
 
-######################################################
-## plot with time-scale X axis and confidence bands ##
-######################################################
-pdf(file = "../plots/statics-terms-45-6-7-8-9-10-item-time-scale.pdf", width = 10, height = 7)
+#################################################################
+## plot terms 4:11 with time-scale X axis and confidence bands ##
+#################################################################
+#pdf(file = "../plots/statics-terms-45-6-7-8-9-10-item-time-scale.pdf", width = 10, height = 7)
 sel <- which(terms.dates$term %in% 4:10)
 terms.dates <- terms.dates[sel,] # subset terms.dates
 # set plot
@@ -747,7 +788,150 @@ tmp1 <- lapply(1:nrow(tmp), function(x){
 })
 #
 lapply(tmp1, function(x){lines(x$xx,x$yy, col = "gray")}) # draws transparent confidence bands
-dev.off()
+#dev.off()
+1
+#####################################
+## plot terms 2:3 point estimates ##
+#####################################
+#pdf(file = "../plots/statics-terms-2-3-item.pdf", width = 10, height = 7)
+plot(c(.25,T+.75), c(min(point.est, na.rm = TRUE), max(point.est, na.rm = TRUE)), type="n", xlab = "term", ylab = "ideal point", axes = FALSE,
+     main = "Static estimates by term, item-identified") 
+axis(1, at = 1:T, labels = c("Woldenberg I\n1996-2000", "Woldenberg II\n2000-2003"), padj = .25)
+axis(2)
+for (t in 1:T){
+    sel <- c("2","3"); sel <- sel[t]; sel <- grep(pattern = sel, ids$tenure)
+    party.t   <- ids$party [sel]
+    column.t  <- ids$column[sel]
+    color.t   <- ids$color[sel]
+    color50.t <- ids$color50[sel]
+    tmp <- point.est[column.t, t]
+    points(x = rep(t, length(tmp)),
+           y = tmp,
+           col = color.t)
+}
+for (i in 1:nrow(point.est)){
+    lines(x = 1:T,
+          y = point.est[i,],
+          col = ids$color[i])
+}
+sel.r <- ids$column[which(!is.na(point.est[,1]))]
+text(x = 1,
+     y = point.est[sel.r, 1],
+     labels = ids[sel.r, "short"],
+     pos = 2 )
+sel.r <- ids$column[which(is.na(point.est[,1]))]
+text(x = 2,
+     y = point.est[sel.r, 2],
+     labels = ids[sel.r, "short"],
+     pos = 4 )
+#dev.off()
+
+#################################################################
+## plot terms 2:3 with time-scale X axis and confidence bands ##
+#################################################################
+#pdf(file = "../plots/statics-terms-2-3-item-time-scale.pdf", width = 10, height = 7)
+sel <- which(terms.dates$term %in% 2:3)
+terms.dates <- terms.dates[sel,] # subset terms.dates
+# set plot
+plot(c(min(terms.dates$start), max(terms.dates$end)+100),
+     c(min(lo, na.rm = TRUE)-.5, max(hi, na.rm = TRUE)+.15), type="n", xlab = "Year", ylab = "Ideal point", axes = FALSE,
+     main = "Static estimates by term, item-identified")
+#axis(1, at = c(min(terms.dates$start), max(terms.dates$end)), labels = FALSE)
+axis(1, at = seq(from = ymd("19960101"), to = ymd("20220101"), by = "year"), labels = FALSE)
+axis(1, at = seq(from = ymd("19970701"), to = ymd("20030701"), by = "year"), tick = FALSE, labels = 1997:2003)
+#axis(1, at = terms.dates$mid, labels = c("Ugalde\n2003-08", "Valdés I\n2008", "Valdés II\n2008-10", "Valdés III\n2010-11", "Valdés IV\n2011-13", "Valdés V\n2013"), padj = .25)
+axis(2)
+# lines connecting point estimates
+for (i in 1:nrow(point.est)){
+    #i <- 1
+    lines(x = terms.dates$mid,
+          y = point.est[i,],
+          col = ids$color[i])
+}
+# add point estimates and confidence bands
+for (t in 1:T){
+    #t <- 2
+    sel <- c("2","3"); sel <- sel[t]; sel <- grep(pattern = sel, ids$tenure)
+    party.t  <- ids$party [sel]
+    column.t <- ids$column[sel]
+    color.t <- ids$color[sel]
+    color50.t <- ids$color50[sel]
+    tmp <- point.est[column.t, t]
+    points(x = rep(terms.dates$mid[t], length(tmp)),
+           y = tmp,
+           col = "white", pch = 19) # makes points non-transparent
+    points(x = rep(terms.dates$mid[t], length(tmp)),
+           y = tmp,
+           col = color.t)           # draws point estimates
+    # prepares data for conf bands
+    tmp <- data.frame(y1 = lo[column.t, t],
+                      y2 = lo[column.t, t],
+                      y3 = hi[column.t, t],
+                      y4 = hi[column.t, t])
+    tmp$x1 <- terms.dates$start[t]
+    tmp$x2 <- terms.dates$end[t]
+    tmp$x3 <- terms.dates$end[t]
+    tmp$x4 <- terms.dates$start[t]
+    tmp$color <- color50.t
+    tmp$who <- column.t
+    # turn into list
+    tmp1 <- lapply(1:length(sel), function(x){
+        res <- list(xx = tmp[x, grep("^x", colnames(tmp))],
+                    yy = tmp[x, grep("^y", colnames(tmp))],
+                    color = tmp$color[x],
+                    who = tmp$who[x])
+        return(res)
+    })
+    lapply(tmp1, function(x){polygon(x$xx,x$yy, col=x$color, border=NA)}) # draws transparent confidence bands
+    if (t==1) abline(v = tmp1[[1]]$xx$x1, lty = 3)
+    abline(v = tmp1[[1]]$xx$x2, lty = 3)
+}
+# add member names
+sel.r <- ids$column[which(!is.na(point.est[,1]))]
+text(x = terms.dates$mid[1],
+     y = point.est[sel.r, 1],
+     labels = ids[sel.r, "short"],
+     cex = .9, 
+     pos = c(4,2,2,2,4,2,2,2,2) )
+sel.r <- ids$column[which(is.na(point.est[,1]))]
+text(x = terms.dates$mid[2],
+     y = point.est[sel.r, 2],
+     labels = ids[sel.r, "short"],
+     pos = 4 )
+#
+# add term labels on top
+text(x = terms.dates$mid,
+     y = max(hi, na.rm = TRUE)+.25,
+     labels = c("Woldenberg I", "Woldenberg II"), cex = .8)
+#
+# add elections
+text(x=ymd(c("19970702", "20000702", "20030701")),
+     y=min(lo, na.rm = TRUE)-.63 ,
+     labels="*")
+#
+# contested votes histogram at bottom
+vot$date <- ymd(vot$date)
+# aggregate weekly split votes
+tmp <- data.frame(
+    dt = vot$date,
+    wk = floor_date(vot$date, "weeks"))
+tmp <- tmp[order(tmp$wk),]
+tmp$n <- 0
+tmp$n <- ave(tmp$n, as.factor(tmp$wk), FUN=length, na.rm=TRUE)
+tmp <- tmp[duplicated(tmp$wk)==FALSE,]
+# change scale
+tmp$n <- (tmp$n/(2*max(tmp$n))) + (min(lo, na.rm = TRUE)-.58)
+# to list
+tmp1 <- lapply(1:nrow(tmp), function(x){
+    res <- list(xx = c(tmp$wk[x], tmp$wk[x]),
+                yy = c((min(lo, na.rm = TRUE)-.58), tmp$n[x]))
+    return(res)
+})
+#
+lapply(tmp1, function(x){lines(x$xx,x$yy, col = "gray")}) # draws transparent confidence bands
+#dev.off()
+
+
 
 
 #########################
