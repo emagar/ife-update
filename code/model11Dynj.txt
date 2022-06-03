@@ -1,0 +1,52 @@
+
+model {
+  for (j in 1:J){                ## loop over councilors
+    for (i in 1:I){              ## loop over items
+      #y.hat[j,i] ~ dbern(p[j,i]);                                  ## voting rule
+      #p[j,i] <- phi(y.star[j,i]);                                  ## sets 0<p<1
+      y.star[j,i] ~ dnorm(mu[j,i],1)I(lower.y[j,i],upper.y[j,i]);   ## truncated normal sampling
+      mu[j,i] <- delta[i]*(x1[j]*d1[i]*p1[j] + x2[j]*d2[i]*p2[j]
+                           + x3[j]*d3[i]*p3[j] + x4[j]*d4[i]*p4[j]
+                           + x5[j]*d5[i]*p5[j] + x6[j]*d6[i]*p6[j]
+                           + x7[j]*d7[i]*p7[j] + x8[j]*d8[i]*p8[j]
+                           + x9[j]*d9[i]*p9[j] + x10[j]*d10[i]*p10[j]
+                           + x11[j]*d11[i]*p11[j] + x12[j]*d12[i]*p12[j]
+                           + x13[j]*d13[i]*p13[j] + x14[j]*d14[i]*p14[j]) - n[i];     ## utility differential
+                }
+      x1[j] ~ dnorm (x0[j],50);  # todos tienen varianza .1 en slack
+      x2[j] ~ dnorm (x1[j],50);  # todos tienen varianza .1 en slack
+      x3[j] ~ dnorm (x2[j],50);  # todos tienen varianza .1 en slack
+      x4[j] ~ dnorm (x3[j],50);  # todos tienen varianza .1 en slack
+      x5[j] ~ dnorm (x4[j],50);  # todos tienen varianza .1 en slack
+      x6[j] ~ dnorm (x5[j],50);  # todos tienen varianza .1 en slack
+      x7[j] ~ dnorm (x6[j],50);  # todos tienen varianza .1 en slack
+      x8[j] ~ dnorm (x7[j],50);  # todos tienen varianza .1 en slack
+      x9[j] ~ dnorm (x8[j],50);  # todos tienen varianza .1 en slack
+      x10[j] ~ dnorm (x9[j],50);  # todos tienen varianza .1 en slack
+      x11[j] ~ dnorm (x10[j],50);  # todos tienen varianza .1 en slack
+      x12[j] ~ dnorm (x11[j],50);  # todos tienen varianza .1 en slack
+      x13[j] ~ dnorm (x12[j],50);  # todos tienen varianza .1 en slack
+      x14[j] ~ dnorm (x13[j],50);  # todos tienen varianza .1 en slack
+              }
+  for (i in 1:I){
+     m[i] <- n[i] / delta[i]                                      ## midpoint
+  }
+  ## priors
+    x0[1] ~ dnorm(1, 4);    #Woldenberg
+    x0[2] ~ dnorm(2, 4);    #barragan
+    x0[3] ~ dnorm(0, 1);    #cantu
+    x0[4] ~ dnorm(-2, 4);   #cardenas
+    x0[5] ~ dnorm(0, 1);    #lujambio
+    x0[6] ~ dnorm(0, 1);    #merino
+    x0[7] ~ dnorm(0, 1);    #molinar
+    x0[8] ~ dnorm(0, 1);    #peschard
+    x0[9] ~ dnorm(0, 1);    #zebadua
+    x0[10] ~ dnorm(0, 1);   #rivera
+    x0[11] ~ dnorm(0, 1);   #luken
+    for(i in 1:I){
+        delta[i] ~ dnorm( 0, 0.1);
+                 }
+    for(i in 1:I){
+        n[i] ~ dnorm( 0, 0.25);
+                 }
+}
