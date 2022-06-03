@@ -147,14 +147,14 @@ yr.by.yr <- data.frame(
 ################################################################
 ## select temporal range of full analysis (broken down below) ##
 ################################################################
-terms <- 12:13
-terms.grep <- "[cd]"
+## terms <- 12:13
+## terms.grep <- "[cd]"
 ## terms <- 4:11
 ## terms.grep <- "[456789ab]"
 ## terms <- 4:10
 ## terms.grep <- "[45679a]"
-## terms <- 23
-## terms.grep <- "[23]"
+terms <- 23
+terms.grep <- "[23]"
 
 #############################################
 ## subset ids and periodicization to range ##
@@ -169,10 +169,10 @@ ids[, c("column","sponsor","tenure")] # inspect
 #############################################################
 table(term=yr.by.yr$term, yrn=yr.by.yr$yrn) # inspect
 #tees <- yr.by.yr$yrn # years 8:18 cover terms 4:11, ug to 2014 reform
-tees <- c(12:13) # post-2014 terms córdoba I and II
+## tees <- c(12:13) # post-2014 terms córdoba I and II
 ## tees <- c(4,6:11) # terms ugalde I+II valdés I II III IV and V+VI
 ## tees <- c(4,6:10) # terms ugalde I+II valdés I II III IV and V
-## tees <- c(2:3)
+tees <- c(2:3)
 T <- length(tees)
 
 ##########################################
@@ -184,13 +184,13 @@ colnames(prior.location) <- paste0("term", tees)
 prior.precision <- prior.location
 prior.precision[] <- 1 # for N=2-on
 #
-# assign priors for first round in council term 12
-prior.location[] <- 0
-prior.location  ["favela",] <-  2
-prior.location["murayama",] <- -2
-prior.precision[,1] <- 1
-prior.precision  ["favela",] <- 4
-prior.precision["murayama",] <- 4
+## # assign priors for first round in council term 12
+## prior.location[] <- 0
+## prior.location  ["favela",] <-  2
+## prior.location["murayama",] <- -2
+## prior.precision[,1] <- 1
+## prior.precision  ["favela",] <- 4
+## prior.precision["murayama",] <- 4
 ## #
 ## # assign priors for first round in council terms 4 to 11
 ## prior.location[,1] <- 0
@@ -211,13 +211,13 @@ prior.precision["murayama",] <- 4
 ## prior.precision ["banos",] <- 4
 ## prior.precision ["figueroa",] <- 4
 ## #
-## # assign priors for first round in council terms 2 and 3
-## prior.location[] <- 0
-## prior.location  ["merino",] <-  2
-## prior.location["cardenas",] <- -2
-## prior.precision[,1] <- 1
-## prior.precision  ["merino",] <- 4
-## prior.precision["cardenas",] <- 4
+# assign priors for first round in council terms 2 and 3
+prior.location[] <- 0
+prior.location  ["merino",] <-  2
+prior.location["cardenas",] <- -2
+prior.precision[,1] <- 1
+prior.precision  ["merino",] <- 4
+prior.precision["cardenas",] <- 4
 
 prior.location  # inspect
 prior.precision # inspect
@@ -273,9 +273,9 @@ terms.dates$mid <- as.Date(terms.dates$start + as.duration(interval(terms.dates$
 ##############################################
 ## Read votes, exported by code/data-prep.r ##
 ##############################################
-#vot.raw <-read.csv("v23.csv",  header=TRUE)
-#vot.raw <-read.csv("v456789ab.csv",  header=TRUE)
-vot.raw <-read.csv("vcde.csv",  header=TRUE)
+vot.raw <-read.csv("v23.csv",  header=TRUE)
+## vot.raw <-read.csv("v456789ab.csv",  header=TRUE)
+## vot.raw <-read.csv("vcde.csv",  header=TRUE)
 vot <- vot.raw # duplicate for manipulation
 
 #########################################################
@@ -301,8 +301,6 @@ for (i in 1:T){
     sel <- which(vot$term==tees[i])
     vot$t[sel] <- i
 }
-# explore
-table(dunan=vot$dunan, t=vot$t)
 
 ## ####################################################
 ## ## using approx.yrs: add temporal periodicization ##
@@ -424,15 +422,16 @@ rm(i,sel) # clean
 ##########################################
 ## pick one year (turn into loop later) ##
 ##########################################
-t <- c(1:T)[7]
+t <- c(1:T)[1]
 paste("t =", t, "is term", tees[t])
 #for (t in 1:7){
 
 ###################################################
 ## by terms: determine members and their parties ##
 ###################################################
-sel <- c("4","6","7","8","9","a","b")
-## sel <- c("2","3")
+## sel <- c("c","d")
+## sel <- c("4","6","7","8","9","a","b")
+sel <- c("2","3")
 sel <- sel[t]
 sel    <- grep(pattern = sel, ids$tenure)
 party.t  <- ids$party [sel]
@@ -555,8 +554,8 @@ results <- run.jags(
   n.chains = 2,
   data     = ife.data.vector,
   inits    = list (ife.inits(), ife.inits()),
-  thin = 250, burnin = 50000, sample = 200,
-  #thin = 50, burnin = 10000, sample = 200,
+  #thin = 250, burnin = 50000, sample = 200,
+  thin = 50, burnin = 10000, sample = 200,
   #thin = 5, burnin = 200, sample = 200,
   plots = FALSE)
 
@@ -564,24 +563,25 @@ chains <- mcmc.list(list (results$mcmc[[1]], results$mcmc[[2]]))
 # check model convergence 
 gelman.diag (chains, multivariate=F)
 
-############################
-## store posterior sample ##
-############################
-getwd()
-load("posterior-samples/in-git/theta-chains-statics-2-3-items.RData")
-load("posterior-samples/in-git/theta-chains-statics-45-6-7-8-9-10-items.RData")
-post.samples[[t]] <- list(map.vote.indices=map.vote.indices,
-                          map.member.indices=map.member.indices,
-                          map.time.indices=map.time.indices,
-                          chains=chains)
-names(post.samples) <- paste0("term", tees)
-summary(post.samples)
-#save(post.samples, file = "posterior-samples/in-git/theta-chains-statics-45-6-7-8-9-10-items.RData")
-save(post.samples, file = "posterior-samples/in-git/theta-chains-statics-2-3-items.RData")
+## ############################
+## ## store posterior sample ##
+## ############################
+## getwd()
+## load("posterior-samples/in-git/theta-chains-statics-2-3-items.RData")
+## load("posterior-samples/in-git/theta-chains-statics-45-6-7-8-9-10-items.RData")
+## post.samples[[t]] <- list(map.vote.indices=map.vote.indices,
+##                           map.member.indices=map.member.indices,
+##                           map.time.indices=map.time.indices,
+##                           chains=chains)
+## names(post.samples) <- paste0("term", tees)
+## summary(post.samples)
+## #save(post.samples, file = "posterior-samples/in-git/theta-chains-statics-45-6-7-8-9-10-items.RData")
+## save(post.samples, file = "posterior-samples/in-git/theta-chains-statics-2-3-items.RData")
 
 ##################################################
 ## will receive point estimates and 80pct bands ##
 ##################################################
+load("posterior-samples/in-git/theta-chains-statics-2-3-items.RData")
 load("posterior-samples/in-git/theta-chains-statics-45-6-7-8-9-10-items.RData")
 point.est <- prior.location
 point.est[] <- NA
@@ -789,7 +789,7 @@ tmp1 <- lapply(1:nrow(tmp), function(x){
 #
 lapply(tmp1, function(x){lines(x$xx,x$yy, col = "gray")}) # draws transparent confidence bands
 #dev.off()
-1
+
 #####################################
 ## plot terms 2:3 point estimates ##
 #####################################

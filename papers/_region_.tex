@@ -1,0 +1,78 @@
+\message{ !name(ife96-12.v01.tex)}\documentclass[letter,12pt]{article}
+
+\usepackage[letterpaper,right=1.25in,left=1.25in,top=1in,bottom=1in]{geometry}
+\usepackage[longnamesfirst, sort]{natbib}\bibpunct[]{(}{)}{;}{a}{}{,}
+\usepackage{ae} % or {zefonts}
+\usepackage[T1]{fontenc} \usepackage[ansinew]{inputenc}
+\usepackage{amsmath} \usepackage{amssymb}
+\usepackage{url} %handles web & email addresses
+\usepackage{lscape} %landcape pages support
+\usepackage{setspace} %allows to change linespacing
+\usepackage{rotating} % allows sideways tables
+
+% avoid clubs and widows \clubpenalty=10000 \widowpenalty=10000
+% \displaywidowpenalty=10000
+
+%\usepackage[pdftex]{graphicx}
+% \graphicspath{"c:/data"}
+
+% for submission: sends figs and tables to last pages, other turns
+% footnotes to endnotes if endnotes used, place \listofendnotes where
+% you want the endnotes to appear (it must be after the last endnote).
+% \RequirePackage[nomarkers,nolists]{endfloat}
+% \RequirePackage{endnotes} \let\footnote=\endnote
+% \newcommand{\listofendnotes}{
+% \begingroup
+% \parindent 0pt
+% \parskip 2ex \def\enotesize{\normalsize} \theendnotes
+% \endgroup
+% }
+
+%   titlepage without author and date \renewcommand{\maketitle}{
+%   \begin{spacing}{1.5}
+%     \centering \LARGE{\textbf{\@title}}
+%   \end{spacing}
+% }
+
+%   to change margins in a section --
+%   type \begin{changemargin}{deltaLEFT}{deltaRIGHT}
+\def\changemargin#1#2{\list{}{\rightmargin#2\leftmargin#1}\item[]}
+\let\endchangemargin=\endlist
+
+% Defines small fractions with diagonal divisor
+\newcommand{\smfrac}[2]{$^{#1}\!/\!_{#2}$}
+
+\setstretch{2} %linespacing
+% \onehalfspacing \doublespacing
+
+\usepackage{tikz} % Easier syntax to draw pgf files (invokes pgf automatically)
+\usetikzlibrary{arrows}
+
+%scientific number notation: para 2.3x10^-3 se pone 2.3\e{-3}
+\providecommand{\e}[1]{\ensuremath{\times 10^{#1}}}
+
+\usepackage{color}
+\usepackage{arydshln} %% allows dashed lines in tables eg. \hdashline or \cdashline{2-3}
+
+%\usepackage{tabulary} %calcula automáticamente ancho de columnas con texto muy largo
+%% usar \begin{tabulary}{LRJC} para cálculo automático, lrjc para ancho de columna normal
+%\setlength\tymin{10pt}       %% estos permiten cambiar conducta, ver p. 254 LaTeX companion
+%\setlength\tymax{\maxdimen}
+
+% \usepackage[firstpage]{draftwatermark}
+% \SetWatermarkText{DRAFT}
+% \SetWatermarkScale{1}
+
+\newcommand{\mc}{\multicolumn}
+
+\begin{document}
+
+\message{ !name(ife96-12.v01.tex) !offset(32) }
+
+
+Scaling techniques to infer ideal points rely on a standard spatial model of voting \citep{black.1958,poole.rosenthal.1997}. The approach assumes that policy and preferences can be mapped with the same metric in space (as points in a line or plane) wherein distance determines utility and voting. In this context, two voters differ from one another in their spatial locations, just like two different alternatives do; voters choose the alternative closer to his or her ideal point. Scaling relies on observed votes and the spatial model of voting to estimate voters' ideal points and other latent quantities of interest.
+
+We specify a one-dimensional version of the model. In accordance with the spatial approach, voting `aye' (
+\message{ !name(ife96-12.v01.tex) !offset(127) }
+
+\end{document}

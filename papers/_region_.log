@@ -1,8 +1,11 @@
-This is pdfTeX, Version 3.1415926-1.40.10 (TeX Live 2009/Debian) (format=pdflatex 2012.8.16)  17 MAY 2014 10:52
+This is pdfTeX, Version 3.1415926-1.40.10 (TeX Live 2009/Debian) (format=pdflatex 2012.8.16)  15 MAR 2013 13:28
 entering extended mode
  %&-line parsing enabled.
-**\input ifedyn06.tex
-(./ifedyn06.tex (/usr/share/texmf-texlive/tex/latex/base/article.cls
+**\nonstopmode\nofiles\PassOptionsToPackage{active,tightpage,auctex}{preview}\A
+tBeginDocument{\ifx\ifPreview\undefined\RequirePackage[displaymath,floats,graph
+ics,textmath,sections,footnotes]{preview}[2004/11/05]\fi} \input _region_.tex
+(./_region_.tex  !name(ife96-12.v01.tex)
+(/usr/share/texmf-texlive/tex/latex/base/article.cls
 Document Class: article 2007/10/19 v1.4h Standard LaTeX document class
 (/usr/share/texmf-texlive/tex/latex/base/size12.clo
 File: size12.clo 2007/10/19 v1.4h Standard LaTeX file (size option)
@@ -48,9 +51,21 @@ Package: natbib 2009/07/16 8.31 (PWD, AO)
 \bibhang=\skip43
 \bibsep=\skip44
 LaTeX Info: Redefining \cite on input line 694.
+
+
+! LaTeX Error: \makeindex undefined.
+
+See the LaTeX manual or LaTeX Companion for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.795 \renewcommand\makeindex
+                             {\NAT@makeindex
+Try typing  <return>  to proceed.
+If that doesn't work, type  X <return>  to quit.
+
 \c@NAT@ctr=\count90
-)
-(/usr/share/texmf-texlive/tex/latex/ae/ae.sty
+) (/usr/share/texmf-texlive/tex/latex/ae/ae.sty
 Package: ae 2001/02/12 1.3 Almost European Computer Modern
 
 (/usr/share/texmf-texlive/tex/latex/base/fontenc.sty
@@ -466,13 +481,7 @@ Package: arydshln 2004/08/31 v1.71
 LaTeX Warning: Unused global option(s):
     [letter].
 
-(./ifedyn06.aux
-
-LaTeX Warning: Label `F:spaghettis' multiply defined.
-
-)
-\openout1 = `ifedyn06.aux'.
-
+No file _region_.aux.
 LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 68.
 LaTeX Font Info:    ... okay on input line 68.
 LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 68.
@@ -485,7 +494,27 @@ LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 68.
 LaTeX Font Info:    ... okay on input line 68.
 LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 68.
 LaTeX Font Info:    ... okay on input line 68.
+(/usr/share/texmf/tex/latex/preview/preview.sty
+Package: preview 2010/02/14 11.86 (AUCTeX/preview-latex)
 
+(/usr/share/texmf/tex/latex/preview/prtightpage.def
+\PreviewBorder=\dimen170
+)
+(/usr/share/texmf/tex/latex/preview/prauctex.def
+No auxiliary output files.
+
+
+\hbadness=\count134
+\hfuzz=\dimen171
+(/usr/share/texmf/tex/latex/preview/prauctex.cfg))
+(/usr/share/texmf/tex/latex/preview/prfootnotes.def)
+\pr@snippet=\count135
+\pr@box=\box39
+\pr@output=\toks34
+
+Preview: Fontsize 12pt
+Preview: PDFoutput 1
+)
 *geometry auto-detecting driver*
 *geometry detected driver: pdftex*
 -------------------- Geometry parameters
@@ -529,389 +558,42 @@ driver: pdftex
 -----------------------
 (/usr/share/texmf-texlive/tex/context/base/supp-pdf.mkii
 [Loading MPS to PDF converter (version 2006.09.02).]
-\scratchcounter=\count134
-\scratchdimen=\dimen170
-\scratchbox=\box39
-\nofMPsegments=\count135
-\nofMParguments=\count136
-\everyMPshowfont=\toks34
-\MPscratchCnt=\count137
-\MPscratchDim=\dimen171
-\MPnumerator=\count138
-\everyMPtoPDFconversion=\toks35
-) ABD: EveryShipout initializing macros
-LaTeX Font Info:    Try loading font information for U+msa on input line 77.
-
-(/usr/share/texmf-texlive/tex/latex/amsfonts/umsa.fd
-File: umsa.fd 2009/06/22 v3.00 AMS symbols A
-)
-LaTeX Font Info:    Try loading font information for U+msb on input line 77.
-
-(/usr/share/texmf-texlive/tex/latex/amsfonts/umsb.fd
-File: umsb.fd 2009/06/22 v3.00 AMS symbols B
-)
-LaTeX Font Info:    Try loading font information for T1+aett on input line 77.
-
-(/usr/share/texmf-texlive/tex/latex/ae/t1aett.fd
-File: t1aett.fd 1997/11/16 Font definitions for T1/aett.
-)
-
-Package natbib Warning: Citation `martin.quinn.2002' on page 1 undefined on inp
-ut line 84.
-
-
-Package natbib Warning: Citation `bonica.dynamicIPs.2009' on page 1 undefined o
-n input line 84.
-
-
-Package natbib Warning: Citation `estevez.magar.rosas.2008' on page 1 undefined
- on input line 91.
-
-
-Package natbib Warning: Citation `estevez.magar.rosas.2009' on page 1 undefined
- on input line 91.
-
-[1
-
-{/var/lib/texmf/fonts/map/pdftex/updmap/pdftex.map}]
-
-Package natbib Warning: Citation `ackerman.2004.coGov' on page 2 undefined on i
-nput line 93.
-
-
-Package natbib Warning: Citation `eisenstadt.2004' on page 2 undefined on input
- line 93.
-
-
-Package natbib Warning: Citation `schedler.ife.2000' on page 2 undefined on inp
-ut line 93.
-
-
-Package natbib Warning: Citation `woldenberg.transMex.2012' on page 2 undefined
- on input line 93.
-
-[2] [3]
-
-Package natbib Warning: Citation `black.1958' on page 4 undefined on input line
- 103.
-
-
-Package natbib Warning: Citation `poole.rosenthal.1997' on page 4 undefined on 
-input line 103.
-
-[4] [5] <../../graphs/all+divVotsQuarter.pdf, id=37, 505.89pt x 289.08pt>
-File: ../../graphs/all+divVotsQuarter.pdf Graphic file (type pdf)
-
-<use ../../graphs/all+divVotsQuarter.pdf>
-
-LaTeX Warning: File `../../graphs/woldBonicaSmoothLines.pdf' not found on input
- line 125.
-
-
-! Package pdftex.def Error: File `../../graphs/woldBonicaSmoothLines.pdf' not f
-ound.
-
-See the pdftex.def package documentation for explanation.
-Type  H <return>  for immediate help.
- ...                                              
-                                                  
-l.125 ...]{../../graphs/woldBonicaSmoothLines.pdf}
-                                                   %&
-Using draft setting for this image.
-Try typing  <return>  to proceed.
-If that doesn't work, type  X <return>  to quit.
-
-
-LaTeX Warning: File `../../graphs/allWdynQuarter.pdf' not found on input line 1
-36.
-
-
-! Package pdftex.def Error: File `../../graphs/allWdynQuarter.pdf' not found.
-
-See the pdftex.def package documentation for explanation.
-Type  H <return>  for immediate help.
- ...                                              
-                                                  
-l.136 ...xtwidth]{../../graphs/allWdynQuarter.pdf}
-                                                   &
-Using draft setting for this image.
-Try typing  <return>  to proceed.
-If that doesn't work, type  X <return>  to quit.
-
-
-LaTeX Warning: File `../../graphs/allUAVdynQuarter.pdf' not found on input line
- 137.
-
-
-! Package pdftex.def Error: File `../../graphs/allUAVdynQuarter.pdf' not found.
-
-
-See the pdftex.def package documentation for explanation.
-Type  H <return>  for immediate help.
- ...                                              
-                                                  
-l.137 ...width]{../../graphs/allUAVdynQuarter.pdf}
-                                                   \\
-Using draft setting for this image.
-Try typing  <return>  to proceed.
-If that doesn't work, type  X <return>  to quit.
-
-
-Overfull \hbox (6.65147pt too wide) in paragraph at lines 134--139
- [] 
- []
-
-[6] [7 <../../graphs/all+divVotsQuarter.pdf>] [8] [9] [10] [11]
-
-LaTeX Warning: File `../../graphs/woldStackBonicaPan.pdf' not found on input li
-ne 168.
-
-
-! Package pdftex.def Error: File `../../graphs/woldStackBonicaPan.pdf' not foun
-d.
-
-See the pdftex.def package documentation for explanation.
-Type  H <return>  for immediate help.
- ...                                              
-                                                  
-l.168 ...dth]{../../graphs/woldStackBonicaPan.pdf}
-                                                   &
-Using draft setting for this image.
-Try typing  <return>  to proceed.
-If that doesn't work, type  X <return>  to quit.
-
-
-LaTeX Warning: File `../../graphs/woldStackBonicaPri.pdf' not found on input li
-ne 169.
-
-
-! Package pdftex.def Error: File `../../graphs/woldStackBonicaPri.pdf' not foun
-d.
-
-See the pdftex.def package documentation for explanation.
-Type  H <return>  for immediate help.
- ...                                              
-                                                  
-l.169 ...dth]{../../graphs/woldStackBonicaPri.pdf}
-                                                   &
-Using draft setting for this image.
-Try typing  <return>  to proceed.
-If that doesn't work, type  X <return>  to quit.
-
-
-LaTeX Warning: File `../../graphs/woldStackBonicaLeft.pdf' not found on input l
-ine 170.
-
-
-! Package pdftex.def Error: File `../../graphs/woldStackBonicaLeft.pdf' not fou
-nd.
-
-See the pdftex.def package documentation for explanation.
-Type  H <return>  for immediate help.
- ...                                              
-                                                  
-l.170 ...th]{../../graphs/woldStackBonicaLeft.pdf}
-                                                   \\
-Using draft setting for this image.
-Try typing  <return>  to proceed.
-If that doesn't work, type  X <return>  to quit.
-
-
-LaTeX Warning: File `../../graphs/uavStackMartinQuinnQuarterPan.pdf' not found 
-on input line 173.
-
-
-! Package pdftex.def Error: File `../../graphs/uavStackMartinQuinnQuarterPan.pd
-f' not found.
-
-See the pdftex.def package documentation for explanation.
-Type  H <return>  for immediate help.
- ...                                              
-                                                  
-l.173 ...graphs/uavStackMartinQuinnQuarterPan.pdf}
-                                                   &
-Using draft setting for this image.
-Try typing  <return>  to proceed.
-If that doesn't work, type  X <return>  to quit.
-
-
-LaTeX Warning: File `../../graphs/uavStackMartinQuinnQuarterPri.pdf' not found 
-on input line 174.
-
-
-! Package pdftex.def Error: File `../../graphs/uavStackMartinQuinnQuarterPri.pd
-f' not found.
-
-See the pdftex.def package documentation for explanation.
-Type  H <return>  for immediate help.
- ...                                              
-                                                  
-l.174 ...graphs/uavStackMartinQuinnQuarterPri.pdf}
-                                                   &
-Using draft setting for this image.
-Try typing  <return>  to proceed.
-If that doesn't work, type  X <return>  to quit.
-
-
-LaTeX Warning: File `../../graphs/uavStackMartinQuinnQuarterLeft.pdf' not found
- on input line 175.
-
-
-! Package pdftex.def Error: File `../../graphs/uavStackMartinQuinnQuarterLeft.p
-df' not found.
-
-See the pdftex.def package documentation for explanation.
-Type  H <return>  for immediate help.
- ...                                              
-                                                  
-l.175 ...raphs/uavStackMartinQuinnQuarterLeft.pdf}
-                                                   \\
-Using draft setting for this image.
-Try typing  <return>  to proceed.
-If that doesn't work, type  X <return>  to quit.
-
-
-LaTeX Warning: File `../../graphs/uavStackMartinQuinnQuarterPanElba.pdf' not fo
-und on input line 178.
-
-
-! Package pdftex.def Error: File `../../graphs/uavStackMartinQuinnQuarterPanElb
-a.pdf' not found.
-
-See the pdftex.def package documentation for explanation.
-Type  H <return>  for immediate help.
- ...                                              
-                                                  
-l.178 ...hs/uavStackMartinQuinnQuarterPanElba.pdf}
-                                                   &
-Using draft setting for this image.
-Try typing  <return>  to proceed.
-If that doesn't work, type  X <return>  to quit.
-
-
-LaTeX Warning: File `../../graphs/uavStackMartinQuinnQuarterPriMadPvem.pdf' not
- found on input line 179.
-
-
-! Package pdftex.def Error: File `../../graphs/uavStackMartinQuinnQuarterPriMad
-Pvem.pdf' not found.
-
-See the pdftex.def package documentation for explanation.
-Type  H <return>  for immediate help.
- ...                                              
-                                                  
-l.179 ...uavStackMartinQuinnQuarterPriMadPvem.pdf}
-                                                   & \\
-Using draft setting for this image.
-Try typing  <return>  to proceed.
-If that doesn't work, type  X <return>  to quit.
-
-
-Package natbib Warning: Citation `estevez.magar.rosas.2008' on page 12 undefine
-d on input line 185.
-
-
-Package natbib Warning: Citation `moreno.votMex.2003' on page 12 undefined on i
-nput line 185.
-
-
-Package natbib Warning: Citation `dominguez.mccann.apsr.1995' on page 12 undefi
-ned on input line 185.
-
-[12] [13] [14] [15] [16]
-<../../graphs/ptyComplaints.pdf, id=78, 505.89pt x 289.08pt>
-File: ../../graphs/ptyComplaints.pdf Graphic file (type pdf)
-
-<use ../../graphs/ptyComplaints.pdf>
-
-Package natbib Warning: Citation `shepsle.weingast.1987' on page 17 undefined o
-n input line 209.
-
-
-Package natbib Warning: Citation `cox.mccubbins.2005' on page 17 undefined on i
-nput line 209.
-
-
-Package natbib Warning: Citation `baum.2007' on page 17 undefined on input line
- 209.
-
-
-LaTeX Warning: Reference `T:tests' on page 17 undefined on input line 209.
-
-
-LaTeX Warning: Reference `T:tests' on page 17 undefined on input line 209.
-
-[17 <../../graphs/ptyComplaints.pdf>] [18] [19]
-
-LaTeX Warning: Reference `t:WiAndBtw' on page 20 undefined on input line 250.
-
-[20] [21]
-
-Package natbib Warning: Citation `marquez.aparicio.2010' on page 22 undefined o
-n input line 254.
-
-[22]
-
-Package natbib Warning: Citation `mcnollgast.1987' on page 23 undefined on inpu
-t line 294.
-
-
-Package natbib Warning: Citation `weingast.1984' on page 23 undefined on input 
-line 294.
-
-
-Package natbib Warning: Citation `mayhew.1974' on page 23 undefined on input li
-ne 294.
-
-[23]
-
-LaTeX Warning: Reference `F:allwMedian' on page 24 undefined on input line 296.
-
-
-
-LaTeX Warning: Reference `F:allwMedian' on page 24 undefined on input line 296.
-
-
-[24] [25] [26]
-No file ifedyn06.bbl.
+\scratchcounter=\count136
+\scratchdimen=\dimen172
+\scratchbox=\box40
+\nofMPsegments=\count137
+\nofMParguments=\count138
+\everyMPshowfont=\toks35
+\MPscratchCnt=\count139
+\MPscratchDim=\dimen173
+\MPnumerator=\count140
+\everyMPtoPDFconversion=\toks36
+) ABD: EveryShipout initializing macros  !name(ife96-12.v01.tex) !offset(32) 
+
+Package natbib Warning: Citation `black.1958' on page 1 undefined on input line
+ 73.
+
+
+Package natbib Warning: Citation `poole.rosenthal.1997' on page 1 undefined on 
+input line 73.
+
+ !name(ife96-12.v01.tex) !offset(127) 
 
 Package natbib Warning: There were undefined citations.
 
-[27] (./ifedyn06.aux)
-
-LaTeX Warning: There were undefined references.
-
-
-LaTeX Warning: There were multiply-defined labels.
-
  ) 
 Here is how much of TeX's memory you used:
- 11871 strings out of 494972
- 212239 string characters out of 1179626
- 259531 words of memory out of 3000000
- 14752 multiletter control sequences out of 15000+50000
- 49503 words of font info for 115 fonts, out of 3000000 for 9000
+ 11820 strings out of 494972
+ 211350 string characters out of 1179626
+ 253132 words of memory out of 3000000
+ 14776 multiletter control sequences out of 15000+50000
+ 6944 words of font info for 17 fonts, out of 3000000 for 9000
  54 hyphenation exceptions out of 8191
- 56i,13n,55p,3692b,497s stack positions out of 5000i,500n,10000p,200000b,50000s
-</usr/share/texmf-texlive/fonts/type1/public/amsfonts/cm/cmbx10.pfb></usr/sha
-re/texmf-texlive/fonts/type1/public/amsfonts/cm/cmbx12.pfb></usr/share/texmf-te
-xlive/fonts/type1/public/amsfonts/cm/cmmi10.pfb></usr/share/texmf-texlive/fonts
-/type1/public/amsfonts/cm/cmmi12.pfb></usr/share/texmf-texlive/fonts/type1/publ
-ic/amsfonts/cm/cmmi7.pfb></usr/share/texmf-texlive/fonts/type1/public/amsfonts/
-cm/cmmi8.pfb></usr/share/texmf-texlive/fonts/type1/public/amsfonts/cm/cmr10.pfb
-></usr/share/texmf-texlive/fonts/type1/public/amsfonts/cm/cmr12.pfb></usr/share
-/texmf-texlive/fonts/type1/public/amsfonts/cm/cmr17.pfb></usr/share/texmf-texli
-ve/fonts/type1/public/amsfonts/cm/cmr7.pfb></usr/share/texmf-texlive/fonts/type
-1/public/amsfonts/cm/cmr8.pfb></usr/share/texmf-texlive/fonts/type1/public/amsf
-onts/cm/cmsy10.pfb></usr/share/texmf-texlive/fonts/type1/public/amsfonts/cm/cms
-y7.pfb></usr/share/texmf-texlive/fonts/type1/public/amsfonts/cm/cmsy8.pfb></usr
-/share/texmf-texlive/fonts/type1/public/amsfonts/cm/cmti12.pfb></usr/share/texm
-f-texlive/fonts/type1/public/amsfonts/cm/cmtt10.pfb></usr/share/texmf-texlive/f
-onts/type1/public/amsfonts/cm/cmtt12.pfb></usr/share/texmf-texlive/fonts/type1/
-public/amsfonts/symbols/msbm10.pfb>
-Output written on ifedyn06.pdf (27 pages, 279391 bytes).
+ 56i,5n,55p,879b,130s stack positions out of 5000i,500n,10000p,200000b,50000s
+
+No pages of output.
 PDF statistics:
- 175 PDF objects out of 1000 (max. 8388607)
+ 3 PDF objects out of 1000 (max. 8388607)
  0 named destinations out of 1000 (max. 500000)
- 23 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 13 words of extra memory for PDF output out of 10000 (max. 10000000)
 
