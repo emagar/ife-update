@@ -423,8 +423,13 @@ rm(i,sel) # clean
 ##########################################
 ## pick one year (turn into loop later) ##
 ##########################################
+report_prez <- function(x) {
+    prez <- c("(carpizo 1994-96)", "(woldenberg I 1996-2000)", "(woldenberg II 2000-03)", "(ugalde 2003-07)", "(albo 2008)", "(valdés I 2008)", "(valdés II 2008-10)", "(valdés III 2010-11)", "(valdés IV 2011-13)", "(valdés V 2013)", "(valdés VI 2013-14)", "(córdoba I 2014-)")
+    return(prez[x])
+}
 t <- c(1:T)[1]
-paste("t =", t, "is term", tees[t])
+paste("t =", t, "is term", tees[t], report_prez(tees[t])); rm(report_prez)
+
 #for (t in 1:7){
 
 ###################################################
@@ -515,42 +520,7 @@ ife.inits <- function() {
 ## prior.location[map.member.indices$actual,t]
 ## prior.precision[map.member.indices$actual,t]
 
-ife.model.members = "model {
-	for (n in 1:n.obs) {
-		y[n] ~ dbern (pi[n])
-		probit(pi[n]) <- beta[vote[n]]*theta[member[n]] - alpha[vote[n]]
-	}
-	# PRIORS
-	# Alpha (difficulty)
-	for (j in 1:n.item) { alpha[j] ~ dnorm(0, 0.25) }   
-	# Beta (discrimination)
-	for (j in 1:n.item) { beta[j] ~ dnorm(0, 0.1) }   
-	# ideal points
-	for(i in 1:n.member)  { theta[i] ~ dnorm( mean.theta[i], precision.theta[i] ) }
-	## theta[4] ~ dnorm( 2,4)T(0,) # normal + truncated
-	## theta[9] ~ dnorm(-2,4)T(,0) # normal - truncated
-	## for(i in c(1:3,5:8))  { theta[i] ~ dnorm(0,1) }
-	#for(i in setdiff(1:n.mems, c(4,9)))  { theta[i] ~ dnorm(0,1) } # no parece gustarle a jags
-}"
-
-ife.model.items = "model {
-	for (n in 1:n.obs) {
-		y[n] ~ dbern (pi[n])
-		probit(pi[n]) <- beta[vote[n]]*theta[member[n]] - alpha[vote[n]]
-	}
-	# PRIORS
-	# Alpha (difficulty)
-	for (j in 1:n.item) { alpha[j] ~ dnorm(0, 0.25) }   
-	# Beta (discrimination) --- votes sorted such that 1-2 are north-south, rest uninformative
-        for(j in 3:n.item){ 
-            beta [j] ~ dnorm(0, 0.1)
-        }
-        beta [1] ~ dnorm( 4, 4)
-        beta [2] ~ dnorm( 4, 4)
-	# ideal points
-	for(i in 1:n.member) { theta[i] ~ dnorm(0,1) }
-}"
-
+# read model
 source ("../code/mix-model.r")
 
 results <- run.jags(
@@ -560,19 +530,51 @@ results <- run.jags(
   n.chains = 2,
   data     = ife.data.vector,
   inits    = list (ife.inits(), ife.inits()),
+  thin = 50, burnin = 9000, sample = 3000,
   #thin = 250, burnin = 50000, sample = 200,
-  #thin = 50, burnin = 10000, sample = 200,
-  thin = 5, burnin = 200, sample = 200,
+  #thin =  50, burnin = 10000, sample = 200,
+  #thin =   5, burnin =   200, sample = 200,
   plots = FALSE)
 
 chains <- mcmc.list(list (results$mcmc[[1]], results$mcmc[[2]]))
+dim(chains[[1]])
 # check model convergence 
 gelman.diag (chains, multivariate=F)
+
+############################
+## store posterior sample ##
+############################
+getwd()
+load("posterior-samples/in-git/theta-chains-statics-2-3-items.RData")
+load("posterior-samples/in-git/theta-chains-statics-45-6-7-8-9-10-items.RData")
+post.samples[[t]] <- list(map.vote.indices=map.vote.indices,
+                          map.member.indices=map.member.indices,
+                          map.time.indices=map.time.indices,
+                          chains=chains)
+names(post.samples) <- paste0("term", tees)
+summary(post.samples)
+#save(post.samples, file = "posterior-samples/in-git/theta-chains-statics-45-6-7-8-9-10-items.RData")
+save(post.samples, file = "posterior-samples/not-in-git/posterior-chains-statics-mix-2-3-items.RData")
+
+#######################
+## load saved chains ##
+#######################
+load("posterior-samples/in-git/theta-chains-statics-2-3-items.RData")
+load("posterior-samples/in-git/theta-chains-statics-45-6-7-8-9-10-items.RData")
+load("posterior-samples/not-in-git/posterior-chains-statics-mix-2-3-items.RData")
+
+chains <- post.samples[[1]]$chains
 
 #################################################################################
 ### Lines added Jun 3, 2022
 consejero.grupos <- chains[[1]][,grep("component", colnames (chains[[1]]))]
 colnames (consejero.grupos) <- column.t
+dim(consejero.grupos)
+
+# sample posterior chains 30-by-30
+tmp <- as.data.frame(consejero.grupos)
+tmp$tmp <- as.integer(((1:3000)/30)+.99)
+tmp <- split(tmp, f = tmp$tmp)
 
 # Hacer triplot con objeto consejero.grupos
 
@@ -587,6 +589,9 @@ prob.group.belonging <- function (x) {
 
 apply (consejero.grupos, 2, prob.group.belonging)
 
+# plot each element in list tmp2 to get uncertainty cloud
+tmp2 <- lapply(tmp, FUN = function(x) apply(x, 2, prob.group.belonging))
+
 
 promedios <- chains[[1]][,grep("promedios", colnames (chains[[1]]))]
 gaps <- chains[[1]][,grep("gaps", colnames (chains[[1]]))]
@@ -597,26 +602,12 @@ colMeans (gaps)
 #################################################################################
 
 
-## ############################
-## ## store posterior sample ##
-## ############################
-## getwd()
-## load("posterior-samples/in-git/theta-chains-statics-2-3-items.RData")
-## load("posterior-samples/in-git/theta-chains-statics-45-6-7-8-9-10-items.RData")
-## post.samples[[t]] <- list(map.vote.indices=map.vote.indices,
-##                           map.member.indices=map.member.indices,
-##                           map.time.indices=map.time.indices,
-##                           chains=chains)
-## names(post.samples) <- paste0("term", tees)
-## summary(post.samples)
-## #save(post.samples, file = "posterior-samples/in-git/theta-chains-statics-45-6-7-8-9-10-items.RData")
-## save(post.samples, file = "posterior-samples/in-git/theta-chains-statics-2-3-items.RData")
-
 ##################################################
 ## will receive point estimates and 80pct bands ##
 ##################################################
 load("posterior-samples/in-git/theta-chains-statics-2-3-items.RData")
 load("posterior-samples/in-git/theta-chains-statics-45-6-7-8-9-10-items.RData")
+load("posterior-samples/not-in-git/posterior-chains-statics-mix-2-3-items.RData")
 point.est <- prior.location
 point.est[] <- NA
 lo <- hi <- point.est
