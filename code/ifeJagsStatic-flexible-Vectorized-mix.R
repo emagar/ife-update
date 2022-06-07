@@ -541,20 +541,20 @@ dim(chains[[1]])
 # check model convergence 
 gelman.diag (chains, multivariate=F)
 
-############################
-## store posterior sample ##
-############################
-getwd()
-load("posterior-samples/in-git/theta-chains-statics-2-3-items.RData")
-load("posterior-samples/in-git/theta-chains-statics-45-6-7-8-9-10-items.RData")
-post.samples[[t]] <- list(map.vote.indices=map.vote.indices,
-                          map.member.indices=map.member.indices,
-                          map.time.indices=map.time.indices,
-                          chains=chains)
-names(post.samples) <- paste0("term", tees)
-summary(post.samples)
-#save(post.samples, file = "posterior-samples/in-git/theta-chains-statics-45-6-7-8-9-10-items.RData")
-save(post.samples, file = "posterior-samples/not-in-git/posterior-chains-statics-mix-2-3-items.RData")
+## ############################
+## ## store posterior sample ##
+## ############################
+## getwd()
+## load("posterior-samples/in-git/theta-chains-statics-2-3-items.RData")
+## load("posterior-samples/in-git/theta-chains-statics-45-6-7-8-9-10-items.RData")
+## post.samples[[t]] <- list(map.vote.indices=map.vote.indices,
+##                           map.member.indices=map.member.indices,
+##                           map.time.indices=map.time.indices,
+##                           chains=chains)
+## names(post.samples) <- paste0("term", tees)
+## summary(post.samples)
+## #save(post.samples, file = "posterior-samples/in-git/theta-chains-statics-45-6-7-8-9-10-items.RData")
+## save(post.samples, file = "posterior-samples/not-in-git/posterior-chains-statics-mix-2-3-items.RData")
 
 #######################
 ## load saved chains ##
@@ -571,26 +571,55 @@ consejero.grupos <- chains[[1]][,grep("component", colnames (chains[[1]]))]
 colnames (consejero.grupos) <- column.t
 dim(consejero.grupos)
 
-# sample posterior chains 30-by-30
-tmp <- as.data.frame(consejero.grupos)
-tmp$tmp <- as.integer(((1:3000)/30)+.99)
-tmp <- split(tmp, f = tmp$tmp)
-
-# Hacer triplot con objeto consejero.grupos
-
-
-prob.group.belonging <- function (x) {
+# function extracting prob each member belongs in group 1 2 3
+prob.group.belonging <- function (x,n=0) {
   g1 <- length (x[x==1])/length(x)
   g2 <- length (x[x==2])/length(x)
   g3 <- length (x[x==3])/length(x)
-  g <- c (g1, g2, g3)
+  if (n==0) g <- c (g1, g2, g3) # default n=0 returns all three probs
+  if (n==1) g <- g1
+  if (n==2) g <- g2
+  if (n==3) g <- g3
   return (g)
 }
 
-apply (consejero.grupos, 2, prob.group.belonging)
+# triplot functions
+source("../code/triplots.r")
 
-# plot each element in list tmp2 to get uncertainty cloud
-tmp2 <- lapply(tmp, FUN = function(x) apply(x, 2, prob.group.belonging))
+# Hacer triplot con objeto consejero.grupos
+tmp <- apply (consejero.grupos, 2, prob.group.belonging)
+rownames(tmp) <- c("one", "two", "three") 
+#
+# triplot
+#typdf(file = "../plots/group-probs-wold1.pdf")
+par(mfrow=c(3,3))
+for (i in 1:9){
+#i <- 5
+tri.color <- function(x){
+    the.max <- which.max(x)
+    names(the.max) <- NULL
+    if (the.max==1) the.max <- col.prd
+    if (the.max==2) the.max <- col.pan
+    if (the.max==3) the.max <- col.pri
+    return(the.max)
+}
+la.ternera(tmp[,i], cex.pts = 2, color = tri.color(tmp[,i]), main = colnames(tmp)[i], add.sign=FALSE)
+#         , labs=c("2","3","1"), left.right.up=c("two","three","one")) # expression(hat(v)[2018])
+#
+# sample posterior chains 100-by-100 with overlaps
+jitter <- function() runif(1, min=-.02, max=.02)
+tmp2 <- as.data.frame(consejero.grupos)
+for (j in seq(from = 1, to = 2901, by = 20)){
+    tmp3 <- tmp2[j:(j+99),i]
+    tmp3 <- c(pr1=length(tmp3[tmp3==1]) / length(tmp3), pr2=length(tmp3[tmp3==2]) / length(tmp3), pr3=length(tmp3[tmp3==3]) / length(tmp3))
+    tmp4 <- data.frame(t(tern2cart(tmp3))); colnames(tmp4) <- c("x","y")
+    tmp4$x <- apply(tmp4, 1, function(x) x[1]+jitter()); tmp4$y <- apply(tmp4, 1, function(x) x[2]+jitter())
+    points(tmp4 , col = tri.color(tmp3), cex = 1.2 )
+    }
+    points(t(tern2cart(tmp[,i])), cex = 2)#, col = tri.color(tmp[,i] ))
+    points(t(tern2cart(tmp[,i])), cex = 1.2)#, col = tri.color(tmp[,i] ))
+}
+#dev.off()
 
 
 promedios <- chains[[1]][,grep("promedios", colnames (chains[[1]]))]

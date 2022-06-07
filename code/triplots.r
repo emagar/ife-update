@@ -1,11 +1,7 @@
-# workdir
-wd <- c("~/Dropbox/data/elecs/MXelsCalendGovt/redistrict/ife.ine/")
-
-
-######################################################################
-## Function transforming ternary into cartesian coordinates         ##
-## https://stackoverflow.com/questions/11623602/shaded-triplot-in-r ##
-######################################################################
+############################################################################
+## Function transforming ternary compositional into cartesian coordinates ##
+## https://stackoverflow.com/questions/11623602/shaded-triplot-in-r       ##
+############################################################################
 tern2cart <- function(coord){
     coord[1] -> x
     coord[2] -> y
@@ -16,34 +12,37 @@ tern2cart <- function(coord){
     z/tot -> z
     (2*y + z)/(2*(x+y+z)) -> x1
     sqrt(3)*z/(2*(x+y+z)) -> y1
-    return(c(x1,y1))
+    return(c(x=x1,y=y1))
     }
 # function to add vertex labels
 add.lab <- function(labels, add.sign=TRUE){
     left  <- labels[2];
     right <- labels[1];
     up    <- labels[3];
-    text(0,0,labels=left,pos=1)         # left
-    text(1,0,labels=right,pos=1)        # right
-    text(0.5,sqrt(3)/2,labels=up,pos=3) # up
-    if (add.sign==TRUE) text(0.5,0,labels="@emagar",pos=1,cex=.75,col="gray")
+    text(0, 0, labels=left, pos=1)         # left
+    text(1, 0, labels=right, pos=1)        # right
+    text(0.5, sqrt(3)/2, labels=up, pos=3) # up
+    if (add.sign==TRUE) text(0.5,0, labels="@emagar", pos=1, cex=.75, col="gray")
 }
 
 ###############################
 ## function wrapping triplot ##
 ###############################
-la.ternera <- function(datos, color = rgb(.55,.27,.07, alpha = .2), cex.pts = .15, main = NA, labs=c("PAN","PRI","Morena"), left.right.up=c("pri","pan","morena"), add.sign=TRUE){
-    # Prepare data: re-arrange so pan is lower right, pri lower left, morena is above 
-    datos <- datos[,left.right.up] # subset
+la.ternera <- function(datos, color = rgb(.55,.27,.07, alpha = .2), cex.pts = .15, main = NA, labs=c("1","2","3"), left.right.up=c("one","two","three"), add.sign=TRUE){
+    # Prepare data: re-arrange so three is lower right, two lower left, one is above 
+    #datos <- c(one=.2,two=.38,three=.42) tmp[,1] #debug
+    #left.right.up <- c("two","three","one") #debug
+    datos <- datos[left.right.up] # subset and sort according to left.right.up
     #Then transformed into cartesian coordinates:
-    datos <- t(apply(datos,1,tern2cart))
+    # datos <- t(apply(datos,2,tern2cart))
+    datos <- t(tern2cart(datos))
     # Draw the empty ternary diagram:
     par(mar=c(2.1, 2.1, 4.1, 2.1)) ## SETS B L U R MARGIN SIZES
     plot(NA, NA, xlim=c(0,1), ylim=c(0,sqrt(3)/2), asp=1, bty="n", axes=F, xlab="", ylab="", main = main)
     segments(0,0,0.5,sqrt(3)/2)
     segments(0.5,sqrt(3)/2,1,0)
     segments(1,0,0,0)
-    # add vértice labels
+    # add vertex labels
     add.lab(labs, add.sign=add.sign)
     ## # add a grid:
     ## a <- seq(0.9,0.1,by=-0.1)
@@ -59,43 +58,43 @@ la.ternera <- function(datos, color = rgb(.55,.27,.07, alpha = .2), cex.pts = .1
     ## text(grid.tern[18:10,],paste(lab,"\n(PRI)"),col="grey80",cex=0.7, pos=4)
     ## text(grid.tern[27:19,],paste(lab,"\n(Morena)"),col="grey80",cex=0.7, pos=1)
     # or 50-50 to 33-33-33 lines instead
-    ## a <- c(1,1,0)
-    ## b <- c(1,0,1)
-    ## c <- c(0,1,1)
-    ## d <- c(1,1,1)
-    ## grid <- data.frame(matrix(c(a,b,c,d),nrow=4,byrow=TRUE))
+    a <- c(1,1,0)
+    b <- c(1,0,1)
+    c <- c(0,1,1)
+    d <- c(1,1,1)
+    grid <- data.frame(matrix(c(a,b,c,d),nrow=4,byrow=TRUE))
+    grid.tern <- t(apply(grid,1,tern2cart))
+    for (i in 1:3){
+        segments(x0=grid.tern[i,1],y0=grid.tern[i,2],x1=grid.tern[4,1],y1=grid.tern[4,2],lty=2,col="grey10")
+    }
+    ## # or 10 percent bands
+    ## a <- c( 57.5,42.5,   0)
+    ## b <- c( 57.5,   0,42.5)
+    ## c <- c(130/3,85/3,85/3)
+    ## grid <- data.frame(matrix(c(a,b,c),nrow=3,byrow=TRUE))
     ## grid.tern <- t(apply(grid,1,tern2cart))
-    ## for (i in 1:3){
-    ##     segments(x0=grid.tern[i,1],y0=grid.tern[i,2],x1=grid.tern[4,1],y1=grid.tern[4,2],lty=2,col="grey10")
+    ## for (i in 1:2){
+    ##     #i <- 1 # debug
+    ##     segments(x0=grid.tern[i,1],y0=grid.tern[i,2],x1=grid.tern[3,1],y1=grid.tern[3,2],lty=2,col="grey10")
     ## }
-    # or 10 percent bands
-    a <- c( 57.5,42.5,   0)
-    b <- c( 57.5,   0,42.5)
-    c <- c(130/3,85/3,85/3)
-    grid <- data.frame(matrix(c(a,b,c),nrow=3,byrow=TRUE))
-    grid.tern <- t(apply(grid,1,tern2cart))
-    for (i in 1:2){
-        #i <- 1 # debug
-        segments(x0=grid.tern[i,1],y0=grid.tern[i,2],x1=grid.tern[3,1],y1=grid.tern[3,2],lty=2,col="grey10")
-    }
-    a <- c(42.5, 57.5,   0)
-    b <- c(   0, 57.5,42.5)
-    c <- c(85/3,130/3,85/3)
-    grid <- data.frame(matrix(c(a,b,c),nrow=3,byrow=TRUE))
-    grid.tern <- t(apply(grid,1,tern2cart))
-    for (i in 1:2){
-        #i <- 1 # debug
-        segments(x0=grid.tern[i,1],y0=grid.tern[i,2],x1=grid.tern[3,1],y1=grid.tern[3,2],lty=2,col="grey10")
-    }
-    a <- c(42.5,   0, 57.5)
-    b <- c(   0,42.5, 57.5)
-    c <- c(85/3,85/3,130/3)
-    grid <- data.frame(matrix(c(a,b,c),nrow=3,byrow=TRUE))
-    grid.tern <- t(apply(grid,1,tern2cart))
-    for (i in 1:2){
-        #i <- 1 # debug
-        segments(x0=grid.tern[i,1],y0=grid.tern[i,2],x1=grid.tern[3,1],y1=grid.tern[3,2],lty=2,col="grey10")
-    }
+    ## a <- c(42.5, 57.5,   0)
+    ## b <- c(   0, 57.5,42.5)
+    ## c <- c(85/3,130/3,85/3)
+    ## grid <- data.frame(matrix(c(a,b,c),nrow=3,byrow=TRUE))
+    ## grid.tern <- t(apply(grid,1,tern2cart))
+    ## for (i in 1:2){
+    ##     #i <- 1 # debug
+    ##     segments(x0=grid.tern[i,1],y0=grid.tern[i,2],x1=grid.tern[3,1],y1=grid.tern[3,2],lty=2,col="grey10")
+    ## }
+    ## a <- c(42.5,   0, 57.5)
+    ## b <- c(   0,42.5, 57.5)
+    ## c <- c(85/3,85/3,130/3)
+    ## grid <- data.frame(matrix(c(a,b,c),nrow=3,byrow=TRUE))
+    ## grid.tern <- t(apply(grid,1,tern2cart))
+    ## for (i in 1:2){
+    ##     #i <- 1 # debug
+    ##     segments(x0=grid.tern[i,1],y0=grid.tern[i,2],x1=grid.tern[3,1],y1=grid.tern[3,2],lty=2,col="grey10")
+    ## }
     # Plot points:
     points(datos, pch = 20, cex = cex.pts, col = color)
 }
@@ -107,6 +106,7 @@ col.pan <-    rgb(.18,.24,.73, alpha = .2) # moderate blue
 col.vxm <-    rgb(  0,.75,  1, alpha = .2) # deepskyblue
 col.pri <-    rgb(.89,.17,.17, alpha = .2) # brightred
 col.morena <- rgb(.55,.27,.07, alpha = .2) # saddlebrown
+col.prd <-    rgb(  1,.84,  0, alpha = .2) # gold
 col.pvem   <- rgb(  0,.80,  0, alpha = .2) # green 3
 col.mc     <- rgb(.93,.46,  0, alpha = .2) # darkorange2
 col.oth    <- rgb(.55,.55,.55, alpha = .2) # gray 59
@@ -119,87 +119,10 @@ col.oth    <- rgb(.55,.55,.55, alpha = .2) # gray 59
 ## ################################################## ##
 ########################################################
 
-#####################
-## municipio-level ##
-#####################
-extendCoal.2015 <- read.csv(file = paste(wd, "data/dipfed-municipio-vhat-2015.csv", sep = ""), stringsAsFactors = FALSE)
-extendCoal.2018 <- read.csv(file = paste(wd, "data/dipfed-municipio-vhat-2018.csv", sep = ""), stringsAsFactors = FALSE)
-extendCoal.2021 <- read.csv(file = paste(wd, "data/dipfed-municipio-vhat-2021.csv", sep = ""), stringsAsFactors = FALSE)
-
-# for pan/pri/morena
-raw.2021 <- read.csv(file = paste(wd, "data/dipfed-municipio-vraw-2021.csv", sep = ""), stringsAsFactors = FALSE)
-raw.2021 <- within(raw.2021, {
-    pan <- pan + panc + prd;
-    pri <- pri + pric;
-    left <- morena + morenac + pt;
-    pvem <- pvem + pvemc;
-    oth <- pes + rsp + fxm + indep;
-    panc <- pric <- morena <- morenac <- pvemc <- prd <- pt <- pes <- rsp <- fxm <- indep <- NULL;
-})
-
-# alianzas/oth
-raw.2021 <- read.csv(file = paste(wd, "data/dipfed-municipio-vraw-2021.csv", sep = ""), stringsAsFactors = FALSE)
-raw.2021[1,]
-raw.2021 <- within(raw.2021, {
-    vxm <- pan + panc + pri + pric + prd;
-    left <- morena + morenac + pt + pvem + pvemc;
-    oth <- efec - vxm - left;
-})
-
-# oth breakdown
-raw.2021 <- read.csv(file = paste(wd, "data/dipfed-municipio-vraw-2021.csv", sep = ""), stringsAsFactors = FALSE)
-raw.2021 <- raw.2021[,c("ife","pvem","pt","mc","lisnom")]
-raw.2021 <- within(raw.2021, {
-    efec <- pvem + pt + mc;
-})
-
 ####################
 ## ############## ##
 ## ## triplots ## ##
 ## ############## ##
 ####################
-
-##########
-## 2021 ##
-##########
-# triplot predicted
-tmp <- extendCoal.2021[,c("vhat.pan", "vhat.pri", "vhat.left")] # subset
-colnames(tmp) <- c("pan", "pri", "left")
-tri.color <- apply(tmp, 1, which.max); names(tri.color) <- NULL
-tri.color[tri.color==1] <- col.pan
-tri.color[tri.color==2] <- col.pri
-tri.color[tri.color==3] <- col.morena
-#pdf(file = paste(wd, "graph/triplot2021-vhat-mu.pdf", sep = ""))
-#png(file = paste(wd, "graph/triplot2021-vhat-mu.png", sep = ""))
-la.ternera(datos = tmp, cex.pts = 2, color = tri.color, main ="Pronóstico 2021", labs=c("pan","pri","morena"), left.right.up=c("pri","pan","left"), add.sign=TRUE)# expression(hat(v)[2018]))
-#dev.off()
-
-##########
-## 2018 ##
-##########
-# triplot observed
-tmp <- extendCoal.2018[,c("pan", "pri", "left")] # subset
-tri.color <- apply(tmp, 1, which.max); names(tri.color) <- NULL
-tri.color[tri.color==1] <- col.pan
-tri.color[tri.color==2] <- col.pri
-tri.color[tri.color==3] <- col.morena
-#pdf(file = paste(wd, "graph/triplot2018-v-mu.pdf", sep = ""))
-#png(file = paste(wd, "graph/triplot2018-v-mu.png", sep = ""))
-la.ternera(datos = tmp, cex.pts = 2, color = tri.color, main ="Observación 2018")
-#dev.off()
-
-# triplot predicted
-tmp <- extendCoal.2018[,c("vhat.pan", "vhat.pri", "vhat.left")] # subset
-colnames(tmp) <- c("pan", "pri", "left")
-tri.color <- apply(tmp, 1, which.max); names(tri.color) <- NULL
-tri.color[tri.color==1] <- col.pan
-tri.color[tri.color==2] <- col.pri
-tri.color[tri.color==3] <- col.morena
-#pdf(file = paste(wd, "graph/triplot2018-vhat-mu.pdf", sep = ""))
-#png(file = paste(wd, "graph/triplot2018-vhat-mu.png", sep = ""))
-la.ternera(datos = tmp, cex.pts = 2, color = tri.color, main ="Pronóstico 2018")# expression(hat(v)[2018]))
-#dev.off()
-
-
 
 
