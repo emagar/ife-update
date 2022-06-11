@@ -28,7 +28,7 @@ add.lab <- function(labels, add.sign=TRUE){
 ###############################
 ## function wrapping triplot ##
 ###############################
-la.ternera <- function(datos, color = rgb(.55,.27,.07, alpha = .2), cex.pts = .15, main = NA, labs=c("1","2","3"), left.right.up=c("one","two","three"), add.sign=TRUE){
+la.ternera <- function(datos, color = rgb(.55,.27,.07, alpha = .2), cex.pts = .15, main = NA, labs=c("","",""), left.right.up=c("one","two","three"), add.sign=TRUE){
     # Prepare data: re-arrange so three is lower right, two lower left, one is above 
     #datos <- c(one=.2,two=.38,three=.42) tmp[,1] #debug
     #left.right.up <- c("two","three","one") #debug

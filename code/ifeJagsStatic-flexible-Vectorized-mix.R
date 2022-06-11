@@ -81,24 +81,24 @@ ids[5,]
 yr.by.yr <- data.frame(
     yrn = 1:28, 
     start = c(
-        ymd("19961031"), #  1
-        ymd("19971031"), #  2
-        ymd("19981031"), #  3
-        ymd("19991031"), #  4
-        ymd("20001211"), #  5
-        ymd("20011031"), #  6
-        ymd("20021031"), #  7
-        ymd("20031105"), #  8
-        ymd("20041105"), #  9
-        ymd("20051105"), # 10
-        ymd("20061105"), # 11
-        ymd("20080215"), # 12
-        ymd("20080821"), # 13
-        ymd("20090821"), # 14
-        ymd("20101031"), # 15
-        ymd("20111215"), # 16
-        ymd("20130220"), # 17
-        ymd("20131031"), # 18
+        ymd("19961031"), #  1 1997
+        ymd("19971031"), #  2 1998
+        ymd("19981031"), #  3 1999
+        ymd("19991031"), #  4 2000
+        ymd("20001211"), #  5 2001
+        ymd("20011031"), #  6 2002
+        ymd("20021031"), #  7 2003
+        ymd("20031105"), #  8 2004
+        ymd("20041105"), #  9 2005
+        ymd("20051105"), # 10 2006
+        ymd("20061105"), # 11 2007
+        ymd("20080215"), # 12 2008
+        ymd("20080821"), # 13 2009
+        ymd("20090821"), # 14 2010
+        ymd("20101031"), # 15 2011
+        ymd("20111215"), # 16 2012
+        ymd("20130220"), # 17 2013
+        ymd("20131031"), # 18 2014
         ymd("20140411"), # 19
         ymd("20150411"), # 20
         ymd("20160411"), # 21
@@ -377,15 +377,15 @@ if (length(sel)>0) vot <- vot[-sel,]
 ## - folio 9230 Sanción del pri al pan y gob huauchinango (Minority = pri) aye = left             ##
 ## - folio 9408 Declarar leve la multa a un periódico (Minority pri plus nacif) aye = right       ##
 ####################################################################################################
-anch <- c(  385,  1045  # term==2
-        ,  1298,  1669  # term==3
-        ,  2401,  2479  # term==4:5
-        ,  3641,  3924  # term==6
-        ,  6127,  6174  # term==7
-        ,  7421,  7633  # term==8
-        ,  8317,  8320  # term==9
-        ,  9230,  9408  # term==10:11
-        , 10096, 10268  # term==12
+anch <- c(  385,  1045  # term==2  dates 16-12-97 14-11-00
+        ,  1298,  1669  # term==3          6-4-01  28-1-03
+        ,  2401,  2479  # term==4:5       23-8-04  31-1-05
+        ,  3641,  3924  # term==6         20-2-08  23-5-08
+        ,  6127,  6174  # term==7         29-3-09   6-4-09
+        ,  7421,  7633  # term==8         18-1-11   6-6-11
+        ,  8317,  8320  # term==9         21-3-12  21-3-12
+        ,  9230,  9408  # term==10:11      8-5-13  26-9-13
+        , 10096, 10268  # term==12         2-7-14  7-10-14
           )
 anchors <- which(vot$folio %in% anch)
 # some votes need aye/nay reversal to point North
@@ -487,29 +487,36 @@ molten.rc$rc <- car::recode (molten.rc$rc, "0=NA") # non-members' slots, if any,
 molten.rc$rc <- car::recode (molten.rc$rc, "2=0; c(3,4,5,6)=NA") # abstain|absent|recuse to NA
 
 ife.data.vector <-
-    dump.format(list(y = molten.rc$rc, 
-                     n.member = M,
-                     n.item = V,
-                     n.obs  = nrow(molten.rc),
-#                     mean.theta = prior.location[map.member.indices$actual ,t],
-#                     precision.theta = prior.precision[map.member.indices$actual ,t],
-                     vote   = molten.rc$vote,
-                     member = molten.rc$member,
-                     a = c(1,1.5,2)
+    dump.format(list(y = molten.rc$rc 
+                   , n.member = M
+                   , n.item = V
+                   , n.obs  = nrow(molten.rc)
+#                   , mean.theta = prior.location[map.member.indices$actual ,t]
+#                   , precision.theta = prior.precision[map.member.indices$actual ,t]
+                   , vote   = molten.rc$vote
+                   , member = molten.rc$member
+#                   , a = c(2,1,1.5)   # known component sizes: 4 left, 2 pan, 3 pri 
+#                   , a = c(1,1.5,2)   # known component sizes: 2 pan, 3 pri, 4 left
+                   , a = c(2,2,2)    # agnostic component sizes
                      ))
 
 ife.parameters = c("theta", "alpha", "beta", "deviance"
                    , "component", "promedios", "gaps")
+
 
 ife.inits <- function() {
   dump.format(
     list(
 #      theta = c(rnorm(3), NA, rnorm(4), NA)
       theta   = rnorm(M)
+#                     w  b  c  c  l  m  m  p  z
+      , component = c(3, 3, 1, 1, 2, 3, 2, 3, 1)
       , alpha = rnorm(V)
 #      , beta  = rnorm(V)
       , beta  = c(NA, NA, rnorm(V-2))
-      , mix_proportions = c(0.22, .33, .45)
+#      , mix_proportions = c(0.33, .22, .45)  # known component sizes: 3 left, 2 pan, 4 pri 
+#      , mix_proportions = c(0.45, .22, .33)  # known component sizes: 4 left, 2 pan, 3 pri 
+      , mix_proportions = c(.33, .33, .33)  # agnostic component sizes
       ,'.RNG.name'="base::Wichmann-Hill"
       ,'.RNG.seed'= 1971)   #randomNumbers(n = 1, min = 1, max = 1e+04, col=1))
   )
@@ -530,31 +537,34 @@ results <- run.jags(
   n.chains = 2,
   data     = ife.data.vector,
   inits    = list (ife.inits(), ife.inits()),
-  thin = 50, burnin = 9000, sample = 3000,
+  #thin = 20, burnin = 29000, sample = 3000,
   #thin = 250, burnin = 50000, sample = 200,
-  #thin =  50, burnin = 10000, sample = 200,
+  thin =  50, burnin = 10000, sample = 200,
   #thin =   5, burnin =   200, sample = 200,
   plots = FALSE)
 
 chains <- mcmc.list(list (results$mcmc[[1]], results$mcmc[[2]]))
 dim(chains[[1]])
 # check model convergence 
-gelman.diag (chains, multivariate=F)
+gelman.diag <- gelman.diag (chains, multivariate=F)
+gelman.diag
 
-## ############################
-## ## store posterior sample ##
-## ############################
-## getwd()
-## load("posterior-samples/in-git/theta-chains-statics-2-3-items.RData")
-## load("posterior-samples/in-git/theta-chains-statics-45-6-7-8-9-10-items.RData")
-## post.samples[[t]] <- list(map.vote.indices=map.vote.indices,
-##                           map.member.indices=map.member.indices,
-##                           map.time.indices=map.time.indices,
-##                           chains=chains)
-## names(post.samples) <- paste0("term", tees)
-## summary(post.samples)
-## #save(post.samples, file = "posterior-samples/in-git/theta-chains-statics-45-6-7-8-9-10-items.RData")
-## save(post.samples, file = "posterior-samples/not-in-git/posterior-chains-statics-mix-2-3-items.RData")
+############################
+## store posterior sample ##
+############################
+getwd()
+load("posterior-samples/in-git/theta-chains-statics-2-3-items.RData")
+load("posterior-samples/in-git/theta-chains-statics-45-6-7-8-9-10-items.RData")
+load("posterior-samples/not-in-git/posterior-chains-statics-mix-2-3-items.RData")
+post.samples[[t]] <- list(map.vote.indices=map.vote.indices,
+                          map.member.indices=map.member.indices,
+                          map.time.indices=map.time.indices,
+                          gelman.diag=gelman.diag,
+                          chains=chains)
+names(post.samples) <- paste0("term", tees)
+summary(post.samples)
+#save(post.samples, file = "posterior-samples/in-git/theta-chains-statics-45-6-7-8-9-10-items.RData")
+save(post.samples, file = "posterior-samples/not-in-git/posterior-chains-statics-mix-2-3-items.RData")
 
 #######################
 ## load saved chains ##
@@ -591,7 +601,7 @@ tmp <- apply (consejero.grupos, 2, prob.group.belonging)
 rownames(tmp) <- c("one", "two", "three") 
 #
 # triplot
-#typdf(file = "../plots/group-probs-wold1.pdf")
+#pdf(file = "../plots/group-probs-wold1.pdf")
 par(mfrow=c(3,3))
 for (i in 1:9){
 #i <- 5
@@ -624,9 +634,22 @@ for (j in seq(from = 1, to = 2901, by = 20)){
 
 promedios <- chains[[1]][,grep("promedios", colnames (chains[[1]]))]
 gaps <- chains[[1]][,grep("gaps", colnames (chains[[1]]))]
+thetas <- chains[[1]][,grep("theta", colnames (chains[[1]]))]
+components <- chains[[1]][,grep("compo", colnames (chains[[1]]))]
 
 colMeans (promedios)
 colMeans (gaps)
+th <- colMeans (thetas)
+names(th) <- column.t
+modas <- apply(components, 2, FUN = function(x) {
+        uniqv <- unique(x)
+        return(uniqv[which.max(tabulate(match(x, uniqv)))])
+    }
+)
+names(modas) <- column.t
+cbind(modas, th)
+
+x
 
 #################################################################################
 

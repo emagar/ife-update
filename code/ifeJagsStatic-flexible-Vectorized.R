@@ -229,9 +229,9 @@ party.locations <- data.frame(matrix(NA, ncol = T, nrow = 5))
 colnames(party.locations) <- colnames(prior.location)
 rownames(party.locations) <- c("pri", "pan", "prd", "pvem", "morena")
 
-#######################################
-## term-by-term start-en and members ##
-#######################################
+########################################
+## term-by-term start-end and members ##
+########################################
 terms.dates <- data.frame(
     term = 1:15,
     term.a = c(1:9,"a","b","c","d","e","f"),
