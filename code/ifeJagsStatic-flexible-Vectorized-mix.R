@@ -325,6 +325,7 @@ for (i in 1:T){
 ###########################################
 table(factor(vot$dunan, labels = c("contested","not")), vot$term, useNA = "ifany")
 table(factor(vot$dunan, labels = c("contested","not")), useNA = "ifany")
+table(factor(vot$dunan, labels = c("contested","not")), vot$yr, useNA = "ifany")
 sel <- which(vot$dunan==1)
 if (length(sel)>0) vot <- vot[-sel,]
 

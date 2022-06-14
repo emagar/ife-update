@@ -1,25 +1,66 @@
 #########################################################################
 ####  GRAFICA DE VOTOS TOTALES Y DIVIDIDOS POR TRIMESTRE 1997--2012  ####
 #########################################################################
-rm(list = ls())
-workdir <- c("~/Dropbox/data/rollcall/ife_cg")
-graphdir <- paste(workdir, "graphs", sep="/")
+vot1 <-read.csv("/home/eric/Dropbox/data/rollcall/ife_cg/ife-update/data/v23.csv",  header=TRUE)
+vot2 <-read.csv("/home/eric/Dropbox/data/rollcall/ife_cg/ife-update/data/v456789ab.csv",  header=TRUE)
+## vot3 <-read.csv("/home/eric/Dropbox/data/rollcall/ife_cg/ife-update/data/vcde.csv",  header=TRUE)
+vot <- rbind(
+    vot1[,c("folio","date","yr","mo","dy","qtr","sem","term","dunan")],
+    vot2[,c("folio","date","yr","mo","dy","qtr","sem","term","dunan")])
+rm(vot1,vot2)
+
+tmp <- table(vot$sem, vot$dunan)
+tmp <- data.frame(sem=as.numeric(row.names(tmp)),
+                  contested=tmp[,1],
+                  unanimous=tmp[,2])
+tmp$total <- tmp$contested + tmp$unanimous
+
+tmp$s <- (tmp$sem - as.integer(tmp$sem))*10
+tmp$s <- round( (tmp$s / 2) - .5, 2)
+tmp$s <- as.integer(tmp$sem) + tmp$s
+tmp$sem <- tmp$s; tmp$s <- NULL
+tmp.s <- tmp
 #
-setwd(paste(workdir, "graphs/", sep="/"))
+tmp <- table(vot$qtr, vot$dunan)
+tmp <- data.frame(qtr=as.numeric(row.names(tmp)),
+                  contested=tmp[,1],
+                  unanimous=tmp[,2])
+tmp$total <- tmp$contested + tmp$unanimous
+tmp$q <- (tmp$qtr - as.integer(tmp$qtr))*10
+tmp$q <- round( (tmp$q / 4) - .25, 2)
+tmp$q <- as.integer(tmp$qtr) + tmp$q
+tmp$qtr <- tmp$q; tmp$q <- NULL
+tmp.q <- tmp
+
+head(tmp.q)
+
+rm(list = ls())
+workdir <- c("~/Dropbox/data/rollcall/ife_cg/ife-update")
+graphdir <- paste(workdir, "plots", sep="/")
+#
+
+setwd(paste(workdir, "plots/", sep="/"))
+
 #pdf(file="all+divVotsQuarter.pdf",width=7, height=4)
 par(mar=c(5,4,0,1)+0.1)  ## USA EL ESPACIO DEL TITULO INEXISTENTE
 #
-yrqr <- paste(as.integer( seq(from=1997, to=2012.75, by=.25)), c("q1","q2","q3","q4"), sep="")
-yrsm <- paste(as.integer( seq(from=1997, to=2012.75, by=.5)),  c("s1","s2"), sep="")
+yrqr <- tmp.q$qtr
+yrsm <- tmp.s$sem
+#yrqr <- paste(as.integer( seq(from=1997, to=2012.75, by=.25)), c("q1","q2","q3","q4"), sep="")
+#yrsm <- paste(as.integer( seq(from=1997, to=2012.75, by=.5)),  c("s1","s2"), sep="")
 #
 ## OLD COUNT vot <- c(95, 59, 37, 47, 40, 90, 123, 155, 51, 59, 55, 103, 125,
 ##         147, 59,  54, 48, 98, 116, 145, 178, 323)
 ## OLD COUNT div <- c(15,7,19,20,23,35,38,89,31,36,36,57,85,91,23,16,9,17,20,62,
 ##         18,23)
-votsm <- c(95, 59, 37, 47, 40, 90, 123, 116, 90, 59, 55, 103, 125, 147, 59, 54, 48, 98, 116, 145, 178, 182, 231, 547, 718, 485, 280, 368, 192, 353, 517, 544)
-divsm <- c(15 , 7 , 19 , 20 , 23 , 35 , 38 , 60 , 60 , 36 , 36 , 57 , 85 , 91 , 23 , 16 , 9 , 17 , 20 , 62 , 18 , 19 , 43 , 63 , 91 , 137 , 57 , 156 , 35 , 88 , 146 , 110)
-votqr <- c(58 , 37 , 52 , 7 , 20 , 17 , 22 , 25 , 22 , 18 , 29 , 61 , 47 , 76 , 87 , 29 , 40 , 50 , 9 , 50 , 24 , 31 , 39 , 64 , 62 , 63 , 64 , 83 , 18 , 41 , 32 , 22 , 11 , 37 , 40 , 58 , 59 , 57 , 137 , 8 , 66 , 112 , 128 , 54 , 153 , 78 , 331 , 216 , 527 , 191 , 268 , 217 , 153 , 127 , 239 , 129 , 86 , 106 , 202 , 151 , 192 , 325 , 327 , 217)
-divqr <- c(11 , 4 , 7 , 0, 15 , 4 , 4 , 16 , 13 , 10 , 9 , 26 , 16 , 22 , 37 , 23 , 29 , 31 , 7 , 29 , 19 , 17 , 24 , 33 , 46 , 39 , 38 , 53 , 1 , 22 , 9 , 7 , 2 , 7 , 3 , 14 , 11 , 9 , 60 , 2 , 1 , 17 , 2 , 17 , 16 , 27 , 27 , 36 , 26 , 65 , 88 , 49 , 28 , 29 , 114 , 42 , 16 , 19 , 69 , 19 , 48 , 98 , 63 , 47)
+votsm <- tmp.s$total
+divsm <- tmp.s$contested
+votqr <- tmp.q$total
+divqr <- tmp.q$contested
+#votsm <- c(95, 59, 37, 47, 40, 90, 123, 116, 90, 59, 55, 103, 125, 147, 59, 54, 48, 98, 116, 145, 178, 182, 231, 547, 718, 485, 280, 368, 192, 353, 517, 544)
+#divsm <- c(15 , 7 , 19 , 20 , 23 , 35 , 38 , 60 , 60 , 36 , 36 , 57 , 85 , 91 , 23 , 16 , 9 , 17 , 20 , 62 , 18 , 19 , 43 , 63 , 91 , 137 , 57 , 156 , 35 , 88 , 146 , 110)
+#votqr <- c(58 , 37 , 52 , 7 , 20 , 17 , 22 , 25 , 22 , 18 , 29 , 61 , 47 , 76 , 87 , 29 , 40 , 50 , 9 , 50 , 24 , 31 , 39 , 64 , 62 , 63 , 64 , 83 , 18 , 41 , 32 , 22 , 11 , 37 , 40 , 58 , 59 , 57 , 137 , 8 , 66 , 112 , 128 , 54 , 153 , 78 , 331 , 216 , 527 , 191 , 268 , 217 , 153 , 127 , 239 , 129 , 86 , 106 , 202 , 151 , 192 , 325 , 327 , 217)
+#divqr <- c(11 , 4 , 7 , 0, 15 , 4 , 4 , 16 , 13 , 10 , 9 , 26 , 16 , 22 , 37 , 23 , 29 , 31 , 7 , 29 , 19 , 17 , 24 , 33 , 46 , 39 , 38 , 53 , 1 , 22 , 9 , 7 , 2 , 7 , 3 , 14 , 11 , 9 , 60 , 2 , 1 , 17 , 2 , 17 , 16 , 27 , 27 , 36 , 26 , 65 , 88 , 49 , 28 , 29 , 114 , 42 , 16 , 19 , 69 , 19 , 48 , 98 , 63 , 47)
 #
 vot <- votqr; div <- divqr ## choose appropriate
 #vot[49] <- 375 ## max(vot) way off, break column
@@ -33,15 +74,18 @@ lines(c(17,17),  c(0,530),lty=3)     ## quarter periods
 lines(c(28.5,28.5),  c(0,530),lty=3) ## quarter periods
 lines(c(46,46),  c(0,530),lty=3)     ## quarter periods
 lines(c(48,48),  c(0,530),lty=3)     ## quarter periods
-lines(c(56.5,56.5),  c(0,530),lty=3)     ## quarter periods
+lines(c(56.5,56.5),  c(0,530),lty=3) ## quarter periods
 lines(c(61,61),  c(0,530),lty=3)     ## quarter periods
-text(17/2,    540,"I")               ## quarter periods
+lines(c(67,67),  c(0,530),lty=3)     ## quarter periods
+lines(c(71,71),  c(0,530),lty=3)     ## quarter periods
+text(17/2,      540,"I")             ## quarter periods
 text((17+29)/2, 540,"II")            ## quarter periods
 text((29+46)/2, 540,"III")           ## quarter periods
 text((46+48)/2, 540,"IV")            ## quarter periods
 text((48+56)/2, 540,"V")             ## quarter periods
 text((56+61)/2, 540,"VI")            ## quarter periods
-text((61+64)/2, 540,"VII")            ## quarter periods
+text((61+67)/2, 540,"VII")           ## quarter periods
+text((67+71)/2, 540,"VIII")          ## quarter periods
 ## IN AND OUT SUMMARY QUARTERS
 #        event         date       qtr (progress)  qr_count
 # I      Molinar out   5/12/2000  2001.1 (35%)    17
@@ -67,15 +111,16 @@ text((61+64)/2, 540,"VII")            ## quarter periods
 #        Marván in    15/11/2011  2012.1 (20%)    61 or 33
 #        GarcíaRmz in 15/11/2011  2012.1 (20%)    61 or 33
 # VIII   G. Rmz out     8/2/2013  2013.2 (10%)    65 or 37
-axis(1, at=c(1:64), labels = FALSE)
-axis(1, tick=FALSE, cex.axis=.35, at=c(1:64), labels = c(4,rep(1:4,15),1,2,3), line=-0.8) #axis(1, tick=FALSE, cex.axis=.35, at=c(1:64), labels = rep(1:4,16), line=-0.8)
-axis(1, tick= FALSE,cex.axis=.675, at=seq(from=3.5, to=65.5, by=4),
-     labels = c("1997","'98","'99","2000","'01","'02","'03","'04","'05","'06","'07","'08","'09","'10","'11", "2012"))
+# add remainder
+axis(1, at=c(1:71), labels = FALSE)
+axis(1, tick=FALSE, cex.axis=.35, at=c(1:71), labels = c(4,rep(1:4,17),1,2), line=-0.8) #axis(1, tick=FALSE, cex.axis=.35, at=c(1:64), labels = rep(1:4,16), line=-0.8)
+axis(1, tick= FALSE,cex.axis=.675, at=seq(from=3.5, to=72.5, by=4),
+     labels = c("1997","'98","'99","2000","'01","'02","'03","'04","'05","'06","'07","'08","'09","'10","'11", "'12","'13",""))
 axis(2, at=25*(0:21), labels = FALSE)
 axis(2, tick= FALSE,cex.axis=.75, at=100*(0:5))
 abline(h=25*(0:21), col="grey")  #abline(h=25*(0:14), col="grey")
 wi <- .3
-for (i in 1:64){
+for (i in 1:71){
   polygon(c(rep(i-wi,2),rep(i+wi,2)), c(0,rep(vot[i],2),0), col = "grey", border = "grey")
   polygon(c(rep(i-wi,2),rep(i+wi,2)), c(0,rep(div[i],2),0), col = "black", border = "black")
 }
@@ -85,12 +130,13 @@ for (i in 1:64){
 #lines(1:28,pct.div,lwd=2)
 text(c(3,15,27,39,51,63), rep(-10,6), c("*"))
 #dev.off()
+
 setwd(workdir)
 
 ########################################################################
 ####  GRAFICA DE VOTOS TOTALES Y DIVIDIDOS POR SEMESTRE 1997--2012  ####
 ########################################################################
-setwd(paste(workdir, "graphs/", sep="/"))
+setwd(paste(workdir, "plots/", sep="/"))
 pdf(file="all+divVotsSemester.pdf",width=7, height=4)
 par(mar=c(5,4,0,1)+0.1)  ## USA EL ESPACIO DEL TITULO INEXISTENTE
 #
