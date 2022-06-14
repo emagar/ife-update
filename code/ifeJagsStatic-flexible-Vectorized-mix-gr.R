@@ -11,7 +11,7 @@
 #	PRD-sponsored=N(-2,4)
 ##################################################################################
 
-library(arm)
+library (arm)
 library (MCMCpack)
 library (foreign)
 library (car)
@@ -20,15 +20,15 @@ library (gtools)
 library (R2jags)
 library (mcmcplots)
 library (sm)
-library(lubridate)
+library (lubridate)
 library (runjags)
 library (coda)
-library(plyr)
+library (plyr)
 
-rm(list = ls())
-workdir <- c("/home/eric/Dropbox/data/rollcall/ife_cg/ife-update/data/")
-# workdir <- c("~/Dropbox/ife-update/data/")
-setwd(workdir)
+rm (list = ls())
+# workdir <- c("/home/eric/Dropbox/data/rollcall/ife_cg/ife-update/data/")
+workdir <- c("~/Dropbox/ife-update/data/")
+setwd (workdir)
 
 # Define colors and plotting names
 # OJO: en tenure term==10 es a, term==11 es b etc. 
@@ -509,8 +509,8 @@ ife.inits <- function() {
     list(
 #      theta = c(rnorm(3), NA, rnorm(4), NA)
       theta   = rnorm(M)
-#                     w  b  c  c  l  m  m  p  z
-      , component = c(3, 3, 1, 1, 2, 3, 2, 3, 1)
+#                     w  b   c  c  l  m  m  p  z
+      , component = c(3, NA, 1, 1, 2, 3, NA, 3, 1)
       , alpha = rnorm(V)
 #      , beta  = rnorm(V)
       , beta  = c(NA, NA, rnorm(V-2))
@@ -528,7 +528,7 @@ ife.inits <- function() {
 ## prior.precision[map.member.indices$actual,t]
 
 # read model
-source ("../code/mix-model.r")
+source ("../code/mix-model-gr.r")  # GR: changed call to model here
 
 results <- run.jags(
   model    = ife.model.items.mix,
@@ -548,6 +548,27 @@ dim(chains[[1]])
 # check model convergence 
 gelman.diag <- gelman.diag (chains, multivariate=F)
 gelman.diag
+
+
+## GR: Moved collected outcomes here
+promedios <- chains[[1]][,grep("promedios", colnames (chains[[1]]))]
+gaps <- chains[[1]][,grep("gaps", colnames (chains[[1]]))]
+thetas <- chains[[1]][,grep("theta", colnames (chains[[1]]))]
+components <- chains[[1]][,grep("compo", colnames (chains[[1]]))]
+
+colMeans (promedios)
+colMeans (gaps)
+th <- colMeans (thetas)
+names(th) <- column.t
+modas <- apply(components, 2, FUN = function(x) {
+  uniqv <- unique(x)
+  return(uniqv[which.max(tabulate(match(x, uniqv)))])
+}
+)
+names(modas) <- column.t
+cbind(modas, th)
+
+
 
 ############################
 ## store posterior sample ##
@@ -574,6 +595,7 @@ load("posterior-samples/in-git/theta-chains-statics-45-6-7-8-9-10-items.RData")
 load("posterior-samples/not-in-git/posterior-chains-statics-mix-2-3-items.RData")
 
 chains <- post.samples[[1]]$chains
+
 
 #################################################################################
 ### Lines added Jun 3, 2022
@@ -631,25 +653,6 @@ for (j in seq(from = 1, to = 2901, by = 20)){
 }
 #dev.off()
 
-
-promedios <- chains[[1]][,grep("promedios", colnames (chains[[1]]))]
-gaps <- chains[[1]][,grep("gaps", colnames (chains[[1]]))]
-thetas <- chains[[1]][,grep("theta", colnames (chains[[1]]))]
-components <- chains[[1]][,grep("compo", colnames (chains[[1]]))]
-
-colMeans (promedios)
-colMeans (gaps)
-th <- colMeans (thetas)
-names(th) <- column.t
-modas <- apply(components, 2, FUN = function(x) {
-        uniqv <- unique(x)
-        return(uniqv[which.max(tabulate(match(x, uniqv)))])
-    }
-)
-names(modas) <- column.t
-cbind(modas, th)
-
-x
 
 #################################################################################
 

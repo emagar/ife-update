@@ -5,10 +5,10 @@
                      '(("article" "letter" "11pt")))
    (TeX-add-to-alist 'LaTeX-provided-package-options
                      '(("geometry" "letterpaper" "right=1.25in" "left=1.25in" "top=1in" "bottom=1in") ("natbib" "longnamesfirst" "sort") ("fontenc" "T1") ("inputenc" "ansinew") ("caption" "margin=20pt" "aboveskip=5pt" "font=small" "labelfont=bf") ("pdfpages" "final") ("helvet" "scaled=.90") ("todonotes" "colorinlistoftodos" "textsize=small")))
-   (add-to-list 'LaTeX-verbatim-macros-with-braces-local "url")
    (add-to-list 'LaTeX-verbatim-macros-with-braces-local "path")
-   (add-to-list 'LaTeX-verbatim-macros-with-delims-local "url")
+   (add-to-list 'LaTeX-verbatim-macros-with-braces-local "url")
    (add-to-list 'LaTeX-verbatim-macros-with-delims-local "path")
+   (add-to-list 'LaTeX-verbatim-macros-with-delims-local "url")
    (TeX-run-style-hooks
     "latex2e"
     "article"

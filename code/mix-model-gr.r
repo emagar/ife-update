@@ -51,12 +51,21 @@ ife.model.items.mix = "model {
 	for(i in 1:n.member) {
         theta[i] ~ dnorm(mu[i],3) 
         mu[i] <- promedios[component[i]]
-        component[i] ~ dcat(mix_proportions[])
 	}
+  # GR: Priors on group membership
+  component[1] ~ dcat(mix_proportions[])
+  component[2] <- 2 # Barragan  2
+  component[3] ~ dcat(mix_proportions[])
+  component[4] ~ dcat(mix_proportions[])
+  component[5] ~ dcat(mix_proportions[])
+  component[6] ~ dcat(mix_proportions[])
+  component[7] <- 1 # Molinar   1
+  component[8] ~ dcat(mix_proportions[])
+  component[9] ~ dcat(mix_proportions[])
 	# three mixture components (party contingents)
 	mix_proportions[1:3] ~ ddirch(a[])     # a[] is a data vector with three elements
-	gaps[1] ~ dnorm(0, 1.0E-0)T(0,)
-	gaps[2] ~ dnorm(0, 1.0E-0)T(0,)
+	gaps[1] ~ dnorm(0, 1.0E-0) #T(0,)
+	gaps[2] ~ dnorm(0, 1.0E-0) #T(0,)
 	promedios[1] ~ dnorm(0.0, 1.0E-0)
 	promedios[2] <- promedios[1] + gaps[1]
 	promedios[3] <- promedios[2] + gaps[2]

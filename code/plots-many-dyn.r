@@ -1314,7 +1314,6 @@ polygon(p18, col=rgb(1,0,0,alpha=.25), lty=0)                       ## G. Ramíre
 ######################################################
 ######################################################
 rm(list = ls())
-graphdir <- c("~/Dropbox/ifeSharedGE/graphs")
 setwd(graphdir)
 #
 qtr <- 1:45
@@ -1339,6 +1338,7 @@ wi <- .25
 for (i in 1:45){
   polygon(c(rep(i-wi,2),rep(i+wi,2)), c(0,rep(shr.pty.complaints[i],2),0), col = color[i], border = "black")
 }
+text(c(3,15,27,39,51,63), rep(-.015,6), c("*"))
 dev.off()
 #
 mean ( shr.pty.complaints[ c(2:4,14:16,26:28,38:40)] ) ## Election quarters
