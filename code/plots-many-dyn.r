@@ -1,10 +1,11 @@
 #########################################################################
 ####  GRAFICA DE VOTOS TOTALES Y DIVIDIDOS POR TRIMESTRE 1997--2012  ####
 #########################################################################
-vot1 <-read.csv("/home/eric/Dropbox/data/rollcall/ife_cg/ife-update/data/v23.csv",  header=TRUE)
-vot2 <-read.csv("/home/eric/Dropbox/data/rollcall/ife_cg/ife-update/data/v456789ab.csv",  header=TRUE)
-## vot3 <-read.csv("/home/eric/Dropbox/data/rollcall/ife_cg/ife-update/data/vcde.csv",  header=TRUE)
-vot <- rbind(
+# read data
+vot1 <- read.csv("/home/eric/Dropbox/data/rollcall/ife_cg/ife-update/data/v23.csv"      ,  header=TRUE)
+vot2 <- read.csv("/home/eric/Dropbox/data/rollcall/ife_cg/ife-update/data/v456789ab.csv",  header=TRUE)
+#vot3 <-read.csv("/home/eric/Dropbox/data/rollcall/ife_cg/ife-update/data/vcde.csv"      ,  header=TRUE)
+vot <- rbind(        # keep select columns only
     vot1[,c("folio","date","yr","mo","dy","qtr","sem","term","dunan")],
     vot2[,c("folio","date","yr","mo","dy","qtr","sem","term","dunan")])
 rm(vot1,vot2)
@@ -32,15 +33,12 @@ tmp$q <- as.integer(tmp$qtr) + tmp$q
 tmp$qtr <- tmp$q; tmp$q <- NULL
 tmp.q <- tmp
 
-head(tmp.q)
-
 rm(list = ls())
 workdir <- c("~/Dropbox/data/rollcall/ife_cg/ife-update")
 graphdir <- paste(workdir, "plots", sep="/")
 #
 
-setwd(paste(workdir, "plots/", sep="/"))
-
+setwd(graphdir)
 #pdf(file="all+divVotsQuarter.pdf",width=7, height=4)
 par(mar=c(5,4,0,1)+0.1)  ## USA EL ESPACIO DEL TITULO INEXISTENTE
 #
@@ -86,32 +84,46 @@ text((48+56)/2, 540,"V")             ## quarter periods
 text((56+61)/2, 540,"VI")            ## quarter periods
 text((61+67)/2, 540,"VII")           ## quarter periods
 text((67+71)/2, 540,"VIII")          ## quarter periods
-## IN AND OUT SUMMARY QUARTERS
-#        event         date       qtr (progress)  qr_count
-# I      Molinar out   5/12/2000  2001.1 (35%)    17
-# II     Luken in     11/12/2000  2001.1 (40%)    17
-#        All Wold out 31/10/2003  2003.4 (100%)   28
-# III    All Ugalde in 3/11/2003  2004.1 (0%)     29 or 1
-#        Ugalde out   14/12/2007  2008.1 (50%)    45 or 17
-#        Latapí out     7/2/2008  2008.2 (10%)    46 or 18
-#        Morales out    7/2/2008  2008.1 (50%)    46 or 18
-# IV     Valdés in      8/2/2008  2008.2 (10%)    46 or 18
-#        Nacif in       8/2/2008  2008.2 (10%)    46 or 18
-#        Baños in       8/2/2008  2008.2 (10%)    46 or 18
-#        Albo out      14/8/2008  2008.4 (20%)    48 or 20
-#        GlezLuna out  14/8/2008  2008.4 (20%)    48 or 20
-#        LpzFlores out 14/8/2008  2008.4 (20%)    48 or 20
-# V      Figueroa in   15/8/2008  2008.4 (20%)    48 or 20
-#        Guerrero in   15/8/2008  2008.4 (20%)    48 or 20
-#        Elizondo in   15/8/2008  2008.4 (20%)    48 or 20
-# VI     Sánchez out  31/10/2010  2010.4 (100%)   56 or 28
-#        Andrade out  31/10/2010  2010.4 (100%)   56 or 28
-#        Alcántar out 31/10/2010  2010.4 (100%)   56 or 28
-# VII    Córdova in   15/11/2011  2012.1 (20%)    61 or 33
-#        Marván in    15/11/2011  2012.1 (20%)    61 or 33
-#        GarcíaRmz in 15/11/2011  2012.1 (20%)    61 or 33
-# VIII   G. Rmz out     8/2/2013  2013.2 (10%)    65 or 37
-# add remainder
+## IN AND OUT SUMMARY QUARTERS (ROMAN NUMERALS CORRESPOND TO THOSE IN PLOT)
+#        term event         date       qtr (progress)  qr_count
+# I         2 Molinar out   5/12/2000  2001.1 (35%)    17
+# II        3 Luken in     11/12/2000  2001.1 (40%)    17
+#             All Wold out 31/10/2003  2003.4 (100%)   28
+# III     4&5 All Ugalde in 3/11/2003  2004.1  (0%)    29 or 1
+#             Ugalde out   14/12/2007  2008.1 (50%)    45 or 17
+#             Latapí out     7/2/2008  2008.2 (10%)    46 or 18
+#             Morales out    7/2/2008  2008.2 (50%)    46 or 18
+# IV        6 Valdés in      8/2/2008  2008.2 (10%)    46 or 18
+#             Nacif in       8/2/2008  2008.2 (10%)    46 or 18
+#             Baños in       8/2/2008  2008.2 (10%)    46 or 18
+#             Albo out      14/8/2008  2008.4 (20%)    48 or 20
+#             GlezLuna out  14/8/2008  2008.4 (20%)    48 or 20
+#             LpzFlores out 14/8/2008  2008.4 (20%)    48 or 20
+# V         7 Figueroa in   15/8/2008  2008.4 (20%)    48 or 20
+#             Guerrero in   15/8/2008  2008.4 (20%)    48 or 20
+#             Elizondo in   15/8/2008  2008.4 (20%)    48 or 20
+# VI        8 Sánchez out  31/10/2010  2010.4 (100%)   56 or 28
+#             Andrade out  31/10/2010  2010.4 (100%)   56 or 28
+#             Alcántar out 31/10/2010  2010.4 (100%)   56 or 28
+# VII       9 Córdova in   15/11/2011  2012.1 (20%)    61 or 33
+#             Marván in    15/11/2011  2012.1 (20%)    61 or 33
+#             GarcíaRmz in 15/11/2011  2012.1 (20%)    61 or 33
+# VIII  10&11 G. Rmz out     8/2/2013  2013.2 (10%)    66 or 38
+#             Valdés out   30/10/2013  2013.4 (100%)   68 or 40
+#             Elizondo out 30/10/2013  2013.4 (100%)   68 or 40
+#             Figueroa out 30/10/2013  2013.4 (100%)   68 or 40
+#             Guerrero out 30/10/2013  2013.4 (100%)   68 or 40
+# IX       12 Andrade2 in   11/4/2014  2014.2  (68%)   70 or 42
+#             Favela in     11/4/2014  2014.2  (68%)   70 or 42
+#             Galindo in    11/4/2014  2014.2  (68%)   70 or 42
+#             Murayama in   11/4/2014  2014.2  (68%)   70 or 42
+#             Ruiz in       11/4/2014  2014.2  (68%)   70 or 42
+#             Sánchez in    11/4/2014  2014.2  (68%)   70 or 42
+#             Santiago in   11/4/2014  2014.2  (68%)   70 or 42
+#             SnMartín in   11/4/2014  2014.2  (68%)   70 or 42
+#             Baños out      3/4/2014  2014.2  (68%)   70 or 42
+#             Marván out     3/4/2014  2014.2  (68%)   70 or 42
+#             Nacif out      3/4/2014  2014.2  (68%)   70 or 42
 axis(1, at=c(1:71), labels = FALSE)
 axis(1, tick=FALSE, cex.axis=.35, at=c(1:71), labels = c(4,rep(1:4,17),1,2), line=-0.8) #axis(1, tick=FALSE, cex.axis=.35, at=c(1:64), labels = rep(1:4,16), line=-0.8)
 axis(1, tick= FALSE,cex.axis=.675, at=seq(from=3.5, to=72.5, by=4),
