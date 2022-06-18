@@ -379,10 +379,19 @@ d$tmp <- NULL
 #
 # noshows must be deducted from abstentions
 d$absten <- d$absten - d$noshow
-#
-# "A vote qualifies as contested when, ignoring absences, at least one councilor voted contrary to the rest or abstained" ifedyn06
+
+# describe ayes-nays given number of abstainees
+sel <- which(d$absten==3)
+table(ayes=d$ayes[sel], nays=d$nays[sel])
+
+## # "A vote qualifies as contested when, ignoring absences, at least one councilor voted contrary to the rest or abstained" ifedyn06
+## # 16jun2022: counting abstentions as contesting seems wrong --- if all else vote together, method will draw abstainer(s) at random
+## d$dunan <- 0
+## d$dunan[d$absten==0 & (d$ayes==0 | d$nays==0)]  <- 1 
+##
+## # 16jun2022: This is stronger definition of contestation seems preferable
 d$dunan <- 0
-d$dunan[d$absten==0 & (d$ayes==0 | d$nays==0)]  <- 1 
+d$dunan[d$ayes==0 | d$nays==0] <- 1 
 #
 ########################################################
 ## COULD GET OTHER UNANIMITY MEASURE FROM ife.do HERE ##

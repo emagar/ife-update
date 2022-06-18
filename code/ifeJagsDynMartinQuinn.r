@@ -7,10 +7,16 @@ library (foreign)
 library (car)
 library (gtools)
 library (lubridate)
-#library (multicore)
+library (parallel) # library (multicore) removed from CRAN
+
+library (R2jags)
+library (mcmcplots)
+library (sm)
+library (runjags)
+library (coda)
+library(plyr)
 
 #library (R2WinBUGS)
-library (R2jags)
 #library(BRugs)
 
 rm(list = ls())
@@ -30,7 +36,7 @@ names.23 <- c("Woldenberg", "Barragán", "Cantú", "Cárdenas", "Lujambio", "Mer
 ## names.9 <- c("Valdés", "Baños", "Elizondo", "Figueroa", "Guerrero", "Nacif", "Marván", "Córdova", "García Rmz.")
 ## names.4567 <- c("Ugalde", "Albo", "Andrade", "Alcántar", "Glez. Luna", "Latapi", "López Flores", "Morales", "Sánchez", "Valdés", "Baños", "Nacif", "Elizondo", "Figueroa", "Guerrero")
 ## names.45678 <- c("Ugalde", "Albo", "Andrade", "Alcántar", "Glez. Luna", "Latapi", "López Flores", "Morales", "Sánchez", "Valdés", "Baños", "Nacif", "Elizondo", "Figueroa", "Guerrero")
-names.456789 <- c("Ugalde", "Albo", "Andrade", "Alcántar", "Glez. Luna", "Latapi", "López Flores", "Morales", "Sánchez", "Valdés", "Baños", "Nacif", "Elizondo", "Figueroa", "Guerrero", "Marván", "Córdova", "García Rmz.")
+names.456789ab <- c("Ugalde", "Albo", "Andrade", "Alcántar", "Glez. Luna", "Latapi", "López Flores", "Morales", "Sánchez", "Valdés", "Baños", "Nacif", "Elizondo", "Figueroa", "Guerrero", "Marván", "Córdova", "García Rmz.")
 
 color.23 <- c("red", "gold", "gold", "gold",  "blue", "red", "blue", "red", "gold", "red", "blue")
 rgb.23<-matrix(NA,11,3)
@@ -66,11 +72,11 @@ rgb.4567[15,]<- c(255,  0,  0)/255 #red
 #
 color.45678 <- c("red", "blue", "red", "green",  "blue", "red", "red", "blue", "blue", "gold", "red", "blue", "blue", "gold", "red")
 rgb.45678 <- rgb.4567
-color.456789 <- c(color.45678, "blue", "gold", "red")
-rgb.456789 <- rgb.45678
-rgb.456789 <- rbind(rgb.456789, c(  0,  0,255)/255) #blue
-rgb.456789 <- rbind(rgb.456789, c(255,215,  0)/255) #gold
-rgb.456789 <- rbind(rgb.456789, c(255,  0,  0)/255) #red
+color.456789ab <- c(color.45678, "blue", "gold", "red")
+rgb.456789ab <- rgb.45678
+rgb.456789ab <- rbind(rgb.456789ab, c(  0,  0,255)/255) #blue
+rgb.456789ab <- rbind(rgb.456789ab, c(255,215,  0)/255) #gold
+rgb.456789ab <- rbind(rgb.456789ab, c(255,  0,  0)/255) #red
 #
 #c(255,215,  0)/255 #gold
 #c(255,140,  0)/255 #naranja
@@ -95,33 +101,29 @@ all23       <- read.csv(      "data/v23.csv",  header=TRUE)
 all456789ab <- read.csv("data/v456789ab.csv",  header=TRUE)
 
 # sort by date
-all23 <- all23[order(all23$date),]
+all23 <-             all23[order(all23$date),]
 all456789ab <- all456789ab[order(all456789ab$date),]
 
 # replace semester by quarter (trimester) counter
-all23$t       <- as.numeric(factor(    all23$qtr*10))
+all23$t       <- as.numeric(factor(      all23$qtr*10))
 all456789ab$t <- as.numeric(factor(all456789ab$qtr*10))
-
 
 ## Create object with session traits (choose one)
 tmp <- all23
-nv <- as.numeric(table(tmp$date)); tmp <- tmp[xx==1,]
-tmp2 <- rep(NA, max(tmp$sess))
-sess.dat <- data.frame(sess=1:max(tmp$sess), yr=tmp2, mo=tmp2, dy=tmp2, date=tmp2, nvot=tmp2, term=tmp2)
-sess.dat$yr <- tmp$yr; sess.dat$mo <- tmp$mo; sess.dat$dy <- tmp$dy; sess.dat$date <- tmp$date; sess.dat$term <- tmp$term
-sess.dat$nvot <- nv; sess.dat$term <- tmp$term;
-sess.dat$date <- ymd(sess.dat$date)
-###
-## tmp <- all456789
-## nv <- as.numeric(table(tmp$date)); tmp <- tmp[xxx==1,]
-## tmp2 <- rep(NA, max(tmp$sess))
-## sess.dat <- data.frame(sess=1:max(tmp$sess), yr=tmp2, mo=tmp2, dy=tmp2, date=tmp2, nvot=tmp2, term=tmp2)
-## sess.dat$yr <- tmp$yr; sess.dat$mo <- tmp$mo; sess.dat$dy <- tmp$dy; sess.dat$date <- tmp$date; sess.dat$term <- tmp$term
-## sess.dat$nvot <- nv; sess.dat$term <- tmp$term;
-## sess.dat$date <- ymd(sess.dat$date)
-## rm(xx,xxx,tmp,tmp2,nv)
-##
-S <- max(sess.dat$sess)
+tmp$nvot <- ave(tmp$t, as.factor(tmp$t), FUN=length, na.rm=TRUE)
+tmp <- tmp[duplicated(tmp$t)==FALSE, c("t","date","yr","mo","dy","nvot","term")]
+sess.dat <- tmp
+## #
+## tmp <- all456789ab
+## head(tmp)
+## tmp$nvot <- ave(tmp$t, as.factor(tmp$t), FUN=length, na.rm=TRUE)
+## tmp <- tmp[duplicated(tmp$t)==FALSE, c("t","date","yr","mo","dy","nvot","term")]
+## sess.dat <- tmp
+S <- max(sess.dat$t)
+
+# Drop uncontested votes
+all23       <-       all23[      all23$dunan==0,]
+all456789ab <- all456789ab[all456789ab$dunan==0,]
 
 ## IN AND OUT SUMMARY QUARTERS (ROMAN NUMERALS CORRESPOND TO THOSE IN PLOT)
 #        term event         date       qtr (progress)  qr_count
@@ -163,62 +165,37 @@ S <- max(sess.dat$sess)
 #             Baños out      3/4/2014  2014.2  (68%)   70 or 42
 #             Marván out     3/4/2014  2014.2  (68%)   70 or 42
 #             Nacif out      3/4/2014  2014.2  (68%)   70 or 42
-#
-## IN AND OUT SUMMARY QUARTERS
-#        event         date       qtr (progress)  qr_count
-# I      Molinar out   5/12/2000  2001.1 (35%)    17
-# II     Luken in     11/12/2000  2001.1 (40%)    17
-#        All Wold out 31/10/2003  2003.4 (100%)   28
-# III    All Ugalde in 3/11/2003  2004.1 (0%)     29 or 1
-#        Ugalde out   14/12/2007  2008.1 (50%)    45 or 17
-#        Latapí out     7/2/2008  2008.2 (10%)    46 or 18
-#        Morales out    7/2/2008  2008.1 (50%)    46 or 18
-# IV     Valdés in      8/2/2008  2008.2 (10%)    46 or 18
-#        Nacif in       8/2/2008  2008.2 (10%)    46 or 18
-#        Baños in       8/2/2008  2008.2 (10%)    46 or 18
-#        Albo out      14/8/2008  2008.4 (20%)    48 or 20
-#        GlezLuna out  14/8/2008  2008.4 (20%)    48 or 20
-#        LpzFlores out 14/8/2008  2008.4 (20%)    48 or 20
-# V      Figueroa in   15/8/2008  2008.4 (20%)    48 or 20
-#        Guerrero in   15/8/2008  2008.4 (20%)    48 or 20
-#        Elizondo in   15/8/2008  2008.4 (20%)    48 or 20
-# VI     Sánchez out  31/10/2010  2010.4 (100%)   56 or 28
-#        Andrade out  31/10/2010  2010.4 (100%)   56 or 28
-#        Alcántar out 31/10/2010  2010.4 (100%)   56 or 28
-# VII    Córdova in   15/11/2011  2012.1 (20%)    61 or 33
-#        Marván in    15/11/2011  2012.1 (20%)    61 or 33
-#        GarcíaRmz in 15/11/2011  2012.1 (20%)    61 or 33
-# VIII   G. Rmz out     8/2/2013  2013.2 (10%)    65 or 37
-# add remainder here...
 
 
 ###############################################
 ###     WOLDENBERG A LA MARTIN-QUINN        ###
 ##############################################
 
-### MODEL: 14 semesters or 28 quarters (WOLDENBERG 1y2 together) extremist anchors # # # # # #
-model1Dj.irt <- function() {
+### MODEL: 29 quarters (WOLDENBERG 1y2 together) extremist anchors # # # # # #
+model1Dj.irt <- "model {
   for (j in 1:J){                ## loop over councilors
     for (i in 1:I){              ## loop over items
       v[j,i] ~ dbern(p[j,i]);    ## voting rule
       probit(p[j,i]) <- mu[j,i]; ## sets 0<p<1 as function of mu
-      prod1[j,i]    <- x1[j]*d1[i]*p1[j]    + x2[j]*d2[i]*p2[j];
-      prod2[j,i]    <- x3[j]*d3[i]*p3[j]    + x4[j]*d4[i]*p4[j];
-      prod3[j,i]    <- x5[j]*d5[i]*p5[j]    + x6[j]*d6[i]*p6[j];
-      prod4[j,i]    <- x7[j]*d7[i]*p7[j]    + x8[j]*d8[i]*p8[j];
-      prod5[j,i]    <- x9[j]*d9[i]*p9[j]    + x10[j]*d10[i]*p10[j];
-      prod6[j,i]    <- x11[j]*d11[i]*p11[j] + x12[j]*d12[i]*p12[j];
-      prod7[j,i]    <- x13[j]*d13[i]*p13[j] + x14[j]*d14[i]*p14[j];
-      prod8[j,i]    <- x15[j]*d15[i]*p15[j] + x16[j]*d16[i]*p16[j];
-      prod9[j,i]    <- x17[j]*d17[i]*p17[j] + x18[j]*d18[i]*p18[j];
-      prod10[j,i]   <- x19[j]*d19[i]*p19[j] + x20[j]*d20[i]*p20[j];
-      prod11[j,i]   <- x21[j]*d21[i]*p21[j] + x22[j]*d22[i]*p22[j];
-      prod12[j,i]   <- x23[j]*d23[i]*p23[j] + x24[j]*d24[i]*p24[j];
-      prod13[j,i]   <- x25[j]*d25[i]*p25[j] + x26[j]*d26[i]*p26[j];
-      prod14[j,i]   <- x27[j]*d27[i]*p27[j] + x28[j]*d28[i]*p28[j];
-      sumprod1[j,i] <- prod1[j,i] + prod2[j,i] + prod3[j,i] + prod4[j,i] + prod5[j,i] + prod6[j,i] + prod7[j,i];
-      sumprod2[j,i] <- prod8[j,i] + prod9[j,i] + prod10[j,i] + prod11[j,i] + prod12[j,i] + prod13[j,i] + prod14[j,i];
-      sumprod[j,i] <- sumprod1[j,i] + sumprod2[j,i]
+      prod1[j,i]    <-  x1[j] *d1[i] *p1[j]    + x2[j] *d2[i] *p2[j];
+      prod2[j,i]    <-  x3[j] *d3[i] *p3[j]    + x4[j] *d4[i] *p4[j];
+      prod3[j,i]    <-  x5[j] *d5[i] *p5[j]    + x6[j] *d6[i] *p6[j];
+      prod4[j,i]    <-  x7[j] *d7[i] *p7[j]    + x8[j] *d8[i] *p8[j];
+      prod5[j,i]    <-  x9[j] *d9[i] *p9[j]   + x10[j]*d10[i]*p10[j];
+      prod6[j,i]    <- x11[j]*d11[i]*p11[j]   + x12[j]*d12[i]*p12[j];
+      prod7[j,i]    <- x13[j]*d13[i]*p13[j]   + x14[j]*d14[i]*p14[j];
+      prod8[j,i]    <- x15[j]*d15[i]*p15[j]   + x16[j]*d16[i]*p16[j];
+      prod9[j,i]    <- x17[j]*d17[i]*p17[j]   + x18[j]*d18[i]*p18[j];
+      prod10[j,i]   <- x19[j]*d19[i]*p19[j]   + x20[j]*d20[i]*p20[j];
+      prod11[j,i]   <- x21[j]*d21[i]*p21[j]   + x22[j]*d22[i]*p22[j];
+      prod12[j,i]   <- x23[j]*d23[i]*p23[j]   + x24[j]*d24[i]*p24[j];
+      prod13[j,i]   <- x25[j]*d25[i]*p25[j]   + x26[j]*d26[i]*p26[j];
+      prod14[j,i]   <- x27[j]*d27[i]*p27[j]   + x28[j]*d28[i]*p28[j];
+      prod15[j,i]   <- x29[j]*d29[i]*p29[j];
+      sumprod1[j,i] <- prod1[j,i]  +  prod2[j,i] +  prod3[j,i]  + prod4[j,i]  + prod5[j,i];
+      sumprod2[j,i] <- prod6[j,i]  +  prod7[j,i] +  prod8[j,i]  + prod9[j,i] + prod10[j,i];
+      sumprod3[j,i] <- prod11[j,i] + prod12[j,i] + prod13[j,i] + prod14[j,i] + prod15[j,i];
+      sumprod[j,i] <- sumprod1[j,i] + sumprod2[j,i] + sumprod3[j,i]
       ## mu[j,i] <- signal[i]*(x1[j]*d1[i]*p1[j] + x2[j]*d2[i]*p2[j]
       ##                      + x3[j]*d3[i]*p3[j] + x4[j]*d4[i]*p4[j]
       ##                      + x5[j]*d5[i]*p5[j] + x6[j]*d6[i]*p6[j]
@@ -229,7 +206,7 @@ model1Dj.irt <- function() {
       ## for (t in 1:T){ #inprod(beta[],X[n,])
       ##     mu[j,i] <- signal[i]*inprod(x[t,],dp[i,,t]) - difficulty[i];     ## utility differential
       ## }
-      mu[j,i] <- signal[i]*sumprod[j,i] - difficulty[i];     ## utility differential
+      mu[j,i] <- signal[i]*sumprod[j,i] - difficulty[i];  ## utility differential
                 }
       x1[j]  ~ dnorm ( x0[j],50);  ## Autoregressive process
       x2[j]  ~ dnorm ( x1[j],50);
@@ -259,61 +236,63 @@ model1Dj.irt <- function() {
       x26[j] ~ dnorm (x25[j],50);
       x27[j] ~ dnorm (x26[j],50);
       x28[j] ~ dnorm (x27[j],50);
+      x29[j] ~ dnorm (x28[j],50);
               }
   ## for (i in 1:I){
-  ##    m[i] <- difficulty[i] / signal[i]                                      ## midpoint
+  ##    m[i] <- difficulty[i] / signal[i]          ## midpoint
   ## }
   ## priors
-    x0[1] ~ dnorm(1, 4);    #Woldenberg
-    x0[2] ~ dnorm(2, 4);    #barragan
-    x0[3] ~ dnorm(0, 1);    #cantu
-    x0[4] ~ dnorm(-2, 4);   #cardenas
-    x0[5] ~ dnorm(0, 1);    #lujambio
-    x0[6] ~ dnorm(0, 1);    #merino
-    x0[7] ~ dnorm(0, 1);    #molinar
-    x0[8] ~ dnorm(0, 1);    #peschard
-    x0[9] ~ dnorm(0, 1);    #zebadua
-    x0[10] ~ dnorm(0, 1);   #rivera
-    x0[11] ~ dnorm(0, 1);   #luken
+    x0[1]  ~ dnorm( 1, 4);   #Woldenberg
+    x0[2]  ~ dnorm( 2, 4);   #barragan
+    x0[3]  ~ dnorm( 0, 1);   #cantu
+    x0[4]  ~ dnorm(-2, 4);   #cardenas
+    x0[5]  ~ dnorm( 0, 1);   #lujambio
+    x0[6]  ~ dnorm( 0, 1);   #merino
+    x0[7]  ~ dnorm( 0, 1);   #molinar
+    x0[8]  ~ dnorm( 0, 1);   #peschard
+    x0[9]  ~ dnorm( 0, 1);   #zebadua
+    x0[10] ~ dnorm( 0, 1);   #rivera
+    x0[11] ~ dnorm( 0, 1);   #luken
     for(i in 1:I){
         signal[i] ~ dnorm( 0, 0.1);
                  }
     for(i in 1:I){
         difficulty[i] ~ dnorm( 0, 0.25);
                  }
-}
+}"
 ## END MODEL
 
 ## JAGS VERSION
 time <- all23$t
-d1  <- ifelse(time==1,1,0)
-d2  <- ifelse(time==2,1,0)
-d3  <- ifelse(time==3,1,0)
-d4  <- ifelse(time==4,1,0)
-d5  <- ifelse(time==5,1,0)
-d6  <- ifelse(time==6,1,0)
-d7  <- ifelse(time==7,1,0)
-d8  <- ifelse(time==8,1,0)
-d9  <- ifelse(time==9,1,0)
-d10 <- ifelse(time==10,1,0)
-d11 <- ifelse(time==11,1,0)
-d12 <- ifelse(time==12,1,0)
-d13 <- ifelse(time==13,1,0)
-d14 <- ifelse(time==14,1,0)
-d15 <- ifelse(time==15,1,0)
-d16 <- ifelse(time==16,1,0)
-d17 <- ifelse(time==17,1,0)
-d18 <- ifelse(time==18,1,0)
-d19 <- ifelse(time==19,1,0)
-d20 <- ifelse(time==20,1,0)
-d21 <- ifelse(time==21,1,0)
-d22 <- ifelse(time==22,1,0)
-d23 <- ifelse(time==23,1,0)
-d24 <- ifelse(time==24,1,0)
-d25 <- ifelse(time==25,1,0)
-d26 <- ifelse(time==26,1,0)
-d27 <- ifelse(time==27,1,0)
-d28 <- ifelse(time==28,1,0)
+d1  <- as.numeric (time==1)
+d2  <- as.numeric (time==2)
+d3  <- as.numeric (time==3)
+d4  <- as.numeric (time==4)
+d5  <- as.numeric (time==5)
+d6  <- as.numeric (time==6)
+d7  <- as.numeric (time==7)
+d8  <- as.numeric (time==8)
+d9  <- as.numeric (time==9)
+d10 <- as.numeric(time==10)
+d11 <- as.numeric(time==11)
+d12 <- as.numeric(time==12)
+d13 <- as.numeric(time==13)
+d14 <- as.numeric(time==14)
+d15 <- as.numeric(time==15)
+d16 <- as.numeric(time==16)
+d17 <- as.numeric(time==17)
+d18 <- as.numeric(time==18)
+d19 <- as.numeric(time==19)
+d20 <- as.numeric(time==20)
+d21 <- as.numeric(time==21)
+d22 <- as.numeric(time==22)
+d23 <- as.numeric(time==23)
+d24 <- as.numeric(time==24)
+d25 <- as.numeric(time==25)
+d26 <- as.numeric(time==26)
+d27 <- as.numeric(time==27)
+d28 <- as.numeric(time==28)
+d29 <- as.numeric(time==29)
 ## ##  SEMESTRALES
 ## ##       1 2 3 4 5 6 7 8 9 0 1
 ## p1 <-  c(1,1,1,1,1,1,1,1,1,0,0) # presente o ausente en el semestre
@@ -360,15 +339,25 @@ p25 <- c(1,1,1,1,1,1,0,1,0,1,1)
 p26 <- c(1,1,1,1,1,1,0,1,0,1,1)
 p27 <- c(1,1,1,1,1,1,0,1,0,1,1)
 p28 <- c(1,1,1,1,1,1,0,1,0,1,1)
+p29 <- c(1,1,1,1,1,1,0,1,0,1,1)
 #
-v <- all23[,1:11]; ## EXTRACT VOTES
-v[v==0] <- NA; v[v==-1] <- 0    ## Versión probit requiere 0s y 1s con NAs
-v <- t(v)                       ## ROLL CALLS NEED ITEMS IN COLUMNS, LEGISLATORS IN ROWS
-J <- nrow(v); I <- ncol(v)      ## SESSION TOTALS
+v <- all23[,1:11];                        ## EXTRACT VOTES
+v[v==0] <- NA; v[v>2] <- NA; v[v==2] <- 0 ## Versión probit requiere 0s y 1s con NAs
+v <- t(v)                                 ## ROLL CALLS NEED ITEMS IN COLUMNS, LEGISLATORS IN ROWS
+J <- nrow(v); I <- ncol(v)                ## SESSION TOTALS
 ##
-ife.data <- list ("J", "I", "v", "d1", "d2", "d3", "d4", "d5", "d6", "d7", "d8", "d9", "d10", "d11", "d12", "d13", "d14", "d15", "d16", "d17", "d18", "d19", "d20", "d21", "d22", "d23", "d24", "d25", "d26", "d27", "d28", "p1", "p2", "p3", "p4", "p5", "p6", "p7", "p8", "p9", "p10", "p11", "p12", "p13", "p14", "p15", "p16", "p17", "p18", "p19", "p20", "p21", "p22", "p23", "p24", "p25", "p26", "p27", "p28")
-#ife.data <- list ("J", "I", "T", "v", "dp")
+ife.data <- dump.format(
+    list (J=J, I=I, v=v, 
+          d1=d1, d2=d2, d3=d3, d4=d4, d5=d5, d6=d6, d7=d7, d8=d8, d9=d9, d10=d10, d11=d11, d12=d12, d13=d13, d14=d14, d15=d15, d16=d16, d17=d17, d18=d18, d19=d19, d20=d20, d21=d21, d22=d22, d23=d23, d24=d24, d25=d25, d26=d26, d27=d27, d28=d28, d29=d29,
+          p1=p1, p2=p2, p3=p3, p4=p4, p5=p5, p6=p6, p7=p7, p8=p8, p9=p9, p10=p10, p11=p11, p12=p12, p13=p13, p14=p14, p15=p15, p16=p16, p17=p17, p18=p18, p19=p19, p20=p20, p21=p21, p22=p22, p23=p23, p24=p24, p25=p25, p26=p26, p27=p27, p28=p28, p29=p29
+          ))
+## ife.data <- 
+##     list ("J", "I", "v",
+##                   "d1", "d2", "d3", "d4", "d5", "d6", "d7", "d8", "d9", "d10", "d11", "d12", "d13", "d14", "d15", "d16", "d17", "d18", "d19", "d20", "d21", "d22", "d23", "d24", "d25", "d26", "d27", "d28", "d29",
+##           "p1", "p2", "p3", "p4", "p5", "p6", "p7", "p8", "p9", "p10", "p11", "p12", "p13", "p14", "p15", "p16", "p17", "p18", "p19", "p20", "p21", "p22", "p23", "p24", "p25", "p26", "p27", "p28", "p29")
+#
 ife.inits <- function (){
+  dump.format(
     list (
     x1=rnorm(J),
     x2=rnorm(J),
@@ -398,9 +387,12 @@ ife.inits <- function (){
     x26=rnorm(J),
     x27=rnorm(J),
     x28=rnorm(J),
+    x29=rnorm(J),
     signal=rnorm(I),
     difficulty=rnorm(I)
-    )
+   ,'.RNG.name'="base::Wichmann-Hill"
+   ,'.RNG.seed'= 1970
+    ))
     }
 ## ife.inits <- function (){
 ##     list (
@@ -409,39 +401,49 @@ ife.inits <- function (){
 ##     difficulty=rnorm(I)
 ##     )
 ##     }
-ife.parameters <- c("x1", "x2", "x3", "x4", "x5", "x6", "x7", "x8", "x9", "x10", "x11", "x12", "x13", "x14", "x15", "x16", "x17", "x18", "x19", "x20", "x21", "x22", "x23", "x24", "x25", "x26", "x27", "x28", "signal", "difficulty")
+ife.parameters <- c("x1", "x2", "x3", "x4", "x5", "x6", "x7", "x8", "x9", "x10", "x11", "x12", "x13", "x14", "x15", "x16", "x17", "x18", "x19", "x20", "x21", "x22", "x23", "x24", "x25", "x26", "x27", "x28", "x29", "signal", "difficulty")
 
-#test ride to see program works
+## estimation
 start.time <- proc.time()
-results <- jags (data=ife.data, inits=ife.inits, ife.parameters,
-                 model.file=model1Dj.irt, n.chains=2,
-                 n.iter=100, n.thin=10
-                 )
+results <- run.jags(
+    model    = model1Dj.irt,
+    monitor  = ife.parameters,
+    method   = "parallel",
+    n.chains = 2,
+    data     = ife.data,
+    inits    = list (ife.inits(), ife.inits()),
+#    thin = 5, burnin =   200, sample = 200,
+    thin = 25, burnin =   4000, sample = 200,
+    plots = FALSE)
 time.elapsed <- round(((proc.time()-start.time)[3])/60,2); rm(start.time)
 print(cat("\tTime elapsed in estimation:",time.elapsed,"minutes","\n")); rm(time.elapsed)
 
-## multicore call
-start.time <- proc.time()
-results <- mclapply(1:2, function(x) {
-   model.jags.re <- try(jags (data=ife.data, inits=ife.inits, ife.parameters,
-   model.file=model1Dj.irt, n.chains=1,
-   n.iter=100, n.burnin=50, n.thin=1
-#   n.iter=20000, n.burnin=10000, n.thin=100
-   ))
-   if(inherits(model.jags.re,"try-error")) {return()}
-   return(model.jags.re)
-   }, mc.cores=2 )
-time.elapsed <- round(((proc.time()-start.time)[3])/60,2); rm(start.time)
-print(cat("\tTime elapsed in estimation:",time.elapsed,"minutes","\n")); rm(time.elapsed)
+# continue updating
+results <- extend.jags(results, thin = 25, sample = 200)
 
-#longer run
-start.time <- proc.time()
-results <- jags (data=ife.data, inits=ife.inits, ife.parameters,
-                 model.file=model1Dj.irt, n.chains=2,
-                n.iter=30000, n.burnin=20000, n.thin=100
-                 )
-time.elapsed <- round(((proc.time()-start.time)[3])/60,2); rm(start.time)
-print(cat("\tTime elapsed in estimation:",time.elapsed,"minutes","\n")); rm(time.elapsed)
+## ## multicore call
+## start.time <- proc.time()
+## results <- mclapply(1:2, function(x) {
+##     model.jags.re <- try(run.jags (
+##         model    = model1Dj.irt,
+##         monitor  = ife.parameters,
+##         method   = "parallel",
+##         n.chains = 2,
+##         data     = ife.data,
+##         inits    = list (ife.inits(), ife.inits()),
+##         thin = 5, burnin =   200, sample = 200,
+##         plots = FALSE)
+##    )
+##    if(inherits(model.jags.re,"try-error")) {return()}
+##    return(model.jags.re)
+## }, mc.cores = 2 )
+## time.elapsed <- round(((proc.time()-start.time)[3])/60,2); rm(start.time)
+## print(cat("\tTime elapsed in estimation:",time.elapsed,"minutes","\n")); rm(time.elapsed)
+
+chains <- mcmc.list(list (results$mcmc[[1]], results$mcmc[[2]]))
+# check model convergence 
+gelman.diag <- gelman.diag (chains, multivariate=F)
+gelman.diag
 
 
 xxxxxx viejo
@@ -591,47 +593,47 @@ model17Dynj <- function() {
 ## END MODEL
 
 #########################################
-###     all456789 UGALDE-VALDES       ###
+###     all456789ab UGALDE-VALDES       ###
 #########################################
 
-time <- all456789$t
+time <- all456789ab$t
 ## SEMESTRALES
-d1 <-  ifelse(time==1,1,0)
-d2 <-  ifelse(time==2,1,0)
-d3 <-  ifelse(time==3,1,0)
-d4 <-  ifelse(time==4,1,0)
-d5 <-  ifelse(time==5,1,0)
-d6 <-  ifelse(time==6,1,0)
-d7 <-  ifelse(time==7,1,0)
-d8 <-  ifelse(time==8,1,0)
-d9 <-  ifelse(time==9,1,0)
-d10 <- ifelse(time==10,1,0)
-d11 <- ifelse(time==11,1,0)
-d12 <- ifelse(time==12,1,0)
-d13 <- ifelse(time==13,1,0)
-d14 <- ifelse(time==14,1,0)
-d15 <- ifelse(time==15,1,0)
-d16 <- ifelse(time==16,1,0)
-d17 <- ifelse(time==17,1,0)
-d18 <- ifelse(time==18,1,0)
-d19 <- ifelse(time==19,1,0)
-d20 <- ifelse(time==20,1,0)
-d21 <- ifelse(time==21,1,0)
-d22 <- ifelse(time==22,1,0)
-d23 <- ifelse(time==23,1,0)
-d24 <- ifelse(time==24,1,0)
-d25 <- ifelse(time==25,1,0)
-d26 <- ifelse(time==26,1,0)
-d27 <- ifelse(time==27,1,0)
-d28 <- ifelse(time==28,1,0)
-d29 <- ifelse(time==29,1,0)
-d30 <- ifelse(time==30,1,0)
-d31 <- ifelse(time==31,1,0)
-d32 <- ifelse(time==32,1,0)
-d33 <- ifelse(time==33,1,0)
-d34 <- ifelse(time==34,1,0)
-d35 <- ifelse(time==35,1,0)
-d36 <- ifelse(time==36,1,0)
+d1 <-  as.numeric(time==1)
+d2 <-  as.numeric(time==2)
+d3 <-  as.numeric(time==3)
+d4 <-  as.numeric(time==4)
+d5 <-  as.numeric(time==5)
+d6 <-  as.numeric(time==6)
+d7 <-  as.numeric(time==7)
+d8 <-  as.numeric(time==8)
+d9 <-  as.numeric(time==9)
+d10 <- as.numeric(time==10)
+d11 <- as.numeric(time==11)
+d12 <- as.numeric(time==12)
+d13 <- as.numeric(time==13)
+d14 <- as.numeric(time==14)
+d15 <- as.numeric(time==15)
+d16 <- as.numeric(time==16)
+d17 <- as.numeric(time==17)
+d18 <- as.numeric(time==18)
+d19 <- as.numeric(time==19)
+d20 <- as.numeric(time==20)
+d21 <- as.numeric(time==21)
+d22 <- as.numeric(time==22)
+d23 <- as.numeric(time==23)
+d24 <- as.numeric(time==24)
+d25 <- as.numeric(time==25)
+d26 <- as.numeric(time==26)
+d27 <- as.numeric(time==27)
+d28 <- as.numeric(time==28)
+d29 <- as.numeric(time==29)
+d30 <- as.numeric(time==30)
+d31 <- as.numeric(time==31)
+d32 <- as.numeric(time==32)
+d33 <- as.numeric(time==33)
+d34 <- as.numeric(time==34)
+d35 <- as.numeric(time==35)
+d36 <- as.numeric(time==36)
 
 ## ## VERSIÓN QUE MODIFICA LAS FRONTERAS SEMESTRALES PARA QUE
 ## ## CONSEJEROS SALIENTES Y ENTRANTES NO ESTÉN JUNTOS
@@ -723,7 +725,7 @@ p34 <- c(0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1)
 p35 <- c(0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1)
 p36 <- c(0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1)
 
-v <- all456789[,1:18]
+v <- all456789ab[,1:18]
 #v[v==-1] <- 0  # los -1s se vuelven 0s # DEJA ABSTENCION COMO VOTO NAY
 v[v==0] <- NA; v[v==-1] <- 0                    ## Versión probit requiere 0s y 1s
 v <- t(v)                                       ## ROLL CALLS NEED ITEMS IN COLUMNS, LEGISLATORS IN ROWS
