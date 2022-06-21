@@ -16,7 +16,7 @@ library (MCMCpack)
 library (foreign)
 library (car)
 library (gtools)
-#library (multicore)
+#library (parallel)
 library (R2jags)
 library (mcmcplots)
 library (sm)
@@ -275,7 +275,7 @@ terms.dates$mid <- as.Date(terms.dates$start + as.duration(interval(terms.dates$
 ## Read votes, exported by code/data-prep.r ##
 ##############################################
 vot.raw <-read.csv("v23.csv",  header=TRUE)
-## vot.raw <-read.csv("v456789ab.csv",  header=TRUE)
+vot.raw <-read.csv("v456789ab.csv",  header=TRUE)
 ## vot.raw <-read.csv("vcde.csv",  header=TRUE)
 vot <- vot.raw # duplicate for manipulation
 

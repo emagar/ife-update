@@ -2,11 +2,15 @@
 
 -----
 
-Hola Sebastián. Chris me dijo que serás mi discussant, lo que me da mucho gusto.
+Hola Sebastián. Chris me dijo que serás mi discussant, me da mucho gusto.
 
-Sólo que con Memo hemos enfrentado obstáculos varios en el análisis de datos y no podremos entregar un paper a tiempo para la conferencia.
+Sólo que obstáculos varios nos impidieron tener listo un paper nuevo a tiempo para la conferencia. Te estoy mandando anexo un antiguo borrador que permite entrever una parte importante del proyecto nuevo. El plan es poner al día nuestro trabajo de regulación electoral en México. Además de extender la serie de datos para cubrir la última década y la reforma electoral de 2014, queremos investigar dilemas de la delegación en México y también algunos retos para la teoría de la delegación en general, más allá de los USA. 
 
-Nuestro plan es poner al día nuestro trabajo de regulación electoral en México. Además de extender la serie de datos para cubrir la última década y la reforma electoral de 2014, queremos investigar el dilema que el colapso del sistema de partidos en 2018 plantea para el arreglo.
+El borrador, que enfrenta el problema la deriva (drift) en agentes electorales, cubre una parte sustancial de todo esto, sin desarrollar explícitamente un esquema conceptual. Espero que te permita hacer comentarios a lo que presente el sábado entrante.
+
+Una disculpa por todo esto, ya te contaré. Y me dará mucho gusto verte la próxima semana. 
+
+
 
 Para no dejarte sin material para la discusión, estoy anexando un paper donde intentamos retomar el argumento hace unos años sin mucho éxito. Incluyo también el paper original, que quizás conozcas. 
 

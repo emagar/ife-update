@@ -413,13 +413,16 @@ results <- run.jags(
     data     = ife.data,
     inits    = list (ife.inits(), ife.inits()),
 #    thin = 5, burnin =   200, sample = 200,
-    thin = 25, burnin =   4000, sample = 200,
+    thin = 10, burnin =   10000, sample = 1000,
     plots = FALSE)
 time.elapsed <- round(((proc.time()-start.time)[3])/60,2); rm(start.time)
 print(cat("\tTime elapsed in estimation:",time.elapsed,"minutes","\n")); rm(time.elapsed)
 
 # continue updating
-results <- extend.jags(results, thin = 25, sample = 200)
+start.time <- proc.time()
+results <- extend.jags(results, burnin = 30000, thin = 10, sample = 1000)
+time.elapsed <- round(((proc.time()-start.time)[3])/60,2); rm(start.time)
+print(cat("\tTime elapsed in estimation:",time.elapsed,"minutes","\n")); rm(time.elapsed)
 
 ## ## multicore call
 ## start.time <- proc.time()
@@ -445,6 +448,10 @@ chains <- mcmc.list(list (results$mcmc[[1]], results$mcmc[[2]]))
 gelman.diag <- gelman.diag (chains, multivariate=F)
 gelman.diag
 
+# save results (no convergence in more recent quarters)
+save(results, file = "data/posterior-samples/not-in-git/results-dynmq-120k-2-3-member.RData")
+
+x
 
 xxxxxx viejo
 
