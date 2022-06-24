@@ -20,7 +20,7 @@
 \usepackage{graphicx}
 %\graphicspath{"c:/data"}
 \usepackage{color}
-%\usepackage[colorlinks]{hyperref}
+\usepackage{hyperref}
 \usepackage{tikz} % Easier syntax to draw pgf files (invokes pgf automatically)
 \usetikzlibrary{arrows,shapes.geometric}
 %\usepackage{pgfmath}
@@ -68,11 +68,18 @@
 \tikzstyle{nodo} = [circle, draw=black, fill=white, text=black]
 \tikzstyle{end} = [circle, minimum width=3pt,fill, inner sep=0pt]
 
+\usepackage{array,tabto} % allows word jumps to specific distance \tabto{2cm}
+
+% read external link symbol code store in current directory
+% usage: \ExternalLink
+\input{ext-link.tex}
+
+
 \title[Slippage at IFE]{Slippage among the Experts}
 \subtitle{Agency Costs in Partisan Election Regulation}
-\author[Magar, Rosas \& Est\'evez]{Eric Magar\inst{1} \and Guillermo Rosas\inst{2} \and Federico Est\'evez\inst{1}}
+\author[Est\'evez, Magar \& Rosas]{Federico Est\'evez\inst{1} \and Eric Magar\inst{1} \and Guillermo Rosas\inst{2}}
 \institute[ITAM\&WashU]{ \inst{1}ITAM, Mexico City \and
-\inst{2}Wash. U.}
+\inst{2}Wash.~U., St.~Louis}
 \date[6/25/22]{6/25/22 \\ \small{Mat McCubbins Memorial Conference, UCSD} }
 
 \begin{document}
@@ -84,39 +91,51 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \frame {                      % SLIDE
 
-    \frametitle{How do IFE and parties relate?}
+%    \frametitle{Our work on IFE, now and then}
+    \frametitle{Our work on Mexican election regulation}
 
-\includegraphics[width=\textwidth]{../../pics/calderonIFE20070829.jpg}
+%How does delegation work in fast-changing, multi-party systems?
 
-}
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
-\frame {                      % SLIDE
+%\bigskip
 
-    \frametitle{Our work on IFE, now and then}
+\begin{description}
 
-\textbf{Before}: static ideal point estimation 1996--2007 \\
-(Est\'evez, Magar, and Rosas 2008)
+\item<1->[Before:] Party watchdog model, congressional parties delegate %\\
+% {\footnotesize (Estévez, Magar, Rosas 2008)}
 
 \begin{itemize}
-
-\item Party watchdog model: expect party segmentation of Council General (same-sponsor councilors align).
-
+\item<1-> Expect party segmentation of IFE's Council General
+\item<1-> Ideal point estimation confirms
 \end{itemize}
 
 \bigskip
 
-\textbf{Now}: dynamic estimation 1996--2011
+\item<2->[Now:] longitudinal approach to study councilor drift 1996--2014
 
 \begin{itemize}
-
-\item Same general hypothesis, finer tests.
-
-\item Longitudinal estimates: track realignment, effect of new
-entrants, compare electoral semesters/rest...
-
-\item Link dynamics to analytical narratives.
-
+\item<2-> New puzzles emerge 
 \end{itemize}
+
+\end{description}
+
+\pause \pause \bigskip
+
+$\rightarrow$ Key pieces of the structure of delegation missing in Mexico:
+
+\begin{enumerate}
+\item Multi- vs. two-party system %, some compromise to pass senate, majority can set long-term policy
+\item Constant mutation vs. stability
+\item Younger vs. mature bureaucrats
+\end{enumerate}
+
+}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\frame {                      % SLIDE
+
+    \frametitle{How do IFE and parties relate?}
+
+    \centering \includegraphics[width=.85\textwidth]{../../pics/calderonIFE20070829.jpg}
+    \\ {\color{black!25}\tiny{From \url{http://reforma.com.mx} 8/29/2007}}
 
 }
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -138,57 +157,150 @@ entrants, compare electoral semesters/rest...
 \begin{itemize}
 
 \item Nine-member, non-partisan regulatory board
-
-\item Decisions affect all aspects of party life
-
-    \begin{enumerate}
-        \item party finance
-        \item candidate selection
-        \item campaign contents
-        \item leaders v.\ rank-and-file
-        \item vote count
-        \item ...
-    \end{enumerate}
-
-\item Congress appoints members (super-majority) for 7-year terms. Party quota/veto system (informal)
-
+\item Ran federal elections nationwide 1997--2012, \\ esp. PRI's defeats
+% \item Congress appoints members (super-majority) for 7-year terms. Party quota/veto system (informal)
+\item Congress appoints members by super-majority for 7-year terms
 \item Public roll call votes
-
+\item Upgraded in 2014 to also regulate subnational races (INE)
+  
 \end{itemize}
 
 }
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \frame {                      % SLIDE
 
-    \frametitle{Our argument}
+    \frametitle{IFE's success story: conventional arguments}
 
-\alert{Parties} designed election referee that they can influence
+\begin{itemize}
 
-\bigskip
+\item IFE as \emph{ombusdman} representing citizens directly \\ {\color{black!25} \footnotesize (Eisenstadt 2004, Ackerman 2004)}
 
-Delegation dilemmas: \\ IFE (the agent) affects parties'
-(the principal) welfare
+\item Budget and tenure security
+
+\item Congressional appointment yet no inevitable bias in experts {\color{black!25} \footnotesize (Schedler 2000, Woldenberg 2008)}
+
+\end{itemize}
 
 \bigskip
 
 \begin{center}
-Careful delegation $\rightarrow$ \alert{party} trust $\rightarrow$
-citizen trust
+Independence + impartiality $\rightarrow$ citizen trust
 \end{center}
 
+\pause \bigskip
+
+\begin{block}{Public opinion}
+\centering
+{\footnotesize 
+  \begin{tabular}{lr}
+                & \% trust  \\ \hline
+    Church      & 72 \\
+    \textbf{IFE} & \textbf{67} \\
+    Army        & 65 \\
+    Congress    & 35 \\
+    Parties     & 34 \\ \hline
+    \multicolumn{2}{r}{\tiny \emph{Reforma} poll May 2005}\\
+  \end{tabular} 
+}
+\end{block}
+}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\frame {                      % SLIDE
+
+    \frametitle{Our argument owes much to Mat}
+
+% {\footnotesize     
+%   \onslide<2-> \tabto{.8cm}\textbf{parties} \tabto{8.05cm}\textbf{IFE}\\
+%                \tabto{1.15cm}$\updownarrow$ \tabto{8.2cm}$\updownarrow$ \\
+% \onslide<1-> ``The \alert<2->{principal} seeks to structure the relationship with the \alert<2->{agent} so that the outcomes produced through the agent's efforts are the best the principal could achieve, given the choice to delegate in the first place'' \\ (Kiewiet \& McCubbins 1991:24)
+% }
+    
+Congressional parties (principal) structure a referee (agent) that they can influence %\\  (Kiewiet \& McCubbins 1991, McNollgast 1987)
+
+% \bigskip
+
+% scope + instruments $-$ procedures = agency discretion\\
+% (+) (+) (++) (--) $\leftarrow$ uncertainty/conflict \\
+% {\footnotesize(McCubbins and Page 1986)}
+
+\pause \bigskip
+
+High stakes: IFE has authority over every aspect of party life
+
+\begin{itemize}
+\begin{columns}
+\column{.3\textwidth}
+        \item voter registration
+        \item redistricting
+        \item nominations
+        \item campaign content
+\column{.4\textwidth}
+        \item allocates TV spots
+        \item campaign finance
+%        \item leaders v.\ rank-and-file
+        \item who clears subsidy hurdle
+        \item ...
+\end{columns}
+\end{itemize}
+
+\pause \bigskip
+
+\centering
+Careful delegation $\rightarrow$ \textbf{party} trust $\rightarrow$ citizen trust %\hyperlink{pubop}{\ExternalLink}
+
+}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\frame {                      % SLIDE
+
+    \frametitle{Our argument}
 \begin{block}{Contract design (Kiewiet \& McCubbins 1991)}
  \begin{center}
     \begin{itemize}
-        \item screening
-        \item monitoring
-        \item rewards and sanctions
-        \item checks and balances
+    \item<1-> Screening
+      \begin{itemize}
+      \item<2> formally non-partisan
+      \item<2> super-majority rule
+      \end{itemize}
+    \item<1-> Monitoring
+      \begin{itemize}
+      \item<3> party reps in board and committees
+      \item<3> constant signalling
+      \end{itemize}
+    \item<1-> Carrots/sticks
+      \begin{itemize}
+      \item<4> routine impeachment threats, some took place
+      \item<4> budget cuts
+      \item<4> nuclear option (electoral reform)
+      \end{itemize}
+    \item<1-> Checks and balances
+      \begin{itemize}
+      \item<5> split in thirds
+      \item<5> electoral tribunal
+      \end{itemize}
     \end{itemize}
  \end{center}
 \end{block}
+}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\frame {                      % SLIDE
+  \frametitle{Puzzle 1}
+  How do 3 instead of 2 parties affect delegation?
+  \begin{itemize}
+  \item Party quotas and veto system used (informal) $\rightarrow$ power-sharing
+  \item Collective principal appoints a collective agent
+  \item Common solution in other `autonomous' regulatory boards (telecomm, energy, education...)
+  \end{itemize}
+}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\frame {                      % SLIDE
+  \frametitle{Puzzle 2}
+  Unstable environment
 
-%Collective principal raises additional complications
+  What if the principal goes out of business?
+  
+  U.S. has inherited some of this
 
+  
 }
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %\section{Data and methods}
@@ -330,11 +442,11 @@ Approach 2---Bonica (2010):
 % }
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \frame {                      % SLIDE
-    \frametitle{Contested votes}
+    \frametitle{Data = contested votes}
 
 \begin{center}
 
-Votes: 3,907 unanimous, 1,446 contested (27\%)
+Votes: 5,202 unanimous, 1,640 contested (24\%)
 
 \bigskip
 

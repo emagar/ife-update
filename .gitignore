@@ -5,7 +5,11 @@
 # leave posterior samples out, too large
 data/posterior-samples/not-in-git
 
-# LaTeX
+# auto-generated emacs lisp
+slides/mat-conf-ucsd2022/auto
+papers/ifeDyn/auto
+
+# LaTeX/Beamer
 *.aux
 *.glo
 *.idx
@@ -27,5 +31,6 @@ data/posterior-samples/not-in-git
 *.maf
 *.mtc
 *.mtc1
+*.nav
 *.out
 *.synctex.gz
