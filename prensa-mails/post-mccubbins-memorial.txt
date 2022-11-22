@@ -1,0 +1,28 @@
+30jun2022
+
+Queridos co-autores: la conferencia en memoria de Mat estuvo emotiva y concurrida. A nuestro paper le faltaba estructura básica para inspirar sugerencias concretas. Pero consiguió navegar con decoro, y nos dieron algunas ideas. Resumo las reacciones.
+
+Thomas Schwartz sugirió considerar explícitamente la existencia de delegaciones donde no se espera que la agencia sea un perfecto agente del principal, como la Fed; y delegaciones donde el principal busca sacar las manos de un problema espinoso, echándole la papa caliente a la agencia. Algo críptico, como corresponde a un filósofo formal, pero invita a pensar lo que debemos esperar de nuestros consejeros electorales.
+
+A Kiewiet le brilló el ojo cuando vio su trabajo aplicado a México.
+
+Cox sugirió explorar, en la estimación, un mixture model controlando issues. P.ej. (1) una votación donde se espera conflicto entre partidos grandes-chicos vs (2) otra donde un grande vs otro grande. La segmentación de puntos ideales de (1) debería provenir de una distribución muy distinta a la distribución de (2). Una aplicación distinta de mixtures a la que Memo sugirió en aras de distinguir las distribuciones de puntos ideales de consejeros con distinto patrocinador.
+
+Saiegh, cuyas láminas anexo, invitó a explotar el signal-to-noise ratio (coeficiente de dificultad en un IRT), así como explorar estadísticos clásicos del estudio de partidos legislativos, como los Rice scores. Esto me hizo recordar un viejo paper de Cox y Poole que, justamente, combina Nominate con Rice scores para probar influencia partidista en el Congreso. (Anexo el que, creo, es tal paper.)
+
+Así que tenemos trabajo ante nos. Les deseo un buen fin de semana.
+
+-e
+
+IDEA:
+- en votos con cutpoint entre las medianas partidistas, cox y poole comparan (1) actual Rice score vs (2) Rice implícito en predicción espacial; (1) > (2) es evidencia de presión partidista
+- podríamos hacer algo similar: en votos con cutpoint entre consejeros de un contigente en subconjunto votos (p.ej. quejas del/contra partido), comparamos (1) actual Rice score en vs (2) Rice implícito en predicción espacial.  
+
+Memo, ayer no vino al caso hablar del IFE. Te mando una idea que podríamos echar a andar. Se basa en Cox-Poole 2002. No tiene que ser ahora, pero échale coco para retomarlo cuando terminen las vacaciones.
+
+El procedimiento Cox-Poole consiste en estimar puntos ideales y cutpoints de un periodo, para luego aislar las votaciones cuyos cutpoints se localizan entre las medianas de los partidos. Este subconjunto son los party votes: se espera que se enfrenten sistemáticamente una mayoría de Dems contra una mayoría de Reps. En términos de teóricos, el enfrentamiento es más agudo si los whips son capaces de torcer brazos que si se tratara de una mera controntación de ideologías. Esta diferencia es la esencia del indicador Cox-Poole: comparan el Rice score observado vs. el Rice score implícito en un modelo puramente espacial (todos a la derecha del cutpoint, Dems o Reps, votan contra todos a la izquierda del cutpoint, Dems o Reps). La diferencia es una medida de influencia partidista, el % de legisladores que votaron contra su ideología.
+
+En el IFE no hay party whips. Pero podríamos identificar votaciones donde sea razonable anticipar que los partidos esperen ver a sus consejeros como agentes, para aplicarles el procedimiento Cox-Poole. Un ejemplo son quizás las quejas de un partido contra otro partido de Omar Alejandre. O issues de partidos grandes contra la chiquillada.  
+
+¿Cómo ves esto?
+
