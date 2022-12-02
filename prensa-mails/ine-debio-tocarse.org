@@ -1,0 +1,74 @@
+#+TITLE: op-ed reforma electoral
+#+AUTHOR: Eric Magar
+#+DATE: <2022-11-24 Thu>
+
+Este borrador elabora mis bullets de esta semana en clase. 
+Aún sigue muy de cerca la argumentación original. Hay que meterle cuchillo grande para incorporar la reforma de 2014 (crece el costo de agencia) y el desfonde del sistema de partidos 
+
+* Points
+- Defender el carácter ciudadano del INE contra la voracidad del presidente es un espejismo. 
+- La lógica partidista permite ver por qué la reforma electoral era necesaria. 
+- No verlo (poder o querer) pondrá en jaque la credibilidad --- es insostenible un árbitro que representa al triunvirato del pasado, excluyendo al partido que tiene mayoría en votos y en escaños.
+- Negativa a sentarse a negociar en supermayoría, en aras de preservar el status quo, no lo preservará; peor aún, invita al presidente y su partido a usar sus recursos mayoritarios para "enderezar" las cosas. 
+- Inanición presupuestal.
+- Cuatro nombramientos en abril entrante. Si no se alcanza supermayoría, los insacularán.  
+
+* Parte del argumento, quizás
+Como parte del argumento, podríamos distinguir la ruta súper y la mayoritaria para reformar elecciones. Desde el salinato siempre tomamos la súper. Se negocian reglas aceptables para todos (los grandes). Cada uno pone sus prioridades, tacha lo inaceptable, toma y daca, logroll de reformas constitucionales. La mayoritaria es nueva: cambios legales/presupuestarios para acotar a un árbitro desbocado. Insaculación de 4 consejeros en abril. Al impedir la súper que propuso AMLO, la oposición nos condena a la ruta mayoritaria. Resultará un árbitro que los excluya totalmente. ¿Cuál es el origen de esta miopía extrema? El árbitro siempre ha sido partidista, y el actual excluye a Morena. ¿Por qué tan difícil reconocer esta realidad?
+
+
+
+nos condena a la ruta mayoritaria. Resultará un árbitro que los excluya totalmente. 
+- Cuál es el origen de esta miopía extrema? El árbitro siempre ha sido partidista, y el actual excluye a Morena. ¿Tan difícil reconocer esta realidad?
+
+
+- En reforma electoral hay dos rutas, la súper y la mayoritaria. 
+- La súper se ha transitado casi una docena de veces desde 1979. Se negocian reglas que todos (los grandes) aceptan en paquete. Cada uno plantea prioridades, tacha lo inaceptable, toma y daca, logroll de reformas constitucionales. 
+- La mayoritaria es nueva. Involucra cambios legales/presupuestarios para acotar a un árbitro desbocado. Insaculación de 4 consejeros en abril. 
+- Al impedir la súper que propuso AMLO, la oposición nos condena a la ruta mayoritaria. Resultará un árbitro que los excluya totalmente. 
+- Cuál es el origen de esta miopía extrema? El árbitro siempre ha sido partidista, y el actual excluye a Morena. ¿Tan difícil reconocer esta realidad?
+
+El #INEdebióTocarse
+
+- Primer acto: Se crea el INE, un órgano ciudadano, autónomo de los partidos políticos que regula.
+- Segundo acto: El presidente, que parece romper todo lo que toca, busca convertirlo en un árbitro parcial hacia su partido. 
+- Tercer acto: Se movilizan decenas, quizás cientos de miles de personas, marchan un domingo reciente en favor de la democracia y contra la tentación autoritaria del actual gobierno.
+- La obra, que podría titularse /La democracia como guerra cultural/, aún no llega a su desenlace. Pero no parece encaminarse hacia un final feliz. 
+- En parte importante porque la afirmación del primer acto es falsa. O, en el mejor de los casos, repite un mito muy socorrido, que desmenuzaremos en este texto. Los demás actos los dejaremos para después. 
+* Un árbitro confiable
+- Es imperativo que un árbitro inspire confianza. En cualquier competencia, ya sea futbol, box o elecciones, los rivales y sus seguidores requieren certeza de que intentará genuinamente marcar faltas y aplicar sanciones con criterio imparcial y apego a las reglas.
+- El logro más notable del INE, nuestro árbitro electoral, ha sido la generación de confianza entre los participantes.
+- Convenció a diestra y siniestra: a las oposiciones de los 1990s, de que no favorecería indebidamente al PRI; a éste, que reconoció sus derrotas de 1997 y de la presidencial de 2000---conceder es, según Przeworski, la prueba de fuego de la confianza hacia un árbitro electoral.
+- Confianza que permea también a la opinión pública. Como reportó Alejandro Moreno ([[https://www.elfinanciero.com.mx/opinion/alejandro-moreno/2022/11/18/el-ine-la-convergencia-en-tiempos-de-polarizacion/?outputType=amp][/El Financiero/, 18 de noviembre 2022]]), entre 6 y 7 de cada 10 entrevistados en sus encuestas del último cuarto de siglo han afirmado confiar en el INE, una marca que muy pocos pueden presumir en el país.
+* El mito
+- Para explicar este logro, que animó a la democratización del país, suele invocarse la mitología. 
+- El INE, según esta varsión, representa directamente al ciudadano, obviando la intermediación de los partidos de muy dudosa reputación. 
+- También suele darse por sentado, sin mucha explicación, que la ciudadanía confiará en un árbitro ciudadanizado. Lo que de plano no se explica es cómo fue que la ciudadanización haya también inspirado confianza en los actores regulados, esto es, en los partidos.
+- El INE no es mero intérprete de la ley. Por el contrario, cuenta con discreción amplia para decidir asuntos que afectan todos los aspectos de la vida partidista: pérdida de registro, financiamiento, elección de líderes y su relación con los afiliados, métodos de selección de candidatos, control férreo de los mensajes de campaña, cómputo y calificación de la elección, y tantos otros aspectos de nuestra sobrerregulada vida electoral. Qué, cómo y cuándo decida es de importancia vital para cualquier partido.
+* Regulación electoral partidizada
+- En contracorriente del mito, hemos sostenido que el ingrediente secreto fue la partidización del árbitro. Lo demostramos lógica y empíricamente en articulos anteriores (uno, de corte periodístico, disponible [[https://github.com/emagar/ife-update/blob/master/papers/ifeElectoralStudies/ReplicaNexos/IFE_LaCasaDeLaPartidocracia.pdf][aquí]]; otro, académico, [[https://github.com/emagar/ife-update/blob/master/papers/ifeElectoralStudies/EstevezMagarRosasIfeElecStud2008.pdf][aquí]]). Podrían resumirse así.
+- Argumentamos que un partido confiará en el INE cuando se sepa representado en su seno, cuando anticipe que, en las deliberaciones, el regulador no afectará sus intereses sistemáticamente y que, en el mejor de los casos, incluso verá sus preferencias reflejadas en acuerdos adoptados.
+- La naturaleza colegiada del Consejo General permite una representación plural. 
+- Uno de los elementos de la estructura le permitió a los partidos influir en las decisiones del INE fue el nombramiento de su Consejo General. Son los partidos legislativos quienes confirman consejeros. Del menú de aspirantes a consejero, cada partido tiene posibilidad de seleccionar cuidadosamente a quienes les inspiren confianza y patrocinarlos para integrarse al Consejo General. 
+- Cambios pre/post 2014.
+- El nombramiento siguió reglas formales, como la la aprobación de consejeros por supermayoría de diputados o la exclusión de aspirantes con militancia partidista reciente (la definición de reciente se ha relajado con los años). 
+- E informales, como son las cuotas de consejeros para los partidos.
+- El resultado ha sido un consejo plural, donde PAN, PRI y PRD patrocinaron alrededor de un tercio del consejo cada uno. 
+- La parcialidad del árbitro la garantizaba la suma de parcialidades.
+# - No son empleados, ni reciben línea. Más sutil: selección cuidadosa para que operen en piloto automático. 
+- Analizamos la totalidad de votaciones a lo largo de una década de sesiones del Consejo General en busca de patrones de segmentación de sus integrantes (excluyendo las unánimes). Las alineaciones son reveladoras. Ante conflicto manifesto en el consejo, fue sistemáticamente mayor la probabilidad de que cualquier par de consejeros votaran en sentido contrario si los patrocinaron partidos diferentes. O lo que es lo mismo, compartir patrocinio partidista indica similitud de ideología regulatoria---como lo espera el modelo de control partidista del árbitro. 
+* Nubarrones en el horizonte
+- PAN, PRI y PRD negociaron el INE en 2014. Morena, que obtendría registro hasta un año después, no participó. Obtendría una representación minoritaria en el árbitro colegiado hasta después de 2018. El arreglo sigue respondiendo a partidos que se desfondaron en 2018. La desconfianza del presidente y su partido es natural, se desprende de nuestro argumento. 
+- Por eso debe tocarse el INE. Para que todos tengan confianza en el árbitro, no sólo una parte de los contendientes.
+* La oportunidad perdida
+- Magro favor le hicieron a nuestra joven democracia quienes canalizaron el descontento contra el presidente y su partido para impedir una reforma electoral necesaria. 
+# - La premisa 2 involucra intenciones, inverificables. Pero no se sostiene que el presidente quiera imponer su reforma unilateralmente porque requiere votos de la oposición. De haberse sentado en la mesa, habrían podido poner sus condiciones
+- No poder o no querer reconocer esto? 
+
+- ¿Es antidemocrático usar la mayoría?
+- Montarte en #inenosetoca por desafecciones varias es echar por la borda reforma necesaria 
+* FEE 
+- Lo inescapable es que vinculemos la op-ed a nuestro trabajo previo. Por ejemplo, prefiero el sistema de watchdogs partidistas, vigente hasta 2014, al de la endogamia de los consejeros.  Cierto que los partidos todavía deciden al final, pero no controlan las ternas para poder intercambiar votos en la hechura de mayorías calificadas.  Así, la facción de Woldenberg salió contenta de la última rotación de cuatro consejeros, porque no se le dió mayoría en el C.G. a Morena.  Para la próxima rotación en 2023, el gobierno controlará el comité de selección de candidatos (2 de Derechos Humanos, 2 de Conacyt, y quizás 1 de 2 de la Suprema Corte) y amenaza con proceder a la insacuklación si la oposición rechaza a todos.  Sin una reforma que negociar, la oposición probablemente se quede sin ningún consejero afín. La consigna de #elINEnosetoca es miope en extremo.
+- Eric, el resultado de 2018 ciertamente hunde a la vieja partidocracia (refrendado en 2021) que, sin embargo, sostiene su control del C.G.  De ahí, las tensiones y escaramuzas que siguen dominando las noticias.  También es cierto que los agravios que afligen a AMLO se remontan a 2006. A menos que el INE se comporte como el Trife, doblándose cada vez ante los nuevos vientos políticos, no hay mecanismos para ajustar el balance del C.G.  Esa es la falla del arreglo institucional a partir de 2014.  Pero si el horizonte político se llene con puros partidos personalistas y vehículos electorales de candidatos (al estilo de AMLO y Macron y Guatemala desde siempre), los arreglos del IFE/INE desde 1996 no servirán. Están pensados para los partidos fuertes que Woldenberg siempre deseó para nuestra nueva democracia y que se financiaron generosamente con el presupuesto federal, pero que nunca lograron permear a la sociedad. Por eso, la royunda negación a participar en cualquier proceso de reforma. A los Woldies se les termina el mundo si se alteran los mecanismos de selección de consejeros. Toda su arquitectura se colapsará.
+
+
