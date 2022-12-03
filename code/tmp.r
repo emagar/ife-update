@@ -1,33 +1,11 @@
-dates <- data.frame(
-ins = c(ymd("19961031"),
-ymd("20001211"),
-ymd("20031105"),
-ymd("20071217"),
-ymd("20080215"),
-ymd("20080821"),
-ymd("20101031"),
-ymd("20111215"),
-ymd("20130220"),
-ymd("20131031"),
-ymd("20140411"),
-ymd("20170405"),
-ymd("20200417"),
-ymd("20200723")),
-out = c(ymd("20001211"),
-ymd("20031105"),
-ymd("20071217"),
-ymd("20080215"),
-ymd("20080821"),
-ymd("20101031"),
-ymd("20111215"),
-ymd("20130220"),
-ymd("20131031"),
-ymd("20140411"),
-ymd("20170405"),
-ymd("20200417"),
-ymd("20200723"),
-ymd("20220607")))
-class(dates)
-fun <- function(x) length(seq(from=x[,1], to=x[,2], by='month') - 1)
-fun(dates[14,])
-
+# save full vote set
+sel.r <- which(d$term %in% c(2:14))
+sel.c <- c(
+    c("woldenberg", "barragan", "cantu", "cardenas", "lujambio", "merino", "molinar", "peschard", "zebadua", "rivera", "luken"), 
+    c("ugalde", "albo", "andrade", "alcantar", "glezluna", "latapi", "lopezflores", "morales", "sanchez", "valdes", "banos", "nacif", "elizondo", "figueroa", "guerrero", "cordova", "garcia", "marvan"),
+    c("cordova", "banos", "andrade2", "favela", "galindo", "murayama", "nacif", "ruiz", "sanchez", "santiago", "snmartin", "ravel", "rivera2", "zavala"),
+    info.cols
+)
+sel.c <- sel.c[duplicated(sel.c)==FALSE] # drop duplicates
+tmp <- d[sel.r, sel.c]
+write.csv(tmp, file = "data/v23456789abcde.csv", row.names = FALSE)

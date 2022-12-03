@@ -14,7 +14,7 @@ setwd("~/Dropbox/data/rollcall/ife_cg/ife-update/")
 library(lubridate) # easier dates
 
 # read data
-d <- read.csv(file = "data/base_ife_eric_oct1990-dic2017.csv", stringsAsFactors = FALSE)
+d <- read.csv(file = "data/base_ife_eric_oct1990-abr2020.csv", stringsAsFactors = FALSE)
 str(d)
 
 # drop endline if any
@@ -156,7 +156,7 @@ sel <- which(colnames(d) %in% c("segob", "senpri", "senprd", "dippri", "dippan",
 d <- d[,-sel]
 rm(sel)
 #
-# drop recent consejeros without coded votes (last vote may 2017, before they were appointed)
+# drop recent consejeros without coded votes (last vote apr 2020, before they were appointed)
 sel <- which(colnames(d) %in%  c("magana", "faz", "humphrey", "kib"))
 d <- d[,-sel]
 
@@ -447,6 +447,18 @@ sel.r <- which(d$term %in% 12:14)
 sel.c <- c("cordova", "banos", "andrade2", "favela", "galindo", "murayama", "nacif", "ruiz", "sanchez", "santiago", "snmartin", "ravel", "rivera2", "zavala", info.cols)
 tmp <- d[sel.r, sel.c]
 write.csv(tmp, file = "data/vcde.csv", row.names = FALSE)
+#
+# save full vote set
+sel.r <- which(d$term %in% c(2:14))
+sel.c <- c(
+    c("woldenberg", "barragan", "cantu", "cardenas", "lujambio", "merino", "molinar", "peschard", "zebadua", "rivera", "luken"), 
+    c("ugalde", "albo", "andrade", "alcantar", "glezluna", "latapi", "lopezflores", "morales", "sanchez", "valdes", "banos", "nacif", "elizondo", "figueroa", "guerrero", "cordova", "garcia", "marvan"),
+    c("cordova", "banos", "andrade2", "favela", "galindo", "murayama", "nacif", "ruiz", "sanchez", "santiago", "snmartin", "ravel", "rivera2", "zavala"),
+    info.cols
+)
+sel.c <- sel.c[duplicated(sel.c)==FALSE] # drop duplicates
+tmp <- d[sel.r, sel.c]
+write.csv(tmp, file = "data/v23456789abcde.csv", row.names = FALSE)
 
 
 ## # summarize contested votes
@@ -454,16 +466,21 @@ write.csv(tmp, file = "data/vcde.csv", row.names = FALSE)
 ## with(d[d$dunan==0,], plot(as.factor(date), main = "N contested votes by session"))
 
 cuts <- c(
-    ymd("19961031"), # 1  to 2
-    ymd("20001211"), # 2  to 3
-    ymd("20031105"), # 3  to 4
-    ymd("20071217"), # 4  to 5
-    ymd("20080215"), # 5  to 6
-    ymd("20080821"), # 6  to 7
-    ymd("20101031"), # 7  to 8
-    ymd("20111215"), # 8  to 9
-    ymd("20130220"), # 9  to 10
-    ymd("20131031")  # 10 to 11
+    ymd("19961031"), #  1  to  2
+    ymd("20001211"), #  2  to  3
+    ymd("20031105"), #  3  to  4
+    ymd("20071217"), #  4  to  5
+    ymd("20080215"), #  5  to  6
+    ymd("20080821"), #  6  to  7
+    ymd("20101031"), #  7  to  8
+    ymd("20111215"), #  8  to  9
+    ymd("20130220"), #  9  to 10a
+    ymd("20131031"), # 10a to 11b
+    ymd("20140411"), # 11b to 12c
+    ymd("20170405"), # 12c to 13d
+    ymd("20200417"), # 13d to 14e
+    ymd("20200723"), # 14e to 15f
+    ymd("20230404")  # 15f to 16g
 )
 
 ############################################
