@@ -14,7 +14,8 @@ setwd("~/Dropbox/data/rollcall/ife_cg/ife-update/")
 library(lubridate) # easier dates
 
 # read data
-d <- read.csv(file = "data/base_ife_eric_oct1990-abr2020.csv", stringsAsFactors = FALSE)
+d <- read.csv(file = "data/base_ife_eric_oct1990-dic2020.csv", stringsAsFactors = FALSE)
+colnames(d)
 str(d)
 
 # drop endline if any
@@ -33,7 +34,7 @@ d$dlogroll[d$folio==2623] <- 0
 d$nconjunto[d$folio>=2503 & d$folio<=2514] <- 1
 
 # turn NAs to vote=0
-sel <- which(colnames(d) %in%  c("segob", "senpri", "senprd", "dippri", "dippan", "creel", "granados", "pinchetti", "pozas", "zertuche", "woldenberg", "barragan", "cantu", "cardenas", "lujambio", "merino", "molinar", "peschard", "zebadua", "luken", "rivera", "albo", "alcantar", "andrade", "glezluna", "latapi", "lopezflores", "morales", "sanchez", "ugalde", "banos", "nacif", "valdes", "elizondo", "figueroa", "guerrero", "cordova", "garcia", "marvan", "andrade2", "favela", "galindo", "murayama", "ruiz", "snmartin", "santiago", "ravel", "rivera2", "zavala", "magana", "faz", "humphrey", "kib"))
+sel <- which(colnames(d) %in%  c("segob", "senpri", "senprd", "dippri", "dippan", "creel", "granados", "pinchetti", "pozas", "zertuche", "woldenberg", "barragan", "cantu", "cardenas", "lujambio", "merino", "molinar", "peschard", "zebadua", "luken", "rivera", "albo", "alcantar", "andrade", "glezluna", "latapi", "lopezflores", "morales", "sanchez", "ugalde", "banos", "nacif", "valdes", "elizondo", "figueroa", "guerrero", "cordova", "garcia", "marvan", "andrade2", "favela", "galindo", "murayama", "ruiz", "snmartin", "santiago", "ravel", "rivera2", "zavala", "cruz", "faz", "humphrey", "kib"))
 tmp <- d[,sel]
 tmp[is.na(tmp)] <- 0
 d[,sel] <- tmp
@@ -116,7 +117,7 @@ d$tmp62[d$ravel==1]                     <- 1
 d$tmp63[d$rivera2==1]                   <- 1
 d$tmp64[d$zavala==1]                    <- 1
 #
-d$tmp65[d$magana==1]                    <- 1
+d$tmp65[d$cruz==1]                      <- 1
 d$tmp66[d$faz==1]                       <- 1
 d$tmp67[d$humphrey==1]                  <- 1
 d$tmp68[d$kib==1]                       <- 1
@@ -156,9 +157,9 @@ sel <- which(colnames(d) %in% c("segob", "senpri", "senprd", "dippri", "dippan",
 d <- d[,-sel]
 rm(sel)
 #
-# drop recent consejeros without coded votes (last vote apr 2020, before they were appointed)
-sel <- which(colnames(d) %in%  c("magana", "faz", "humphrey", "kib"))
-d <- d[,-sel]
+## # drop recent consejeros without coded votes (last vote apr 2020, before they were appointed)
+## sel <- which(colnames(d) %in%  c("cruz", "faz", "humphrey", "kib"))
+## d <- d[,-sel]
 
 str(d)
 colnames(d)
@@ -214,10 +215,10 @@ d <- within(d, {
     ravel1       <- as.numeric(      ravel==1 | ravel==2);
     rivera21     <- as.numeric(    rivera2==1 | rivera2==2);
     zavala1      <- as.numeric(     zavala==1 | zavala==2);
-    ## magana1      <- as.numeric(     magana==1 | magana==2);
-    ## faz1         <- as.numeric(        faz==1 | faz==2);
-    ## humphrey1    <- as.numeric(   humphrey==1 | humphrey==2);
-    ## kib1         <- as.numeric(        kib==1 | kib==2);
+    cruz1        <- as.numeric(       cruz==1 | cruz==2);
+    faz1         <- as.numeric(        faz==1 | faz==2);
+    humphrey1    <- as.numeric(   humphrey==1 | humphrey==2);
+    kib1         <- as.numeric(        kib==1 | kib==2);
 })
 #
 d$vtot <- NA
@@ -273,7 +274,19 @@ tmp <- d[d$term==13,]
 tmp <- within(tmp, vtot <- banos1 + nacif1 + cordova1 + andrade21 + favela1 + murayama1 + ruiz1 + snmartin1 + ravel1 + rivera21 + zavala1)
 d[d$term==13,] <- tmp
 #
+tmp <- d[d$term==14,]
+tmp <- within(tmp, vtot <- cordova1 + favela1 + murayama1 + ravel1 + rivera21 + ruiz1)
+d[d$term==14,] <- tmp
+#
+tmp <- d[d$term==15,]
+tmp <- within(tmp, vtot <- cordova1 + favela1 + murayama1 + faz1 + humphrey1 + kib1 + cruz1 + ravel1 + rivera21 + ruiz1 + zavala1)
+d[d$term==15,] <- tmp
+#
 table(d$vtot)
+
+# code result
+d$dpass <- as.numeric(d$result==0)
+table(d$dpass)
 #
 d$absten <- NA
 d$absten[d$term==1]               <- 11 - d$vtot[d$term==1]
@@ -293,13 +306,12 @@ table(d$ayes, useNA = "always")
 table(d$nays, useNA = "always")
 table(d$absten, useNA = "always")
 #
-# recompute result
-d$tmp <- 1 - d$result # for comparison (was coded 0 pass 1 fail)
-d <- within(d, result <- as.numeric(ayes - nays > 0))
-# there were lots of inconsistent codings
-## table(d$result, d$tmp, useNA = "always")
-## sel <- which(d$result!=d$tmp)
-## d[sel[2],]
+# many result miscoded, cleaned all false passes but many false non-passes remain (odd codes by gus and sergio)
+table(d$ayes - d$nays, d$dpass, useNA = "always")
+# recode result based on ayes - nays
+d$dpass <- as.numeric(d$ayes - d$nays > 0)
+table(d$dpass)
+#
 # clean
 sel <- grep(".*1$", colnames(d))
 d <- d[,-sel]
@@ -363,13 +375,12 @@ d <- within(d, {
     ravelgone <-       as.numeric(      ravel==4 | ravel==5);
     rivera2gone <-     as.numeric(    rivera2==4 | rivera2==5);
     zavalagone <-      as.numeric(     zavala==4 | zavala==5);
-    ## maganagone <-      as.numeric(     magana==4 | magana==5);
-    ## fazgone <-         as.numeric(        faz==4 | faz==5);
-    ## humphreygone <-    as.numeric(   humphrey==4 | humphrey==5);
-    ## kibgone <-         as.numeric(        kib==4 | kib==5);
+    cruzgone <-        as.numeric(       cruz==4 | cruz==5);
+    fazgone <-         as.numeric(        faz==4 | faz==5);
+    humphreygone <-    as.numeric(   humphrey==4 | humphrey==5);
+    kibgone <-         as.numeric(        kib==4 | kib==5);
 })
-d <- within(d, noshow <- woldenberggone + molinargone + lujambiogone + peschardgone + merinogone + cardenasgone + barragangone + cantugone + zebaduagone + lukengone + riveragone + albogone + glezlunagone + sanchezgone + moralesgone + ugaldegone + latapigone + andradegone + lopezfloresgone + alcantargone + valdesgone + banosgone + nacifgone + elizondogone + figueroagone + guerrerogone + marvangone + cordovagone + garciagone + andrade2gone + favelagone + galindogone + murayamagone + ruizgone + snmartingone + santiagogone + ravelgone + rivera2gone + zavalagone)
-## + maganagone + fazgone + humphreygone + kibgone
+d <- within(d, noshow <- woldenberggone + molinargone + lujambiogone + peschardgone + merinogone + cardenasgone + barragangone + cantugone + zebaduagone + lukengone + riveragone + albogone + glezlunagone + sanchezgone + moralesgone + ugaldegone + latapigone + andradegone + lopezfloresgone + alcantargone + valdesgone + banosgone + nacifgone + elizondogone + figueroagone + guerrerogone + marvangone + cordovagone + garciagone + andrade2gone + favelagone + galindogone + murayamagone + ruizgone + snmartingone + santiagogone + ravelgone + rivera2gone + zavalagone+ cruzgone + fazgone + humphreygone + kibgone)
 # check
 #table(d$noshow)
 # clean
@@ -421,7 +432,7 @@ d <- within(d, {
 ## export data ##
 #################
 #info.cols <- c("folio", "date", "qtr", "sem", "term")
-info.cols <- c("folio", "date", "yr", "mo", "dy", "qtr", "sem", "term", "dunan")
+info.cols <- c("folio", "date", "yr", "mo", "dy", "qtr", "sem", "term", "dunan", "dpass")
 #
 sel.r <- which(d$term %in% c(2,3))
 sel.c <- c("woldenberg", "barragan", "cantu", "cardenas", "lujambio", "merino", "molinar", "peschard", "zebadua", "rivera", "luken", info.cols)
@@ -443,22 +454,29 @@ sel.c <- c("ugalde", "albo", "andrade", "alcantar", "glezluna", "latapi", "lopez
 tmp <- d[sel.r, sel.c]
 write.csv(tmp, file = "data/v456789ab.csv", row.names = FALSE)
 #
-sel.r <- which(d$term %in% 12:14)
+sel.r <- which(d$term %in% 12:15)
 sel.c <- c("cordova", "banos", "andrade2", "favela", "galindo", "murayama", "nacif", "ruiz", "sanchez", "santiago", "snmartin", "ravel", "rivera2", "zavala", info.cols)
 tmp <- d[sel.r, sel.c]
-write.csv(tmp, file = "data/vcde.csv", row.names = FALSE)
+write.csv(tmp, file = "data/vcdef.csv", row.names = FALSE)
 #
 # save full vote set
-sel.r <- which(d$term %in% c(2:14))
+sel.r <- which(d$term %in% c(2:15))
 sel.c <- c(
     c("woldenberg", "barragan", "cantu", "cardenas", "lujambio", "merino", "molinar", "peschard", "zebadua", "rivera", "luken"), 
-    c("ugalde", "albo", "andrade", "alcantar", "glezluna", "latapi", "lopezflores", "morales", "sanchez", "valdes", "banos", "nacif", "elizondo", "figueroa", "guerrero", "cordova", "garcia", "marvan"),
-    c("cordova", "banos", "andrade2", "favela", "galindo", "murayama", "nacif", "ruiz", "sanchez", "santiago", "snmartin", "ravel", "rivera2", "zavala"),
+    c("ugalde", "albo", "andrade", "alcantar", "glezluna", "latapi", "lopezflores", "morales", "sanchez"),
+    c("valdes", "albo", "alcantar", "andrade", "banos", "glezluna", "lopezflores", "nacif", "sanchez"),
+    c("valdes", "alcantar", "andrade", "banos", "elizondo", "figueroa", "guerrero", "nacif", "sanchez"),
+    c("valdes", "banos", "elizondo", "figueroa", "guerrero", "nacif"),
+    c("valdes", "banos", "cordova", "elizondo", "figueroa", "garcia", "guerrero", "marvan", "nacif"),
+    c("cordova", "andrade2", "banos", "favela", "galindo", "murayama", "nacif", "ruiz", "sanchez", "santiago", "snmartin"),
+    c("cordova", "andrade2", "banos", "favela", "murayama", "nacif", "ravel", "rivera2", "ruiz", "snmartin", "zavala"),
+    c("cordova", "cruz", "kib", "favela", "faz", "humphrey", "murayama", "ravel", "rivera2", "ruiz", "zavala"),
+    c("cordova", "favela", "murayama", "faz", "humphrey", "kib", "cruz", "ravel", "rivera2", "ruiz", "zavala"),
     info.cols
 )
 sel.c <- sel.c[duplicated(sel.c)==FALSE] # drop duplicates
 tmp <- d[sel.r, sel.c]
-write.csv(tmp, file = "data/v23456789abcde.csv", row.names = FALSE)
+write.csv(tmp, file = "data/v23456789abcdef.csv", row.names = FALSE)
 
 
 ## # summarize contested votes

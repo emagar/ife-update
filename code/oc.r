@@ -18,15 +18,29 @@
 ## library(plyr)
 library(lubridate)
 
-options(width = 120)
+options(width = 110)
 rm(list = ls())
 workdir <- c("/home/eric/Dropbox/data/rollcall/ife_cg/ife-update/data/")
 # workdir <- c("~/Dropbox/ife-update/data/")
 setwd(workdir)
 
+################################################################
+## select temporal range of full analysis (broken down below) ##
+################################################################
+#terms <- 12:13
+terms <- 4
+
+# term letter equivalence
+term.eq <- data.frame(term = 1:16,
+                      term.a = c(1:9,"a","b","c","d","e","f","g")
+                      )
+# create pattern for regex search
+terms.grep <- paste(c("[",term.eq$term.a[terms],"]"), collapse = '')
+#
 # Define colors and plotting names
 # OJO: en tenure term==10 es a, term==11 es b etc. 
 ids <- read.csv("../ancillary/consejo-general-ife-ine.csv")
+ids <- ids[order(ids$ord),] # sort
 ids <- ids[, -grep("^x", colnames(ids))] # drop redundant "x" columns
 ids <- ids[, -grep("^job", colnames(ids))] # drop jobs
 ids <- ids[-grep("^1$", ids$tenure),]    # drop consejeros ciudadanos 1994-96
@@ -67,8 +81,8 @@ ids <- within(ids, {
 ##                                  "gray")))));
 ##     })
 rownames(ids) <- ids$column
-ids[5,]
-
+ids[1,]
+#
 #####################################################################################
 ## adjusts approximate years with constant membership for year-by-year estimations ##
 #####################################################################################
@@ -138,141 +152,61 @@ yr.by.yr <- data.frame(
     term =   c(2, 2, 2, 2, 3, 3, 3, 4, 4, 4, 4, 6, 7, 7, 8, 9, 10, 11, 12, 12, 12, 13, 13, 13, 14, 15, 15, 15),
     term.a = c(2, 2, 2, 2, 3, 3, 3, 4, 4, 4, 4, 6, 7, 7, 8, 9, "a","b","c","c","c","d","d","d","e","f","f","f")
 )
-
-################################################################
-## select temporal range of full analysis (broken down below) ##
-################################################################
-terms <- 12:13
-terms.grep <- "[cd]"
-## terms <- 4:11
-## terms.grep <- "[456789ab]"
-## terms <- 4:10
-## terms.grep <- "[45679a]"
-terms <- 23
-terms.grep <- "[23]"
-
+#
+##############################################
+## Read votes, exported by code/data-prep.r ##
+##############################################
+vot.raw <-read.csv("v23456789abcdef.csv",  header=TRUE)
+#
 #############################################
 ## subset ids and periodicization to range ##
 #############################################
 ids <- ids[grep(pattern = terms.grep, ids$tenure),]
 yr.by.yr <- yr.by.yr[grep(pattern = terms.grep, yr.by.yr$term.a),]
 ids[, c("column","sponsor","tenure")] # inspect
-
-#############################################################
-## select temporal unit -- discrete periods to be analyzed ##
-## e.g. terms, year-by-year, semester...                   ##
-#############################################################
-table(term=yr.by.yr$term, yrn=yr.by.yr$yrn) # inspect
-#tees <- yr.by.yr$yrn # years 8:18 cover terms 4:11, ug to 2014 reform
-## tees <- c(12:13) # post-2014 terms córdoba I and II
-## tees <- c(4,6:11) # terms ugalde I+II valdés I II III IV and V+VI
-## tees <- c(4,6:10) # terms ugalde I+II valdés I II III IV and V
-tees <- c(2:3)
-T <- length(tees)
-
-## ##########################################
-## ## Prep object to receive yearly priors ##
-## ##########################################
-## prior.location <- data.frame(matrix(NA, nrow = length(ids$column), ncol = T))
-## rownames(prior.location) <- ids$column
-## colnames(prior.location) <- paste0("term", tees)
-## prior.precision <- prior.location
-## prior.precision[] <- 1 # for N=2-on
-## #
-## ## # assign priors for first round in council term 12
-## ## prior.location[] <- 0
-## ## prior.location  ["favela",] <-  2
-## ## prior.location["murayama",] <- -2
-## ## prior.precision[,1] <- 1
-## ## prior.precision  ["favela",] <- 4
-## ## prior.precision["murayama",] <- 4
-## ## #
-## ## # assign priors for first round in council terms 4 to 11
-## ## prior.location[,1] <- 0
-## ## prior.location["alcantar",1] <-  2
-## ## prior.location ["sanchez",1] <- -2
-## ## prior.precision[,1] <- 1
-## ## prior.precision["alcantar",1] <- 4
-## ## prior.precision ["sanchez",1] <- 4
-## ## # assign priors for first round in council
-## ## prior.location[] <- 0
-## ## prior.location["alcantar",] <-  2
-## ## prior.location ["sanchez",] <- -2
-## ## prior.location["banos",] <-  2
-## ## prior.location["figueroa",] <- -2
-## ## prior.precision[,1] <- 1
-## ## prior.precision["alcantar",] <- 4
-## ## prior.precision ["sanchez",] <- 4
-## ## prior.precision ["banos",] <- 4
-## ## prior.precision ["figueroa",] <- 4
-## ## #
-## # assign priors for first round in council terms 2 and 3
-## prior.location[] <- 0
-## prior.location  ["merino",] <-  2
-## prior.location["cardenas",] <- -2
-## prior.precision[,1] <- 1
-## prior.precision  ["merino",] <- 4
-## prior.precision["cardenas",] <- 4
-
-## prior.location  # inspect
-## prior.precision # inspect
-
-## ##############################
-## ## will receive party means ##
-## ##############################
-## party.locations <- data.frame(matrix(NA, ncol = T, nrow = 5))
-## colnames(party.locations) <- colnames(prior.location)
-## rownames(party.locations) <- c("pri", "pan", "prd", "pvem", "morena")
-
-########################################
-## term-by-term start-end and members ##
-########################################
-terms.dates <- data.frame(
-    term = 1:15,
-    term.a = c(1:9,"a","b","c","d","e","f"),
-    vot1st =  ymd("19940603", "19961031", "20001211", "20031105", "20071217", "20080215", "20080821", "20101031", "20111215", "20130220", "20131031", "20140411", "20170405", "20200417", "20200723"),
-    votlast = ymd("19960712", "20001114", "20031021", "20071128", "20080128", "20080814", "20101027", "20111214", "20130206", "20131028", "20140402", "20170328", "20200401", "20200708", "20230403"))
-terms.dates$start <- terms.dates$vot1st
-terms.dates$end <- c(terms.dates$vot1st[2:15], NA)
-# merge term 5 to 4
-terms.dates$end[terms.dates$term==4] <- terms.dates$end[terms.dates$term==5]
-terms.dates <- terms.dates[-which(terms.dates$term==5),]
-# mid-date
-terms.dates$mid <- as.Date(terms.dates$start + as.duration(interval(terms.dates$start, terms.dates$end))/2) # as.Date drop UTC
-
 #
-## # members
-## tmp <- rbind(
-## c("segob", "creel", "granados", "pinchetti", "pozas", "woldenberg", "zertuche", "senpri", "senprd", "dippri", "dippan"),
-## c("woldenberg", "barragan", "cantu", "cardenas", "lujambio", "merino", "molinar", "peschard", "zebadua", NA, NA),
-## c("woldenberg", "barragan", "cantu", "cardenas", "lujambio", "luken", "merino", "peschard", "rivera", NA, NA),
-## c("ugalde", "albo", "alcantar", "andrade", "glezluna", "latapi", "lopezflores", "morales", "sanchez", NA, NA),
-## c("albo", "alcantar", "andrade", "glezluna", "latapi", "lopezflores", "morales", "sanchez", NA, NA, NA),
-## c("valdes", "albo", "alcantar", "andrade", "banos", "glezluna", "lopezflores", "nacif", "sanchez", NA, NA),
-## c("valdes", "alcantar", "andrade", "banos", "elizondo", "figueroa", "guerrero", "nacif", "sanchez", NA, NA),
-## c("valdes", "banos", "elizondo", "figueroa", "guerrero", "nacif", NA, NA, NA, NA, NA),
-## c("valdes", "banos", "cordova", "elizondo", "figueroa", "garcia", "guerrero", "marvan", "nacif", NA, NA),
-## c("valdes", "banos", "cordova", "elizondo", "figueroa", "guerrero", "marvan", "nacif", NA, NA, NA),
-## c("cordova", "banos", "marvan", "nacif", NA, NA, NA, NA, NA, NA, NA),
-## c("cordova", "andrade2", "banos", "favela", "galindo", "murayama", "nacif", "ruiz", "sanchez", "santiago", "snmartin"),
-## c("cordova", "andrade2", "banos", "favela", "murayama", "nacif", "ravel", "rivera2", "ruiz", "snmartin", "zavala"),
-## c("cordova", "favela", "murayama", "ravel", "rivera2", "ruiz", "zavala", NA, NA, NA, NA),
-## c("cordova", "favela", "murayama", "faz", "humphrey", "kib", "magana", "ravel", "rivera2", "ruiz", "zavala")
-## )
-## colnames(tmp) <- paste0("m", 1:11)
-## term.members <- cbind(terms.dates, tmp)
-## # inspect
-## tmp <- term.members[4, grep("^m[0-9]", colnames(terms.dates))]
-## tmp[!is.na(tmp)]
-
-##############################################
-## Read votes, exported by code/data-prep.r ##
-##############################################
-vot.raw <-read.csv("v23.csv",  header=TRUE)
-vot.raw <-read.csv("v456789ab.csv",  header=TRUE)
-vot.raw <-read.csv("vcde.csv",  header=TRUE)
-vot <- vot.raw # duplicate for manipulation
-
+# period name columns
+per.cols <- ids$column
+#
+## #############################################################
+## ## select temporal unit -- discrete periods to be analyzed ##
+## ## e.g. terms, year-by-year, semester...                   ##
+## #############################################################
+## table(term=yr.by.yr$term, yrn=yr.by.yr$yrn) # inspect
+## #tees <- yr.by.yr$yrn # years 8:18 cover terms 4:11, ug to 2014 reform
+## ## tees <- c(12:13) # post-2014 terms córdoba I and II
+## ## tees <- c(4,6:11) # terms ugalde I+II valdés I II III IV and V+VI
+## ## tees <- c(4,6:10) # terms ugalde I+II valdés I II III IV and V
+## tees <- c(2:3)
+## T <- length(tees)
+#
+## ########################################
+## ## term-by-term start-end and members ##
+## ########################################
+## terms.dates <- data.frame(
+##     term = 1:16,
+##     term.a = c(1:9,"a","b","c","d","e","f","g"),
+##     vot1st =  ymd("19940603", "19961031", "20001211", "20031105", "20071217", "20080215", "20080821", "20101031", "20111215", "20130220", "20131031", "20140411", "20170405", "20200417", "20200723", "20230404"),
+##     votlast = ymd("19960712", "20001114", "20031021", "20071128", "20080128", "20080814", "20101027", "20111214", "20130206", "20131028", "20140402", "20170328", "20200401", "20200708", "20230403", NA))
+## terms.dates$start <- terms.dates$vot1st
+## terms.dates$end <- c(terms.dates$vot1st[2:16], NA)
+## # merge term 5 to 4
+## terms.dates$end[terms.dates$term==4] <- terms.dates$end[terms.dates$term==5]
+## terms.dates <- terms.dates[-which(terms.dates$term==5),]
+## # mid-date
+## terms.dates$mid <- as.Date(terms.dates$start + as.duration(interval(terms.dates$start, terms.dates$end))/2) # as.Date drop UTC
+#
+##################
+## info columns ##
+##################
+info.cols <- c("folio","date","yr","mo","dy","qtr","sem","term","dunan","dpass")
+sel.r <- which(vot.raw$term %in% terms)
+#
+########################################
+## subset to term's votes and members ##
+########################################
+vot <- vot.raw[sel.r, c(per.cols, info.cols)]
+#
 #########################################################
 ## term 5 has one contested vote only, merge to term 4 ##
 #########################################################
@@ -284,36 +218,7 @@ if (length(sel)>0) vot$term[sel] <- 4
 sel <- which(vot$term==11)
 #if (length(sel)>0) vot$term[sel] <- 10
 if (length(sel)>0) vot <- vot[-sel,]
-
-###########################################
-## using terms: subset to desired terms  ##
-###########################################
-sel <- which(vot$term %in% tees)
-vot <- vot[sel,]
-# add temporal aggregation as column t
-vot$t <- NA
-for (i in 1:T){
-    sel <- which(vot$term==tees[i])
-    vot$t[sel] <- i
-}
-
-## ####################################################
-## ## using approx.yrs: add temporal periodicization ##
-## ####################################################
-## # approx yr version
-## tmp <- vot$date # extract dates
-## tmp2 <- tmp3 <- tmp # triplicate
-## for (i in 1:length(tmp)){
-##     sel <- which(yr.by.yr$start<=tmp[i] & yr.by.yr$end>=tmp[i])
-##     tmp2[i] <- yr.by.yr$approx.yr[sel] # returns yr vote belongs to
-##     tmp3[i] <- yr.by.yr$yrn[sel]         # returns t vote belongs to
-## }
-## vot$yrn <- as.numeric(tmp2)
-## vot$t  <- as.numeric(tmp3)
-## # explore
-## table(dunan=vot$dunan, yr=vot$yrn)
-## with(vot, table(term=term[dunan==0], yr=yr[dunan==0]))
-
+#
 ###########################################
 ## summarize then drop uncontested votes ##
 ###########################################
@@ -322,35 +227,32 @@ table(factor(vot$dunan, labels = c("contested","not")), useNA = "ifany")
 table(factor(vot$dunan, labels = c("contested","not")), vot$yr, useNA = "ifany")
 sel <- which(vot$dunan==1)
 if (length(sel)>0) vot <- vot[-sel,]
-
-
+#
+###########################################################
+## RECODE ABSENCES AND ABSTENTIONS AS VOTE WITH MAJORITY ##
+###########################################################
+sel <- which(vot$dpass==1)
+tmp <- vot[sel, -which(colnames(vot) %in% info.cols)] # subset vote columns
+tmp[1,]
+tmp[tmp==3 | tmp==4 | tmp==5] <- 1
+vot[sel, -which(colnames(vot) %in% info.cols)] <- tmp # return manipulation to data
+#
+sel <- which(vot$dpass==0)
+tmp <- vot[sel, -which(colnames(vot) %in% info.cols)] # subset vote columns
+tmp[tmp==3 | tmp==4 | tmp==5] <- 2
+vot[sel, -which(colnames(vot) %in% info.cols)] <- tmp # return manipulation to data
+#
 ###########################
 ## Taken from piper code ##
 ###########################
 ## ONE-DIM ARRANGEMENT
-# duplicate for manipulation
-votes <- vot
-# select term for estimation
-sel <- which(votes$term==2)
-# keep appropriate rows
-votes <- votes[sel,]
-
-
-
-ids[1,]
-terms
-ls()
-x
+#
 # keep votes cols only
-sel <- which(colnames(votes) %in% c("folio","date","yr","mo","dy","qtr","sem","term","dunan","t"))
-votes <- votes[,-sel]
-head(votes)
-table(votes$lujambio)
+votes <- vot[,-which(colnames(vot) %in% info.cols)] # duplicate votes only
+table(votes$murayama)
 # 
 votes[votes==2] <- -1  # los nays se codifican -1s
-votes[votes==3 | votes==4 | votes==5] <- 0  # abstentions and absences coded 0s
-votes[votes==0] <- -1  # ABSTENCIONES == NAY
-
+#
 I <- dim(votes)[1]; J <- dim(votes)[2]
 agreeMatrix <- matrix(NA, ncol=J, nrow=J); tmp <- rep(NA, times=I)
 for (j in 1:J){
@@ -365,8 +267,7 @@ for (j1 in 2:J){
         print( paste("j1 =",j1,"; j2 =",j2) )
                         }
 }
-
-
+#
 # SQUARED DISTANCES
 sd <- (1-agreeMatrix)^2
 ## DOUBLE-CENTRED MATRIX
@@ -382,18 +283,40 @@ for (r in 1:J){
 ## SIMPLE ONE-DIM IDEAL POINTS
 tmp <- sqrt(dc[1,1])
 ip  <- c(tmp, dc[2:J,1]/tmp)
-##
-## EXTREMA DERECHA
-plot(x=ip)
-thr <- .14
-data.frame(ip=ip[c(1:J)[ip>thr]], id=dipdat$id[c(1:J)[ip>thr]], nom=dipdat$nom[c(1:J)[ip>thr]], part=dipdat$part[c(1:J)[ip>thr]], noVote=dipdat$noVoteRate[c(1:J)[ip>thr]])
-##EXTREMA IZQUIERDA
-thr <- -.185
-data.frame(ip=ip[c(1:J)[ip<thr]], id=dipdat$id[c(1:J)[ip<thr]], nom=dipdat$nom[c(1:J)[ip<thr]], part=dipdat$part[c(1:J)[ip<thr]], noVote=dipdat$noVoteRate[c(1:J)[ip< thr]])
-##
-plot(c(-.3,.3), c(1,7), type="n")
-for (j in 1:J){
-    points(ip[j], dipdat$part[j], pch=20,col=dipdat$color[j])
-    
+names(ip) <- per.cols
+
+
+
+plot(x = c(min(ip)*1.1, max(ip)*1.1), y = c(0,0), type = "n", axes = FALSE, xlab = "", ylab = "", main = paste0("Term =  ", terms))
+abline(h=0)
+points(x = ip, y = rep(0, length(ip)), pch = 19)
+#text(x = ip, y = rep(-.1, length(ip)), labels = round(ip, 1))
+for (i in 1:length(ip)){
+    text(x = ip[i], y = 0, labels = per.cols[i], srt = 90, pos = 4)
 }
 
+# Alexader Tahc's OC method
+library(npideal)
+library(pscl)     # simon jackman's package
+
+# keep votes cols only
+votes <- vot[,-which(colnames(vot) %in% info.cols)] # duplicate votes only
+votes <- as.matrix(votes)
+votes <- t(votes)
+head(vot)
+# prep roll-call object
+votes <- rollcall(votes,
+                  yea = 1,
+                  nay = 2,
+                  missing = NA,
+                  notInLegis = c(3,4,5),
+                  legis.names = rownames(votes),
+                  legis.data = ids,
+                  vote.names = vot$folio,
+                  vote.data = vot[,info.cols]
+                  )
+
+table(votes$votes)
+with(votes, voteest(votes))
+with(votes, rankAgreeR(votes, n, m))
+computeCombinations(4)
